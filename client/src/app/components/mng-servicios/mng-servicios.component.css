@@ -1,0 +1,97 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+img{
+    min-width: 50%;
+}
+
+h1{
+    color:deepskyblue;
+    font-weight: 500;
+    font-style:oblique;
+    text-align: center;
+}
+
+#contenedor{
+    margin-top: 10%;
+}
+
+div.alert-primary{
+    text-align: center;
+    font-size: x-large;
+    font-style: Bold;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+  }
+  .ng-autocomplete{
+    max-width: 100% !important ;
+  }
+
+  .ng-autocomplete
+    ::ng-deep .autocomplete-container{
+      box-shadow: none !important;
+      border: solid !important;
+      border-width: thin !important;
+      border-color: lightgray !important;
+      min-width: 100% !important;
+  }
+
+  .cardheader{
+    background-color: #d13138;
+    text-align: center;
+  }
+
+  .folioregistro{
+    font-weight:bolder;
+    font-size: x-large;
+  }
+
+  #octagon {
+    cursor: pointer;
+    width: 120px;
+    height: 120px;
+    background: #28a745;
+    position: relative;
+  }
+  #octagon:before {
+    content: "";
+    width: 120px;
+    height: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-bottom: 32px solid #28a745;
+    border-left: 32px solid rgb(255, 254, 254);
+    border-right: 32px solid rgb(255, 255, 255);
+  }
+  #octagon:after {
+    content: "";
+    width: 120px;
+    height: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-top: 32px solid #28a745;
+    border-left: 32px solid rgb(255, 252, 252);
+    border-right: 32px solid rgb(255, 255, 255);
+  }
+
+  .textoctagon{
+    font-size: 95%;
+    font-weight: bolder;
+    margin-top: 26%;
+    color: white;
+    text-align: center;
+  }
+
+  p{
+    margin-bottom: auto;
+  }
+
+  p, h3, label{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }

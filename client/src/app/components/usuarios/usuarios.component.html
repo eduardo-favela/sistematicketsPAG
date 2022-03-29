@@ -1,0 +1,123 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card mb-3">
+      <div class="card-header text-white cardheader">REGISTRO DE USUARIOS</div>
+      <div class="card-body">
+        <h5 class="card-title">Registrar usuario</h5>
+        <hr>
+        <div class="row d-flex justify-content-around">
+          <div class="col-md-4 col-sm-12 mt-3">
+            <label for="userInput">Usuario</label>
+            <input class="form-control" type="text" name="userInput"
+              id="userInput"
+              [(ngModel)]="usuario.user" placeholder="Escriba un nombre de usuario">
+          </div>
+          <div class="col-md-4 col-sm-12 mt-3">
+            <label for="passInput">Contraseña</label>
+            <input class="form-control" type="password" name="passInput"
+              id="passInput"
+              [(ngModel)]="usuario.pass" placeholder="Ingrese una contraseña">
+          </div>
+        </div>
+        <div class="row d-flex justify-content-around">
+          <div class="col-md-4 col-sm-12 mt-3">
+            <label>Empleado</label>
+            <div class="ng-autocomplete" id="inputEmpleado">
+              <ng-autocomplete #inputUsuario name="usuarios"
+                [data]="usuarios"
+                [disabled]="inputsDisabled"
+                [searchKeyword]="keywordUsuarios"
+                (selected)='selectEventUsuario($event)'
+                [placeholder]='placeholderUsuario'
+                (inputChanged)='onChangeSearch($event)'
+                (inputCleared)='onCleared($event)'
+                (inputFocused)='onFocusedUsuario($event)'
+                [itemTemplate]="itemTemplateUsuario"
+                [notFoundTemplate]="notFoundTemplate">
+              </ng-autocomplete>
+              <ng-template #itemTemplateUsuario let-item>
+                <a>
+                  <span [innerHTML]="item.nombre"></span>
+                </a>
+              </ng-template>
+              <ng-template #notFoundTemplate let-notFound>
+                <div [innerHTML]="notFound"></div>
+              </ng-template>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-12 mt-3">
+            <label for="servicio">Tipo de usuario</label>
+            <select [(ngModel)]="usuario.tipo_usuario" id="tipoUsuario"
+              class="form-control"
+              name="tipoUsuario">
+              <option value= null disabled selected>Selecciona un tipo de
+                usuario...</option>
+              <option *ngFor="let usuario of tiposUsuario"
+                value="{{usuario.idtipousuario }}">{{ usuario.tipousuario }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+          <div class="col-md-3 col-sm-6 mt-3 mb-3">
+            <button (click)="registrarUsuario()" class="mt-4 form-control btn
+              btn-success">Registrar usuario<i class="far fa-save ml-2"></i></button>
+          </div>
+        </div>
+        <hr>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal de confirmación de registro de usuario-->
+<div class="modal fade" id="nuevoUsuarioModal" tabindex="-1"
+  aria-labelledby="nuevoUsuarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 class="modal-title">Usuario registrado</h5>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <div class="alert alert-success" role="alert">
+                <p><i class="fas fa-check-circle mr-2"></i>¡El usuario fue
+                  registrado exitosamente!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Continuar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal de error-->
+<div class="modal fade" id="errorUsuarioModal" tabindex="-1"
+  aria-labelledby="errorUsuarioModal" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 id="motivoErrorHeader" class="modal-title"></h5>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <div class="alert alert-warning" role="alert">
+                <p id="motivoErrorContent"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Continuar</button>
+      </div>
+    </div>
+  </div>
+</div>

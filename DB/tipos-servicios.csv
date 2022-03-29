@@ -1,0 +1,105 @@
+tipo_servicio,id_servicio
+Día Inhábil / Vacs / Permisos,1
+Reuniones / Planeación,1
+Administración Personal,1
+Bitácora / Indicadores,1
+Cursos y Capacitaciones,1
+Métodos y Procesos,1
+No cubre el sistema,2
+Error de sistema,2
+Error de usuario,2
+Ajustes y Modificaciones,2
+Asesoria / Capacitación,2
+Cargas Masivas de Datos,2
+Configuración / Permisos,2
+Preanálisis,3
+Análisis,3
+Especificación de Requerimientos,3
+Diseño de Pruebas,3
+Diseño,3
+Codificación,3
+Pruebas Unitarias,3
+Pruebas Integrales,3
+Pruebas de Usuario,3
+Preparación de datos - SetUp,3
+Liberación,3
+Ajuste o Modificación Post-Implementación,3
+Tareas Periódicas / Preventivas,4
+Tareas Operativas,4
+Día Inhábil / Vacs / Permisos,5
+Reuniones / Planeación / Organización,5
+Administración Personal,5
+Bitácora / Indicadores,5
+Capacitación,5
+ABC Usuarios de Red,6
+Actualización de Windows,6
+Antivirus,6
+Configuración Impresoras,6
+Correo Equipo Celular,6
+Correo Equipo de Cómputo,6
+Equipo de Cómputo,6
+Red Cableada,6
+WiFi,6
+Adm Access Point,6
+Adm Correo Corporativo,6
+Adm DVR,6
+Adm Firewalls - Servidor Antivirus,6
+Adm File Server - Carpetas Compartidas,6
+Adm Gotomeeting,6
+Adm Microsip,6
+Adm Servidor de Respaldos o NAS,6
+Adm Servidores Físicos,6
+Adm Servidores Virtuales,6
+Adm Mikrotik,6
+Comunicaciones VPN,6
+Conmutadores,6
+Instalación de Programas,6
+Internet - Monitoreo Servicio en UEN,6
+Internet - Restricción Navegación,6
+Inventario Equipo de Cómputo,6
+QDOC,6
+Respaldo y/o Recuperación Inf Usuario,6
+Relojes Checadores,6
+Seguridad Análisis Auditorías,6
+Soporte Manejo Office-Internet,6
+Soporte Consumibles y Refacciones,6
+Switching,6
+Seguridad Perimetral (Fortinet),7
+Infraestructura ERP (Hosting - On Premise),7
+Matriz Servicios TI,7
+Servidor Kaspersky - Configuración,7
+Servidor Streaming,7
+Ampliación Planta Laguna,7
+Control de Actualizaciones de Windows,7
+Implementación Kairos,7
+Optimización-Virtualizacion Servers,7
+SCADA Monterrey,7
+Portal WEB Electric Depot,7
+Mantenimiento Preventivo,8
+Respaldo Carpetas Personales,8
+Respaldo PST,8
+Refresh 2020,8
+Auditorías 2020,8
+CheckList UENS,8
+Fallo Interno EQ Computo,9
+Error por Usuario,9
+Error en Outlook,9
+Error Microsip,9
+Fallo en Red Cableada,9
+Fallo en Red Inalámbrica,9
+Fallo de Sistema Operativo,9
+Actualizaciones Windows,9
+Fallo en Servidores ERP,9
+Pérdida de Accesos,9
+Fallo Comunicación DVR,9
+Falla Mikrotik,9
+Fallo Equipo DVR,9
+Fallo Comunicaciones/Energía,9
+Fallo de Switches,9
+Fallo de Impresión,9
+Fallo de Conmutador,9
+Fallo Servicio de Correo,9
+Fallo de acceso a E. Remoto,9
+Fallo Internet,9
+Fallo Telefonía o Extensiones,9
+Fallo Otros,9

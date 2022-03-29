@@ -1,0 +1,1 @@
+{"ast":null,"code":"const API_URI = 'http://200.100.100.86:3005/api';\nexport default API_URI;","map":null,"metadata":{},"sourceType":"module"}
