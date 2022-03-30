@@ -95,3 +95,7 @@ div.alert-primary{
     -ms-user-select: none;
     user-select: none;
   }
+
+  a {
+    cursor : pointer;
+  }

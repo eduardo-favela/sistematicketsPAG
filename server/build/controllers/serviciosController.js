@@ -32,6 +32,30 @@ class ServiciosController {
             });
         });
     }
+    getDeptosSistemas(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield database_1.default.query(`SELECT * FROM departamentos_sistema;`, function (err, result, fields) {
+                if (err)
+                    throw err;
+                res.json(result);
+            });
+        });
+    }
+    setServicio(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const servicioRes = yield database_1.default.query(`SELECT * FROM servicios WHERE servicio = ?`, req.body.servicio);
+            if (servicioRes.length > 0) {
+                res.json(false);
+            }
+            else {
+                yield database_1.default.query(`INSERT INTO servicios SET ?;`, [req.body], function (err, result, fields) {
+                    if (err)
+                        throw err;
+                    res.json(result);
+                });
+            }
+        });
+    }
 }
 const serviciosController = new ServiciosController();
 exports.default = serviciosController;

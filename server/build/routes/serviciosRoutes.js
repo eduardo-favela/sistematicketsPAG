@@ -12,7 +12,9 @@ class ServiciosRoutes {
     }
     config() {
         this.router.get('/getServicios', serviciosController_1.default.getServicios);
+        this.router.get('/getDeptosSistemas', serviciosController_1.default.getDeptosSistemas);
         this.router.post('/getTiposServicios', serviciosController_1.default.getTiposServicios);
+        this.router.post('/setServicio', serviciosController_1.default.setServicio);
     }
 }
 const serviciosRoutes = new ServiciosRoutes();

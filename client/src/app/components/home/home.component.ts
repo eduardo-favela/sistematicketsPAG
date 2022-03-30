@@ -176,7 +176,7 @@ export class HomeComponent implements OnInit {
       '-' + this.fechaRespuesta.day.toString()) + ' ' + this.horaRespuesta.hour.toString() +
       ':' + this.horaRespuesta.minute.toString() + ':00');
 
-    this.ticket.servicioparauen = (this.ticket.servicioparauen=$('#radioButtonUsuario').is(':checked') ? 0 : 1)
+    this.ticket.servicioparauen = ($('#radioButtonUsuario').is(':checked') ? 0 : 1)
 
     console.log(this.ticket)
     /*     if (this.nomEmp && this.idpventa && this.problema && this.correo && this.telefono && this.comentarios) {

@@ -13,7 +13,15 @@ export class ServiciosService {
     return this.http.get(`${API_URI}/servicios/getServicios`)
   }
 
+  getDeptosSistemas(){
+    return this.http.get(`${API_URI}/servicios/getDeptosSistemas`)
+  }
+
   getTiposServicio(servicio){
     return this.http.post(`${API_URI}/servicios/getTiposServicios`,servicio)
+  }
+
+  setServicio(servicio){
+    return this.http.post(`${API_URI}/servicios/setServicio`,servicio)
   }
 }

@@ -10,7 +10,9 @@ class ServiciosRoutes {
 
     config(): void{
         this.router.get('/getServicios', serviciosController.getServicios)
+        this.router.get('/getDeptosSistemas', serviciosController.getDeptosSistemas)
         this.router.post('/getTiposServicios', serviciosController.getTiposServicios)
+        this.router.post('/setServicio', serviciosController.setServicio)
     }
 }
 
