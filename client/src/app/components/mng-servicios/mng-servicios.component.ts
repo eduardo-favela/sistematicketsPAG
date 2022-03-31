@@ -10,7 +10,23 @@ export class MngServiciosComponent implements OnInit {
 
   constructor(private serviciosService: ServiciosService) { }
 
-  servicios: any = []
+  noInfo = true;
+
+  tipoServicios: any = [];
+
+  servicioHasTipo: any = [];
+
+  deptosistemas: any = [];
+
+  servicios: any = [];
+
+  serviciosTable: any = [];
+
+  tiposServicioTable: any = [];
+
+  tipoServiciosAsignados: any = [];
+
+  tipoServiciosPDesasignar: any = [];
 
   servicio = null;
 
@@ -20,17 +36,90 @@ export class MngServiciosComponent implements OnInit {
     depto: null
   }
 
-  deptosistemas: any = []
   tipoServicioNew: any = {
-    tiposervicio: null
+    tipoServicio: null
   }
 
-  tipoServicios: any = []
-
-  servicioHasTipo: any = []
+  servicioeditando: any = {}
+  tservicioeditando: any = {}
 
   ngOnInit(): void {
     this.getdeptosSistemas()
+    this.getServicios()
+    this.getServiciosTable()
+    this.getTiposServicioTable()
+  }
+
+  onServicioChange() {
+    this.getTiposServicio()
+  }
+
+  getServicios() {
+    this.serviciosService.getServicios().subscribe(
+      res => {
+        this.servicios = res
+      },
+      err => console.error(err)
+    )
+  }
+
+  getServiciosTable() {
+    this.serviciosService.getServiciosTable().subscribe(
+      res => {
+        this.serviciosTable = res
+      },
+      err => console.error(err)
+    )
+  }
+
+  getTiposServicio() {
+    this.servicioHasTipo = []
+    this.getTiposServicioAsignados()
+    if (this.servicio) {
+      this.serviciosService.getTiposServicio({ idservicio: this.servicio }).subscribe(
+        res => {
+          this.tipoServicios = res
+          if (this.tipoServicios.length > 0) {
+            this.noInfo = false
+          }
+          else {
+            this.noInfo = true
+          }
+        },
+        err => console.error(err)
+      )
+    }
+  }
+
+  getTiposServicioTable() {
+    this.tiposServicioTable = []
+    this.getTiposServicioAsignados()
+    this.serviciosService.getTiposServicioTable().subscribe(
+      res => {
+        this.tiposServicioTable = res
+      },
+      err => console.error(err)
+    )
+  }
+
+  getTiposServicioAsignados() {
+    if (this.servicio) {
+      this.serviciosService.getTiposServicioAsignados({ idservicio: this.servicio }).subscribe(
+        res => {
+          this.servicioHasTipo = res;
+          this.tipoServiciosAsignados = [];
+          this.tipoServiciosAsignados.push(...this.servicioHasTipo);
+          this.tipoServiciosPDesasignar = [];
+          if (this.servicioHasTipo.length > 0) {
+            this.noInfo = false
+          }
+          else {
+            this.noInfo = true
+          }
+        },
+        err => console.error(err)
+      )
+    }
   }
 
   getdeptosSistemas() {
@@ -44,55 +133,209 @@ export class MngServiciosComponent implements OnInit {
 
   setServicio() {
     this.servicioNew.asignar_equipo = ($('#radioButtonNoAplica').is(':checked') ? 0 : 1)
-    if (this.servicioNew.servicio && this.servicioNew.asignar_equipo!=null && this.servicioNew.depto) {
-      this.servicioNew.servicio=this.servicioNew.servicio.toString().toUpperCase().trim()
+    if (this.servicioNew.servicio && this.servicioNew.asignar_equipo != null && this.servicioNew.depto) {
+      this.servicioNew.servicio = this.servicioNew.servicio.toString().toUpperCase().trim()
       this.serviciosService.setServicio(this.servicioNew).subscribe(
         res => {
           if (res) {
-            this.servicioNew.asignar_equipo=null
-            this.servicioNew.asignar_equipo=null
-            this.servicioNew.depto=null
-            $('#headerModal').html('Registro guardado')
-            $('#descripctionP').html('<i class="fas fa-check-circle mr-2"></i>El servicio se guardó exitosamente')
-            $('#successModal').modal('show')
+            this.servicioNew.servicio = null
+            this.servicioNew.asignar_equipo = null
+            this.servicioNew.depto = null
+            this.getTiposServicio()
+            this.getServicios()
+            this.getServiciosTable()
+            this.showModal(2, 'Registro guardado', 'El servicio se guardó exitosamente')
           }
           else {
-            $('#headerModalError').html('Advertencia')
-            $('#descripcionPSuccess').html('<i class="mr-2 fa fa-exclamation-triangle" aria-hidden="true"></i>El servicio ya existe')
-            $('#advertenciaModal').modal('show')
+            this.showModal(1, 'Advertencia', 'El servicio ya existe')
           }
         },
         err => console.error(err)
       )
     }
-    else{
-      $('#headerModalError').html('Advertencia')
-      $('#descripcionPSuccess').html('<i class="mr-2 fa fa-exclamation-triangle" aria-hidden="true"></i>Debe llenar todos los campos para registrar un servicio')
-      $('#advertenciaModal').modal('show')
+    else {
+      this.showModal(1, 'Advertencia', 'Debe llenar todos los campos para registrar un servicio')
     }
   }
+
+  setTipoServicio() {
+    if (this.tipoServicioNew.tipoServicio) {
+      this.tipoServicioNew.tipoServicio = this.tipoServicioNew.tipoServicio.toString().toUpperCase().trim()
+      this.serviciosService.setTipoServicio(this.tipoServicioNew).subscribe(
+        res => {
+          if (res) {
+            this.tipoServicioNew.tipoServicio = null
+            this.getTiposServicio()
+            this.getTiposServicioTable()
+            this.showModal(2, 'Registro guardado', 'El tipo de servicio se guardó exitosamente')
+          }
+          else {
+            this.showModal(1, 'Advertencia', 'El tipo de servicio ya existe')
+          }
+        },
+        err => console.error(err)
+      )
+    }
+    else {
+      this.showModal(1, 'Advertencia', 'Debe ingresar un nombre para el tipo de usuario')
+    }
+  }
+
+  //SET SERVICIO HAS TIPO DE SERVICIO
+  setServicioHTS() {
+    if (this.servicioHasTipo.length > 0) {
+      this.serviciosService.setServicioHTS(this.servicioHasTipo).subscribe(
+        res => {
+          if (res) {
+            if (this.tipoServiciosPDesasignar.length > 0) {
+              this.unsetServicioHTS();
+            }
+            else {
+              this.servicio = null;
+              this.servicioHasTipo = []
+              this.tipoServicios = []
+              this.noInfo = true
+              this.showModal(2, 'Registros guardados', 'Los cambios se guardaron correctamente')
+            }
+          }
+        },
+        err => console.error(err)
+      )
+    }
+    else {
+      this.unsetServicioHTS();
+    }
+  }
+
+  unsetServicioHTS() {
+    if (this.tipoServiciosPDesasignar.length > 0) {
+      this.serviciosService.unsetTipoServicio(this.tipoServiciosPDesasignar).subscribe(
+        res => {
+          if (res) {
+            this.servicio = null;
+            this.servicioHasTipo = []
+            this.tipoServicios = []
+            this.noInfo = true
+            this.showModal(2, 'Registros guardados', 'Los cambios se guardaron correctamente')
+          }
+        },
+        err => {
+          console.error(err)
+        }
+      )
+    }
+    else {
+      this.showModal(1, 'Advertencia', 'No hay registros por guardar')
+    }
+  }
+
+  showModal(tipoModal, header, descripcion) {
+    if (tipoModal == 1) {
+      $('#headerModalError').html(header)
+      $('#descripcionPSuccess').html(`<i class="mr-2 fa fa-exclamation-triangle" aria-hidden="true"></i>${descripcion}`)
+      $('#advertenciaModal').modal('show')
+    }
+    else if (tipoModal == 2) {
+      $('#headerModal').html(header)
+      $('#descripctionP').html(`<i class="fas fa-check-circle mr-2"></i>${descripcion}`)
+      $('#successModal').modal('show')
+    }
+  }
+
+  //////////////////////////////////////MODAL EDITAR SERVICIO FUNCTIONS//////////////////////////////////////
+
+  onEditServicioButtonClick(servicio) {
+    this.servicioeditando.idservicios = servicio.idservicios;
+    this.servicioeditando.depto = servicio.depto;
+    this.servicioeditando.estatusid = servicio.estatusid;
+    this.servicioeditando.asignar_equipoid = servicio.asignar_equipoid;
+    this.servicioeditando.servicio = servicio.servicio;
+    $("#editaserviciomodal").modal('show')
+  }
+
+  guardarCambiosModalEdit() {
+    if(this.servicioeditando.servicio && this.servicioeditando.idservicios && this.servicioeditando.depto && this.servicioeditando.estatusid && this.servicioeditando.asignar_equipoid){
+      this.servicioeditando.servicio = this.servicioeditando.servicio.toString().toUpperCase().trim()
+      this.serviciosService.updateServicio(this.servicioeditando).subscribe(
+        res=>{
+          if(res){
+            this.servicioeditando = {}
+            this.getServiciosTable()
+            this.getServicios()
+            $("#editaserviciomodal").modal('hide')
+            this.showModal(2,'Registros guardados', 'Los cambios se guardaron correctamente')
+          }
+        },
+        err=>console.error(err)
+      )
+    }
+    else{
+      alert('Se deben llenar todos los campos')
+    }
+  }
+
+  cancelarCambiosModalEdit() {
+    this.servicioeditando = {}
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  //////////////////////////////////////MODAL EDITAR SERVICIO FUNCTIONS//////////////////////////////////////
+
+  onEditTServicioButtonClick(servicio) {
+    this.tservicioeditando.idtipos_servicio=servicio.idtipos_servicio;
+    this.tservicioeditando.tiposervicio=servicio.tiposervicio;
+    this.tservicioeditando.estatus=servicio.estatusid;
+    $("#editatserviciomodal").modal('show')
+  }
+
+  guardarCambiosModalEditTS() {
+    if(this.tservicioeditando.tiposervicio){
+      this.tservicioeditando.tiposervicio = this.tservicioeditando.tiposervicio.toString().toUpperCase().trim()
+      this.serviciosService.updateTipoServicio(this.tservicioeditando).subscribe(
+        res=>{
+          if(res){
+            this.tservicioeditando={}
+            this.getTiposServicioTable()
+            $("#editatserviciomodal").modal('hide')
+            this.showModal(2,'Registros guardados', 'Los cambios se guardaron correctamente')
+          }
+        },
+        err=>console.error(err)
+      )
+    }
+    else{
+      alert('Se deben llenar todos los campos')
+    }
+  }
+
+  cancelarCambiosModalEditTS() {
+    this.tservicioeditando = {}
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   //AGREGAR ELEMENTO A LA RELACIÓN ENTRE EL SERVICIO Y EL TIPO DE SERVICIO
   addElement(item: any) {
     if (this.servicio) {
-      let index = this.tipoServicios.findIndex(servicio => servicio.id_servicio == item.id_servicio)
+      let index = this.tipoServicios.findIndex(servicio => servicio.idtipos_servicio == item.idtipos_servicio)
       let elementSpliced = this.tipoServicios.splice(index, 1)[0];
       elementSpliced.idServicio = this.servicio
       this.servicioHasTipo.push(elementSpliced)
     }
     else {
-      $('#descripcionPSuccess').html('Advertencia')
-      $('#headerModalError').html('<i class="mr-2 fa fa-exclamation-triangle" aria-hidden="true"></i>Se debe seleccionar un servicio')
-      $('#advertenciaModal').modal('show')
+      this.showModal(1, 'Advertencia', 'Se debe seleccionar un servicio')
     }
   }
 
   //ELIMINAR ELEMENTO DE LA RELACIÓN ENTRE EL SERVICIO Y EL TIPO DE SERVICIO
-  deleteElement(item: any) {
-    let index = this.servicioHasTipo.findIndex(servicio => servicio.id_servicio == item.id_servicio)
+  async deleteElement(item: any) {
+    let itemAsignado = this.tipoServiciosAsignados.find(tiposervicio => tiposervicio.idtipos_servicio == item.idtipos_servicio)
+    if (itemAsignado) { this.tipoServiciosPDesasignar.push(item) }
+    let index = this.servicioHasTipo.findIndex(servicio => servicio.idtipos_servicio == item.idtipos_servicio)
     let elementSpliced = this.servicioHasTipo.splice(index, 1)[0];
     //ELIMINAR LA PROPIEDAD DEL OBJETO PARA REGRESARLO AL ARREGLO
-    delete elementSpliced.idServicio
+    /* delete elementSpliced.idServicio */
     this.tipoServicios.push(elementSpliced)
   }
 }

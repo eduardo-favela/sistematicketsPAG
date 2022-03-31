@@ -99,7 +99,7 @@ export class HomeComponent implements OnInit {
     this.equipoticket = null
     this.tipoEquipo = null
     this.equipoSistemas = []
-    this.serviciosService.getTiposServicio({ servicio: this.ticket.servicio }).subscribe(
+    this.serviciosService.getTiposServicioAsignados({ servicio: this.ticket.servicio }).subscribe(
       res => {
         this.tiposServicios = res
       },
