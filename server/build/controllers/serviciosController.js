@@ -16,7 +16,16 @@ const database_1 = __importDefault(require("../database"));
 class ServiciosController {
     getServicios(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.query(`SELECT * FROM servicios WHERE estatus = 1 ORDER BY servicio;`, function (err, result, fields) {
+            yield database_1.default.query(`SELECT * FROM servicios WHERE estatus = 1;`, function (err, result, fields) {
+                if (err)
+                    throw err;
+                res.json(result);
+            });
+        });
+    }
+    getActividades(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield database_1.default.query(`SELECT * FROM actividades;`, function (err, result, fields) {
                 if (err)
                     throw err;
                 res.json(result);
@@ -66,7 +75,7 @@ class ServiciosController {
             WHEN estatus = 1 THEN 'ACTIVO'
             WHEN estatus = 0 THEN 'INACTIVO'
         END AS estatus
-        FROM tipos_servicio ORDER BY tiposervicio;`, function (err, result, fields) {
+        FROM tipos_servicio;`, function (err, result, fields) {
                 if (err)
                     throw err;
                 res.json(result);
@@ -169,11 +178,31 @@ class ServiciosController {
     //DESHABILITA LA RELACIÓN DEL SERVICIO Y TIPO DE SERVICIO
     unsetServicioHTS(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(req.body);
             for (let i = 0; i < req.body.length; i++) {
                 yield database_1.default.query(`UPDATE servicio_has_tipo_servicio SET estatus = 0
             WHERE shts_has_servicio = ? and shts_has_tipo_servicio = ?;`, [req.body[i].idServicio, req.body[i].idtipos_servicio]);
             }
+            res.json(true);
+        });
+    }
+    setActividad(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const actividadRes = yield database_1.default.query(`SELECT * FROM actividades WHERE actividad = ?`, req.body.actividad);
+            if (actividadRes.length > 0) {
+                res.json(false);
+            }
+            else {
+                yield database_1.default.query(`INSERT INTO actividades SET ?;`, [req.body], function (err, result, fields) {
+                    if (err)
+                        throw err;
+                    res.json(true);
+                });
+            }
+        });
+    }
+    updateActividad(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield database_1.default.query(`UPDATE actividades SET actividad = ?  WHERE id_actividad = ?;`, [req.body.actividad, req.body.id_actividad]);
             res.json(true);
         });
     }

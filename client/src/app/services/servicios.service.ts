@@ -29,6 +29,10 @@ export class ServiciosService {
     return this.http.get(`${API_URI}/servicios/getTiposServicioTable`)
   }
 
+  getActividades(){
+    return this.http.get(`${API_URI}/servicios/getActividades`)
+  }
+
   setServicio(servicio){
     return this.http.post(`${API_URI}/servicios/setServicio`,servicio)
   }
@@ -47,6 +51,14 @@ export class ServiciosService {
 
   unsetTipoServicio(tiposervicio){
     return this.http.post(`${API_URI}/servicios/unsetTipoServicio`,tiposervicio)
+  }
+
+  setActividad(actividad){
+    return this.http.post(`${API_URI}/servicios/setActividad`,actividad)
+  }
+
+  updateActividad(actividad){
+    return this.http.post(`${API_URI}/servicios/updateActividad`,actividad)
   }
 
   getTiposServicioAsignados(servicio){

@@ -19,6 +19,7 @@ import {NgbPaginationModule, NgbAlertModule} from '@ng-bootstrap/ng-bootstrap'
 import { UsuariosComponent } from './components/usuarios/usuarios.component';
 import { MngServiciosComponent } from './components/mng-servicios/mng-servicios.component';
 import * as $ from 'jquery';
+import {DataTablesModule} from 'angular-datatables';
 import * as bootstrap from 'bootstrap';
 
 registerLocaleData(localeEs)
@@ -38,7 +39,7 @@ const routes:Route[]=[
     VerreportesComponent,
     LoginComponent,
     UsuariosComponent,
-    MngServiciosComponent,
+    MngServiciosComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +53,8 @@ const routes:Route[]=[
     NgxGaugeModule,
     NgbModule,
     NgbPaginationModule,
-    NgbAlertModule
+    NgbAlertModule,
+    DataTablesModule
   ],
   providers: [
   ],

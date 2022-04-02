@@ -4,7 +4,14 @@ import db from '../database'
 class ServiciosController {
 
     public async getServicios(req: Request, res: Response) {
-        await db.query(`SELECT * FROM servicios WHERE estatus = 1 ORDER BY servicio;`, function (err: any, result: any, fields: any) {
+        await db.query(`SELECT * FROM servicios WHERE estatus = 1;`, function (err: any, result: any, fields: any) {
+            if (err) throw err
+            res.json(result)
+        });
+    }
+
+    public async getActividades(req: Request, res: Response) {
+        await db.query(`SELECT * FROM actividades;`, function (err: any, result: any, fields: any) {
             if (err) throw err
             res.json(result)
         });
@@ -48,7 +55,7 @@ class ServiciosController {
             WHEN estatus = 1 THEN 'ACTIVO'
             WHEN estatus = 0 THEN 'INACTIVO'
         END AS estatus
-        FROM tipos_servicio ORDER BY tiposervicio;`, function (err: any, result: any, fields: any) {
+        FROM tipos_servicio;`, function (err: any, result: any, fields: any) {
             if (err) throw err
             res.json(result)
         });
@@ -139,12 +146,29 @@ class ServiciosController {
     
     //DESHABILITA LA RELACIÓN DEL SERVICIO Y TIPO DE SERVICIO
     public async unsetServicioHTS(req: Request, res: Response) {
-        console.log(req.body)
         for (let i = 0; i < req.body.length; i++) {
             await db.query(`UPDATE servicio_has_tipo_servicio SET estatus = 0
             WHERE shts_has_servicio = ? and shts_has_tipo_servicio = ?;`, [req.body[i].idServicio, req.body[i].idtipos_servicio])
         }
         res.json(true);
+    }
+
+    public async setActividad(req: Request, res: Response) {
+        const actividadRes = await db.query(`SELECT * FROM actividades WHERE actividad = ?`, req.body.actividad)
+        if (actividadRes.length > 0) {
+            res.json(false)
+        }
+        else {
+            await db.query(`INSERT INTO actividades SET ?;`, [req.body], function (err: any, result: any, fields: any) {
+                if (err) throw err
+                res.json(true)
+            });
+        }
+    }
+
+    public async updateActividad(req: Request, res: Response) {
+        await db.query(`UPDATE actividades SET actividad = ?  WHERE id_actividad = ?;`, [req.body.actividad, req.body.id_actividad])
+        res.json(true)
     }
 }
 

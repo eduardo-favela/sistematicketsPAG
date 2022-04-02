@@ -1,5 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
 import { ServiciosService } from 'src/app/services/servicios.service';
+
+////////////////////////////////////////////TABLAS////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 @Component({
   selector: 'app-mng-servicios',
@@ -9,6 +17,14 @@ import { ServiciosService } from 'src/app/services/servicios.service';
 export class MngServiciosComponent implements OnInit {
 
   constructor(private serviciosService: ServiciosService) { }
+
+  ////////////////////////////////////////////TABLAS////////////////////////////////////////////
+  dtOptions: DataTables.Settings = {};
+
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtTriggerTS: Subject<any> = new Subject<any>();
+  dtTriggerS: Subject<any> = new Subject<any>();
+  //////////////////////////////////////////////////////////////////////////////////////////////
 
   noInfo = true;
 
@@ -43,11 +59,28 @@ export class MngServiciosComponent implements OnInit {
   servicioeditando: any = {}
   tservicioeditando: any = {}
 
+  /////////////////////////////////VARIABLES Y PROPIEDADES DEL APARTADO DE ACTIVIDADES/////////////////////////////////
+  actividades: any = [];
+  actividadNew: any = {};
+  actividadEditando: any = {};
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   ngOnInit(): void {
     this.getdeptosSistemas()
     this.getServicios()
     this.getServiciosTable()
     this.getTiposServicioTable()
+    this.getActividades()
+
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 5,
+      lengthMenu: [5, 10, 25],
+      processing: true,
+      language: {
+        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
+      }
+    }
   }
 
   onServicioChange() {
@@ -67,6 +100,7 @@ export class MngServiciosComponent implements OnInit {
     this.serviciosService.getServiciosTable().subscribe(
       res => {
         this.serviciosTable = res
+        this.dtTriggerS.next();
       },
       err => console.error(err)
     )
@@ -97,6 +131,7 @@ export class MngServiciosComponent implements OnInit {
     this.serviciosService.getTiposServicioTable().subscribe(
       res => {
         this.tiposServicioTable = res
+        this.dtTriggerTS.next();
       },
       err => console.error(err)
     )
@@ -141,6 +176,7 @@ export class MngServiciosComponent implements OnInit {
             this.servicioNew.servicio = null
             this.servicioNew.asignar_equipo = null
             this.servicioNew.depto = null
+            this.destroyTableServicios()
             this.getTiposServicio()
             this.getServicios()
             this.getServiciosTable()
@@ -165,6 +201,7 @@ export class MngServiciosComponent implements OnInit {
         res => {
           if (res) {
             this.tipoServicioNew.tipoServicio = null
+            this.destroyTableTServicio()
             this.getTiposServicio()
             this.getTiposServicioTable()
             this.showModal(2, 'Registro guardado', 'El tipo de servicio se guardó exitosamente')
@@ -242,6 +279,81 @@ export class MngServiciosComponent implements OnInit {
     }
   }
 
+  ///////////////////////////////////////FUNCIONES DEL APARTADO DE ACTIVIDADES////////////////////////////////
+  setActividad() {
+    if (this.actividadNew.actividad) {
+      this.actividadNew.actividad = this.actividadNew.actividad.toString().toUpperCase().trim()
+      this.serviciosService.setActividad(this.actividadNew).subscribe(
+        res => {
+          if (res) {
+            this.destroyTableActividades()
+            this.getActividades()
+            this.actividadNew = {}
+            this.showModal(2, 'Registro realizado', 'La actividad se guardó correctamente')
+          }
+          else {
+            this.showModal(1, 'Advertencia', 'La actividad ya existe')
+          }
+        },
+        err => console.error(err)
+      )
+    }
+    else {
+      this.showModal(1, 'Advertencia', 'No hay actividad por guardar')
+    }
+  }
+  onEditActividadButtonClick(item) {
+    this.actividadEditando = { ...item }
+    $('#editactividadmodal').modal('show')
+  }
+
+  getActividades() {
+    this.serviciosService.getActividades().subscribe(
+      res => {
+        this.actividades = res
+        // Calling the DT trigger to manually render the table
+        this.dtTrigger.next();
+      },
+      err => console.error(err)
+    )
+  }
+
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
+    this.dtTriggerTS.unsubscribe();
+  }
+
+  guardarCambiosModalEditA() {
+    if (this.actividadEditando.actividad) {
+      this.actividadEditando.actividad = this.actividadEditando.actividad.toString().toUpperCase().trim()
+      this.serviciosService.updateActividad(this.actividadEditando).subscribe(
+        res => {
+          if (res) {
+            this.actividadEditando = {}
+            this.destroyTableActividades()
+            this.getActividades()
+            $('#editactividadmodal').modal('hide')
+            this.showModal(2, 'Registro guardado', 'El registro se guardó con éxito')
+          }
+        },
+        err => console.error(err)
+      )
+    }
+    else {
+      this.showModal(1, 'Advertencia', 'No hay cambios por guardar')
+    }
+  }
+
+  cancelarCambiosModalEditA() {
+    this.actividadEditando = {}
+  }
+
+  destroyTableActividades() {
+    let table = $('#tablaActividades').DataTable()
+    table.destroy();
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   //////////////////////////////////////MODAL EDITAR SERVICIO FUNCTIONS//////////////////////////////////////
 
   onEditServicioButtonClick(servicio) {
@@ -254,24 +366,30 @@ export class MngServiciosComponent implements OnInit {
   }
 
   guardarCambiosModalEdit() {
-    if(this.servicioeditando.servicio && this.servicioeditando.idservicios && this.servicioeditando.depto && this.servicioeditando.estatusid && this.servicioeditando.asignar_equipoid){
+    if (this.servicioeditando.servicio && this.servicioeditando.idservicios && this.servicioeditando.depto && this.servicioeditando.estatusid && this.servicioeditando.asignar_equipoid) {
       this.servicioeditando.servicio = this.servicioeditando.servicio.toString().toUpperCase().trim()
       this.serviciosService.updateServicio(this.servicioeditando).subscribe(
-        res=>{
-          if(res){
+        res => {
+          if (res) {
             this.servicioeditando = {}
+            this.destroyTableServicios()
             this.getServiciosTable()
             this.getServicios()
             $("#editaserviciomodal").modal('hide')
-            this.showModal(2,'Registros guardados', 'Los cambios se guardaron correctamente')
+            this.showModal(2, 'Registro guardado', 'Los cambios se guardaron correctamente')
           }
         },
-        err=>console.error(err)
+        err => console.error(err)
       )
     }
-    else{
+    else {
       alert('Se deben llenar todos los campos')
     }
+  }
+
+  destroyTableServicios() {
+    let table = $('#tablaServicios').DataTable()
+    table.destroy();
   }
 
   cancelarCambiosModalEdit() {
@@ -280,31 +398,32 @@ export class MngServiciosComponent implements OnInit {
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  //////////////////////////////////////MODAL EDITAR SERVICIO FUNCTIONS//////////////////////////////////////
+  //////////////////////////////////////MODAL EDITAR TIPO DE SERVICIO FUNCTIONS//////////////////////////////////////
 
   onEditTServicioButtonClick(servicio) {
-    this.tservicioeditando.idtipos_servicio=servicio.idtipos_servicio;
-    this.tservicioeditando.tiposervicio=servicio.tiposervicio;
-    this.tservicioeditando.estatus=servicio.estatusid;
+    this.tservicioeditando.idtipos_servicio = servicio.idtipos_servicio;
+    this.tservicioeditando.tiposervicio = servicio.tiposervicio;
+    this.tservicioeditando.estatus = servicio.estatusid;
     $("#editatserviciomodal").modal('show')
   }
 
   guardarCambiosModalEditTS() {
-    if(this.tservicioeditando.tiposervicio){
+    if (this.tservicioeditando.tiposervicio) {
       this.tservicioeditando.tiposervicio = this.tservicioeditando.tiposervicio.toString().toUpperCase().trim()
       this.serviciosService.updateTipoServicio(this.tservicioeditando).subscribe(
-        res=>{
-          if(res){
-            this.tservicioeditando={}
+        res => {
+          if (res) {
+            this.tservicioeditando = {}
+            this.destroyTableTServicio()
             this.getTiposServicioTable()
             $("#editatserviciomodal").modal('hide')
-            this.showModal(2,'Registros guardados', 'Los cambios se guardaron correctamente')
+            this.showModal(2, 'Registros guardados', 'Los cambios se guardaron correctamente')
           }
         },
-        err=>console.error(err)
+        err => console.error(err)
       )
     }
-    else{
+    else {
       alert('Se deben llenar todos los campos')
     }
   }
@@ -313,6 +432,10 @@ export class MngServiciosComponent implements OnInit {
     this.tservicioeditando = {}
   }
 
+  destroyTableTServicio() {
+    let table = $('#tablaTServicios').DataTable()
+    table.destroy();
+  }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   //AGREGAR ELEMENTO A LA RELACIÓN ENTRE EL SERVICIO Y EL TIPO DE SERVICIO

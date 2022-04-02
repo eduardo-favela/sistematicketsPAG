@@ -7,13 +7,6 @@ img {
   min-width: 50%;
 }
 
-h1 {
-  color: deepskyblue;
-  font-weight: 500;
-  font-style: oblique;
-  text-align: center;
-}
-
 #contenedor {
   margin-top: 10%;
 }
@@ -47,44 +40,6 @@ div.alert-primary {
   font-size: x-large;
 }
 
-#octagon {
-  cursor: pointer;
-  width: 120px;
-  height: 120px;
-  background: #28a745;
-  position: relative;
-}
-#octagon:before {
-  content: "";
-  width: 120px;
-  height: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-bottom: 32px solid #28a745;
-  border-left: 32px solid rgb(255, 254, 254);
-  border-right: 32px solid rgb(255, 255, 255);
-}
-#octagon:after {
-  content: "";
-  width: 120px;
-  height: 0;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  border-top: 32px solid #28a745;
-  border-left: 32px solid rgb(255, 252, 252);
-  border-right: 32px solid rgb(255, 255, 255);
-}
-
-.textoctagon {
-  font-size: 95%;
-  font-weight: bolder;
-  margin-top: 26%;
-  color: white;
-  text-align: center;
-}
-
 p {
   margin-bottom: auto;
 }
@@ -104,9 +59,8 @@ a {
 
 thead {
   background-color: #d13138;
-  position: sticky;
-  top: 0;
   box-shadow: 0 2px 2px -1px rgb(0 0 0 / 40%);
+  color: white;
 }
 
 div.table-wrapper {
