@@ -174,7 +174,7 @@ class ReportesController {
                 filename: 'LOGO_AUTOMERCADEO.png',
                 path: `${__dirname}/../../assets/LOGO_AUTOMERCADEO.png`,
                 cid:`logoautomercadeo.png`
-           }]
+            }]
         }
 
         // send mail with defined transport object

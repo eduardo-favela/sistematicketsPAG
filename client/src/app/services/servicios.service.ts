@@ -21,16 +21,16 @@ export class ServiciosService {
     return this.http.get(`${API_URI}/servicios/getDeptosSistemas`)
   }
 
-  getTiposServicio(servicio){
-    return this.http.post(`${API_URI}/servicios/getTiposServicios`,servicio)
-  }
-
   getTiposServicioTable(){
     return this.http.get(`${API_URI}/servicios/getTiposServicioTable`)
   }
 
   getActividades(){
     return this.http.get(`${API_URI}/servicios/getActividades`)
+  }
+
+  getTiposServicio(servicio){
+    return this.http.post(`${API_URI}/servicios/getTiposServicios`,servicio)
   }
 
   setServicio(servicio){
@@ -63,6 +63,10 @@ export class ServiciosService {
 
   getTiposServicioAsignados(servicio){
     return this.http.post(`${API_URI}/servicios/getTiposServicioAsignados`,servicio)
+  }
+
+  getShtsNoAsignados(actividad){
+    return this.http.post(`${API_URI}/servicios/getShtsNoAsignados`,actividad)
   }
 
   setServicioHTS(serviciohts){

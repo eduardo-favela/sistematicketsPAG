@@ -32,6 +32,24 @@ class ServiciosController {
             });
         });
     }
+    //OBTENER LAS RELACIONES ENTRE SERVICIOS Y TIPOS DE SERVICIO QUE NO ESTÉN RELACIONADAS CON LAS ACTIVIDADES
+    getShtsNoAsignados(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield database_1.default.query(`SELECT idservicio_has_tipo_servicio as idshts, servicio, tipos_servicio.tiposervicio
+        FROM servicio_has_tipo_servicio
+        INNER JOIN servicios  on servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
+        INNER JOIN tipos_servicio on servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
+        WHERE servicio_has_tipo_servicio.estatus=1
+        AND servicio_has_tipo_servicio.idservicio_has_tipo_servicio NOT IN
+        (SELECT ahs_has_servicio
+        FROM actividad_has_servicios
+        WHERE ahs_has_actividad = ? AND actividad_has_servicios.estatus = 1);`, req.body.id_actividad, function (err, result, fields) {
+                if (err)
+                    throw err;
+                res.json(result);
+            });
+        });
+    }
     //OBTENER TODOS LOS SERVICIOS PARA MOSTRARLOS EN LA TABLA PARA EDITARLOS
     getServiciosTable(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -57,10 +75,9 @@ class ServiciosController {
     getTiposServicios(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             yield database_1.default.query(`SELECT * FROM tipos_servicio WHERE idtipos_servicio NOT IN (SELECT idtipos_servicio
-            FROM tipos_servicio
-            INNER JOIN servicio_has_tipo_servicio on servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
-            INNER JOIN servicios on servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
-            WHERE idservicios = ? and servicio_has_tipo_servicio.estatus = 1);`, req.body.idservicio, function (err, result, fields) {
+            FROM servicio_has_tipo_servicio
+            INNER JOIN tipos_servicio on servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
+            WHERE shts_has_servicio = ? and servicio_has_tipo_servicio.estatus = 1);`, req.body.idservicio, function (err, result, fields) {
                 if (err)
                     throw err;
                 res.json(result);

@@ -63,6 +63,12 @@ export class MngServiciosComponent implements OnInit {
   actividades: any = [];
   actividadNew: any = {};
   actividadEditando: any = {};
+  noInfoActividades = true;
+  actividad = null;
+  shts: any = null;
+
+  actividadHasShts: any = [];
+  actividadHasShtsSettingTime: any = [];
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   ngOnInit(): void {
@@ -354,6 +360,55 @@ export class MngServiciosComponent implements OnInit {
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  //////////////////////////////FUNCIONES DE APARTADO DE ACTIVIDADES/SERVICIOS-TS/////////////////////////////
+  onActividadSelectChange() {
+    this.serviciosService.getShtsNoAsignados({ id_actividad: parseInt(this.actividad) }).subscribe(
+      res => {
+        this.shts = res;
+        if (this.shts.length > 0) {
+          this.noInfoActividades = false;
+        }
+        else {
+          this.noInfoActividades = true;
+        }
+      },
+      err => console.error(err)
+    )
+  }
+
+  openModalTime(item){
+    this.actividadHasShtsSettingTime={...item}
+    $('#addShtsModal').modal('show')
+  }
+
+  addElementshts(horas, minutos) {
+    this.actividadHasShtsSettingTime.displayTime=horas+':'+minutos
+    minutos=((parseFloat(minutos)==0)?(0):(parseFloat(minutos)/60))
+    this.actividadHasShtsSettingTime.tiempo=parseFloat(horas+'.'+((minutos==0)?(minutos.toString()):(minutos.toString().split('.')[1])));
+    this.actividadHasShtsSettingTime.id_actividad=this.actividad
+    let index = this.shts.findIndex(shts => shts.idshts == this.actividadHasShtsSettingTime.idshts)
+    let elementSpliced = this.shts.splice(index, 1)[0];
+    this.actividadHasShts.push(elementSpliced)
+    this.actividadHasShtsSettingTime={}
+    $('#AHSHTSh').val('');
+    $('#AHSHTSm').val('');
+    $('#addShtsModal').modal('hide')
+    console.log(this.actividadHasShts)
+  }
+
+  deleteElementshts(item) {
+    delete item.tiempo
+    delete item.id_actividad
+    delete item.displayTime
+    console.log(item)
+  }
+
+  cancelarSetTimeAHSHTS(){
+    $('#AHSHTSh').val('');
+    $('#AHSHTSm').val('');
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   //////////////////////////////////////MODAL EDITAR SERVICIO FUNCTIONS//////////////////////////////////////
 
   onEditServicioButtonClick(servicio) {
@@ -366,7 +421,7 @@ export class MngServiciosComponent implements OnInit {
   }
 
   guardarCambiosModalEdit() {
-    if (this.servicioeditando.servicio && this.servicioeditando.idservicios && this.servicioeditando.depto && this.servicioeditando.estatusid && this.servicioeditando.asignar_equipoid) {
+    if (this.servicioeditando.servicio && this.servicioeditando.idservicios && this.servicioeditando.depto && this.servicioeditando.estatusid) {
       this.servicioeditando.servicio = this.servicioeditando.servicio.toString().toUpperCase().trim()
       this.serviciosService.updateServicio(this.servicioeditando).subscribe(
         res => {
@@ -383,6 +438,7 @@ export class MngServiciosComponent implements OnInit {
       )
     }
     else {
+      console.log(this.servicioeditando)
       alert('Se deben llenar todos los campos')
     }
   }

@@ -26,6 +26,7 @@ class ServiciosRoutes {
         this.router.post('/setServicioHTS', serviciosController_1.default.setServicioHTS);
         this.router.post('/unsetTipoServicio', serviciosController_1.default.unsetServicioHTS);
         this.router.post('/getTiposServicioAsignados', serviciosController_1.default.getTiposServicioAsignados);
+        this.router.post('/getShtsNoAsignados', serviciosController_1.default.getShtsNoAsignados);
     }
 }
 const serviciosRoutes = new ServiciosRoutes();

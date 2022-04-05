@@ -65,15 +65,23 @@ thead {
 
 div.table-wrapper {
   overflow-y: scroll;
-  max-height: 16.5rem;
+  max-height: 18rem;
   display: block;
 }
 
 div.lists-wrapper {
   overflow-y: scroll;
-  max-height: 16.5rem;
+  max-height: 18rem;
 }
 
 i {
   pointer-events: none;
+}
+
+.btn-add-shts{
+  height:fit-content;
+}
+
+.btn-dlt-shts{
+  height:fit-content;
 }

@@ -24,6 +24,7 @@ class ServiciosRoutes {
         this.router.post('/setServicioHTS', serviciosController.setServicioHTS)
         this.router.post('/unsetTipoServicio', serviciosController.unsetServicioHTS)
         this.router.post('/getTiposServicioAsignados', serviciosController.getTiposServicioAsignados)
+        this.router.post('/getShtsNoAsignados', serviciosController.getShtsNoAsignados)
     }
 }
 
