@@ -29,6 +29,10 @@ export class ServiciosService {
     return this.http.get(`${API_URI}/servicios/getActividades`)
   }
 
+  getActividadesHShtsTable(){
+    return this.http.get(`${API_URI}/servicios/getActividadesHShtsTable`)
+  }
+
   getTiposServicio(servicio){
     return this.http.post(`${API_URI}/servicios/getTiposServicios`,servicio)
   }
@@ -61,6 +65,10 @@ export class ServiciosService {
     return this.http.post(`${API_URI}/servicios/updateActividad`,actividad)
   }
 
+  updateActivShts(actividad){
+    return this.http.post(`${API_URI}/servicios/updateActivShts`,actividad)
+  }
+
   getTiposServicioAsignados(servicio){
     return this.http.post(`${API_URI}/servicios/getTiposServicioAsignados`,servicio)
   }
@@ -69,7 +77,19 @@ export class ServiciosService {
     return this.http.post(`${API_URI}/servicios/getShtsNoAsignados`,actividad)
   }
 
+  getShtsAsignados(actividad){
+    return this.http.post(`${API_URI}/servicios/getShtsAsignados`,actividad)
+  }
+
   setServicioHTS(serviciohts){
     return this.http.post(`${API_URI}/servicios/setServicioHTS`,serviciohts)
+  }
+
+  setActividadHShts(actividadhshts){
+    return this.http.post(`${API_URI}/servicios/setActividadHShts`,actividadhshts)
+  }
+
+  unSetActividadHShts(actividadhshts){
+    return this.http.post(`${API_URI}/servicios/unSetActividadHShts`,actividadhshts)
   }
 }

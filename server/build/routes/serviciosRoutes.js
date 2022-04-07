@@ -11,22 +11,33 @@ class ServiciosRoutes {
         this.config();
     }
     config() {
+        ////////////////////////////ACTIVIDADES////////////////////////////
+        this.router.get('/getActividades', serviciosController_1.default.getActividades);
+        this.router.get('/getActividadesHShtsTable', serviciosController_1.default.getActividadesHShtsTable);
+        this.router.post('/setActividad', serviciosController_1.default.setActividad);
+        this.router.post('/setActividadHShts', serviciosController_1.default.setActividadHShts);
+        this.router.post('/unSetActividadHShts', serviciosController_1.default.unSetActividadHShts);
+        this.router.post('/updateActividad', serviciosController_1.default.updateActividad);
+        this.router.post('/updateActivShts', serviciosController_1.default.updateActivShts);
+        this.router.post('/getShtsNoAsignados', serviciosController_1.default.getShtsNoAsignados);
+        this.router.post('/getShtsAsignados', serviciosController_1.default.getShtsAsignados);
+        ///////////////////////////////////////////////////////////////////
+        /////////////////////////////SERVICIOS/////////////////////////////
         this.router.get('/getServicios', serviciosController_1.default.getServicios);
         this.router.get('/getServiciosTable', serviciosController_1.default.getServiciosTable);
-        this.router.get('/getDeptosSistemas', serviciosController_1.default.getDeptosSistemas);
-        this.router.get('/getTiposServicioTable', serviciosController_1.default.getTiposServicioTable);
-        this.router.get('/getActividades', serviciosController_1.default.getActividades);
-        this.router.post('/getTiposServicios', serviciosController_1.default.getTiposServicios);
         this.router.post('/setServicio', serviciosController_1.default.setServicio);
         this.router.post('/updateServicio', serviciosController_1.default.updateServicio);
-        this.router.post('/setTipoServicio', serviciosController_1.default.setTipoServicio);
-        this.router.post('/updateTipoServicio', serviciosController_1.default.updateTipoServicio);
-        this.router.post('/setActividad', serviciosController_1.default.setActividad);
-        this.router.post('/updateActividad', serviciosController_1.default.updateActividad);
         this.router.post('/setServicioHTS', serviciosController_1.default.setServicioHTS);
         this.router.post('/unsetTipoServicio', serviciosController_1.default.unsetServicioHTS);
+        ///////////////////////////////////////////////////////////////////
+        ////////////////////////TIPOS DE SERVICIO//////////////////////////
+        this.router.get('/getDeptosSistemas', serviciosController_1.default.getDeptosSistemas);
+        this.router.get('/getTiposServicioTable', serviciosController_1.default.getTiposServicioTable);
+        this.router.post('/getTiposServicios', serviciosController_1.default.getTiposServicios);
+        this.router.post('/setTipoServicio', serviciosController_1.default.setTipoServicio);
+        this.router.post('/updateTipoServicio', serviciosController_1.default.updateTipoServicio);
         this.router.post('/getTiposServicioAsignados', serviciosController_1.default.getTiposServicioAsignados);
-        this.router.post('/getShtsNoAsignados', serviciosController_1.default.getShtsNoAsignados);
+        ///////////////////////////////////////////////////////////////////
     }
 }
 const serviciosRoutes = new ServiciosRoutes();

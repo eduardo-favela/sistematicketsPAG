@@ -24,6 +24,7 @@ export class MngServiciosComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject<any>();
   dtTriggerTS: Subject<any> = new Subject<any>();
   dtTriggerS: Subject<any> = new Subject<any>();
+  dtTriggerA: Subject<any> = new Subject<any>();
   //////////////////////////////////////////////////////////////////////////////////////////////
 
   noInfo = true;
@@ -69,6 +70,12 @@ export class MngServiciosComponent implements OnInit {
 
   actividadHasShts: any = [];
   actividadHasShtsSettingTime: any = [];
+
+  shtsAsignados: any = [];
+  shtsPDesasignar: any = [];
+
+  activhshts: any = [];
+  activshtsEdittingTime: any = null;
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   ngOnInit(): void {
@@ -77,6 +84,7 @@ export class MngServiciosComponent implements OnInit {
     this.getServiciosTable()
     this.getTiposServicioTable()
     this.getActividades()
+    this.getactividadHasShtsTable()
 
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -362,6 +370,7 @@ export class MngServiciosComponent implements OnInit {
 
   //////////////////////////////FUNCIONES DE APARTADO DE ACTIVIDADES/SERVICIOS-TS/////////////////////////////
   onActividadSelectChange() {
+    this.getShtsAsignados()
     this.serviciosService.getShtsNoAsignados({ id_actividad: parseInt(this.actividad) }).subscribe(
       res => {
         this.shts = res;
@@ -376,36 +385,143 @@ export class MngServiciosComponent implements OnInit {
     )
   }
 
-  openModalTime(item){
-    this.actividadHasShtsSettingTime={...item}
+  openModalTime(item) {
+    this.actividadHasShtsSettingTime = { ...item }
     $('#addShtsModal').modal('show')
   }
 
   addElementshts(horas, minutos) {
-    this.actividadHasShtsSettingTime.displayTime=horas+':'+minutos
-    minutos=((parseFloat(minutos)==0)?(0):(parseFloat(minutos)/60))
-    this.actividadHasShtsSettingTime.tiempo=parseFloat(horas+'.'+((minutos==0)?(minutos.toString()):(minutos.toString().split('.')[1])));
-    this.actividadHasShtsSettingTime.id_actividad=this.actividad
+
+    ////FALTA VALIDAR QUE SI UN SERVICIO/TIPOSERVICIO CON CIERTA ACTIVIDAD YA ESTÁ EN EL ARREGLO PARA DESASIGNARLO
+    ////PARA AL MOMENTO DE VOLVER A ASIGNARLO, QUITARLO DE ESA LISTA Y QUE NO LO DESASIGNE CUANDO SE GUARDEN LOS CAMBIOS
+    /* let itemAsignado = this.shtsPDesasignar.findIndex(shts => shts.idshts == this.actividadHasShtsSettingTime.idshts)
+    if (itemAsignado) { this.shtsPDesasignar.push(this.actividadHasShtsSettingTime) } */
+    this.actividadHasShtsSettingTime.displayTime = horas + ':' + minutos
+    minutos = ((parseFloat(minutos) == 0) ? (0) : (parseFloat(minutos) / 60))
+    this.actividadHasShtsSettingTime.tiempo = (horas + '.' + ((minutos == 0) ? (minutos.toString()) : (minutos.toString().split('.')[1])));
+    this.actividadHasShtsSettingTime.id_actividad = parseInt(this.actividad)
     let index = this.shts.findIndex(shts => shts.idshts == this.actividadHasShtsSettingTime.idshts)
-    let elementSpliced = this.shts.splice(index, 1)[0];
-    this.actividadHasShts.push(elementSpliced)
-    this.actividadHasShtsSettingTime={}
+    this.shts.splice(index, 1)[0];
+    this.actividadHasShts.push(this.actividadHasShtsSettingTime)
+    this.actividadHasShtsSettingTime = {}
     $('#AHSHTSh').val('');
     $('#AHSHTSm').val('');
     $('#addShtsModal').modal('hide')
-    console.log(this.actividadHasShts)
+    /* console.log(this.shtsPDesasignar) */
   }
 
   deleteElementshts(item) {
-    delete item.tiempo
-    delete item.id_actividad
-    delete item.displayTime
-    console.log(item)
+    let itemAsignado = this.shtsAsignados.find(shts => shts.idshts == item.idshts)
+    if (itemAsignado) { this.shtsPDesasignar.push(item) }
+    let index = this.actividadHasShts.findIndex(actividadhshts => actividadhshts.idshts == item.idshts)
+    let elementSpliced = this.actividadHasShts.splice(index, 1)[0];
+    this.shts.push(elementSpliced)
+    /* console.log(this.shtsPDesasignar) */
   }
 
-  cancelarSetTimeAHSHTS(){
+  cancelarSetTimeAHSHTS() {
     $('#AHSHTSh').val('');
     $('#AHSHTSm').val('');
+  }
+
+  setActividadHShts() {
+    if (this.actividadHasShts.length > 0) {
+      this.serviciosService.setActividadHShts(this.actividadHasShts).subscribe(
+        res => {
+          if (res) {
+            if (this.shtsPDesasignar.length > 0) {
+              this.unSetActividadHShts()
+            }
+            else {
+              this.actividad = null;
+              this.actividadHasShts = []
+              this.shts = []
+              this.noInfoActividades = true
+              this.destroyTableActhshts()
+              this.getactividadHasShtsTable()
+              this.showModal(2, 'Registros Guardados', 'Los cambios se guardaron correctamente')
+            }
+          }
+        },
+        err => console.error(err)
+      )
+    }
+    else {
+      this.unSetActividadHShts()
+    }
+  }
+
+  unSetActividadHShts() {
+    if (this.shtsPDesasignar.length > 0) {
+      this.serviciosService.unSetActividadHShts(this.shtsPDesasignar).subscribe(
+        res => {
+          if (res) {
+            this.actividad = null;
+            this.actividadHasShts = []
+            this.shts = []
+            this.noInfoActividades = true
+            this.destroyTableActhshts()
+            this.getactividadHasShtsTable()
+            this.showModal(2, 'Registros Guardados', 'Los cambios se guardaron correctamente')
+          }
+        },
+        err => console.error(err)
+      )
+    }
+    else {
+      this.showModal(1, 'Advertencia', 'No hay registros por guardar')
+    }
+  }
+
+  getShtsAsignados() {
+    this.serviciosService.getShtsAsignados({ id_actividad: this.actividad }).subscribe(
+      res => {
+        this.actividadHasShts = res
+        this.shtsAsignados = []
+        this.shtsAsignados.push(...this.actividadHasShts)
+        this.shtsPDesasignar = []
+      },
+      err => console.error(err)
+    )
+  }
+
+  getactividadHasShtsTable() {
+    this.serviciosService.getActividadesHShtsTable().subscribe(
+      res => {
+        this.activhshts = res
+        this.dtTriggerA.next()
+      },
+      err => console.error(err)
+    )
+  }
+
+  editarHoraActividad(item) {
+    this.activshtsEdittingTime = {...item}
+    $('#AHSHTShE').val(this.activshtsEdittingTime.displayTime.split(':')[0])
+    $('#AHSHTSmE').val(this.activshtsEdittingTime.displayTime.split(':')[1])
+    $('#editTimeAModal').modal('show')
+  }
+
+  guardarCambiosEditTimeModal(horas,minutos) {
+    minutos = ((parseFloat(minutos) == 0) ? (0) : (parseFloat(minutos) / 60))
+    let tiempo = (horas + '.' + ((minutos == 0) ? (minutos.toString()) : (minutos.toString().split('.')[1])));
+
+    this.serviciosService.updateActivShts({tiempo: tiempo, ahshts: this.activshtsEdittingTime.id_actividad_has_servicios}).subscribe(
+      res=>{
+        if(res){
+          this.destroyTableActhshts()
+          this.getactividadHasShtsTable()
+          $('#editTimeAModal').modal('hide')
+          this.showModal(2,'Registro guardado', 'Los cambios se guardaron correctamente')
+        }
+      },
+      err=>console.error(err)
+    )
+  }
+
+  destroyTableActhshts() {
+    let table = $('#tablaActhshts').DataTable()
+    table.destroy();
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -438,7 +554,7 @@ export class MngServiciosComponent implements OnInit {
       )
     }
     else {
-      console.log(this.servicioeditando)
+      /* console.log(this.servicioeditando) */
       alert('Se deben llenar todos los campos')
     }
   }

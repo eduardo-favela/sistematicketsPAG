@@ -33,6 +33,22 @@ class ServiciosController {
         });
     }
 
+    //OBTENER LAS RELACIONES ENTRE SERVICIOS Y TIPOS DE SERVICIO QUE ESTÁN RELACIONADAS CON LAS ACTIVIDADES
+    public async getShtsAsignados(req: Request, res: Response) {
+        await db.query(`SELECT ahs_has_actividad AS id_actividad, servicio_has_tipo_servicio.idservicio_has_tipo_servicio AS idshts,
+        servicios.servicio, tipos_servicio.tiposervicio,
+        CONCAT(SUBSTRING_INDEX(tiempo, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo, '.', -1)*60),2),'.',-1)) AS displayTime
+        FROM actividad_has_servicios
+        INNER JOIN actividades ON actividad_has_servicios.ahs_has_actividad=actividades.id_actividad
+        INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio=servicio_has_tipo_servicio.idservicio_has_tipo_servicio
+        INNER JOIN servicios  on servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
+        INNER JOIN tipos_servicio on servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
+        WHERE ahs_has_actividad = ? AND actividad_has_servicios.estatus = 1;`, req.body.id_actividad, function (err: any, result: any, fields: any) {
+            if (err) throw err
+            res.json(result)
+        });
+    }
+
     //OBTENER TODOS LOS SERVICIOS PARA MOSTRARLOS EN LA TABLA PARA EDITARLOS
     public async getServiciosTable(req: Request, res: Response) {
         await db.query(`SELECT idservicios, servicio, depto, departamento, 
@@ -184,6 +200,50 @@ class ServiciosController {
     public async updateActividad(req: Request, res: Response) {
         await db.query(`UPDATE actividades SET actividad = ?  WHERE id_actividad = ?;`, [req.body.actividad, req.body.id_actividad])
         res.json(true)
+    }
+
+    public async updateActivShts(req: Request, res: Response) {
+        await db.query(`UPDATE actividad_has_servicios 
+        SET tiempo = ?  WHERE id_actividad_has_servicios = ?;`, [req.body.tiempo, req.body.ahshts])
+        res.json(true)
+    }
+
+    public async setActividadHShts(req:Request, res: Response){
+        for (let i = 0; i < req.body.length; i++) {
+            let result = await db.query(`SELECT * FROM actividad_has_servicios 
+            WHERE ahs_has_actividad = ? AND ahs_has_servicio = ?;`,
+            [req.body[i].id_actividad, req.body[i].idshts]);
+            if (result.length > 0) {
+                await db.query(`UPDATE actividad_has_servicios SET estatus = 1 
+                WHERE id_actividad_has_servicios = ?;`, result[0].id_actividad_has_servicios);
+            }
+            else {
+                await db.query(`INSERT INTO actividad_has_servicios SET 
+                ahs_has_actividad = ?, ahs_has_servicio = ?, tiempo = ?, estatus = 1;`,
+                [req.body[i].id_actividad, req.body[i].idshts ,req.body[i].tiempo]);
+            }
+        }
+        res.json(true);
+    }
+
+    public async unSetActividadHShts(req:Request, res: Response){
+        for (let i = 0; i < req.body.length; i++) {
+            await db.query(`UPDATE actividad_has_servicios SET estatus = 0
+            WHERE ahs_has_actividad = ? and ahs_has_servicio = ?;`, [req.body[i].id_actividad, req.body[i].idshts])
+        }
+        res.json(true);
+    }
+
+    public async getActividadesHShtsTable(req:Request, res: Response){
+        let activhshts = await db.query(`SELECT actividad_has_servicios.id_actividad_has_servicios,
+        servicios.servicio, tipos_servicio.tiposervicio, actividades.actividad,
+        CONCAT(SUBSTRING_INDEX(tiempo, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo, '.', -1)*60),2),'.',-1)) AS displayTime
+        FROM actividad_has_servicios
+        INNER JOIN actividades ON actividad_has_servicios.ahs_has_actividad=actividades.id_actividad
+        INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio=servicio_has_tipo_servicio.idservicio_has_tipo_servicio
+        INNER JOIN servicios  on servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
+        INNER JOIN tipos_servicio on servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio;`)
+        res.json(activhshts);
     }
 }
 

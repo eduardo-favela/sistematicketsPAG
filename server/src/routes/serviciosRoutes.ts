@@ -1,30 +1,44 @@
 import { Router } from 'express'
-import serviciosController  from '../controllers/serviciosController'
+import serviciosController from '../controllers/serviciosController'
 
 class ServiciosRoutes {
     public router: Router = Router()
 
-    constructor(){
+    constructor() {
         this.config()
     }
 
-    config(): void{
+    config(): void {
+
+        ////////////////////////////ACTIVIDADES////////////////////////////
+        this.router.get('/getActividades', serviciosController.getActividades)
+        this.router.get('/getActividadesHShtsTable', serviciosController.getActividadesHShtsTable)
+        this.router.post('/setActividad', serviciosController.setActividad)
+        this.router.post('/setActividadHShts', serviciosController.setActividadHShts)
+        this.router.post('/unSetActividadHShts', serviciosController.unSetActividadHShts)
+        this.router.post('/updateActividad', serviciosController.updateActividad)
+        this.router.post('/updateActivShts', serviciosController.updateActivShts)
+        this.router.post('/getShtsNoAsignados', serviciosController.getShtsNoAsignados)
+        this.router.post('/getShtsAsignados', serviciosController.getShtsAsignados)
+        ///////////////////////////////////////////////////////////////////
+
+        /////////////////////////////SERVICIOS/////////////////////////////
         this.router.get('/getServicios', serviciosController.getServicios)
         this.router.get('/getServiciosTable', serviciosController.getServiciosTable)
-        this.router.get('/getDeptosSistemas', serviciosController.getDeptosSistemas)
-        this.router.get('/getTiposServicioTable', serviciosController.getTiposServicioTable)
-        this.router.get('/getActividades', serviciosController.getActividades)
-        this.router.post('/getTiposServicios', serviciosController.getTiposServicios)
         this.router.post('/setServicio', serviciosController.setServicio)
         this.router.post('/updateServicio', serviciosController.updateServicio)
-        this.router.post('/setTipoServicio', serviciosController.setTipoServicio)
-        this.router.post('/updateTipoServicio', serviciosController.updateTipoServicio)
-        this.router.post('/setActividad', serviciosController.setActividad)
-        this.router.post('/updateActividad', serviciosController.updateActividad)
         this.router.post('/setServicioHTS', serviciosController.setServicioHTS)
         this.router.post('/unsetTipoServicio', serviciosController.unsetServicioHTS)
+        ///////////////////////////////////////////////////////////////////
+
+        ////////////////////////TIPOS DE SERVICIO//////////////////////////
+        this.router.get('/getDeptosSistemas', serviciosController.getDeptosSistemas)
+        this.router.get('/getTiposServicioTable', serviciosController.getTiposServicioTable)
+        this.router.post('/getTiposServicios', serviciosController.getTiposServicios)
+        this.router.post('/setTipoServicio', serviciosController.setTipoServicio)
+        this.router.post('/updateTipoServicio', serviciosController.updateTipoServicio)
         this.router.post('/getTiposServicioAsignados', serviciosController.getTiposServicioAsignados)
-        this.router.post('/getShtsNoAsignados', serviciosController.getShtsNoAsignados)
+        ///////////////////////////////////////////////////////////////////
     }
 }
 
