@@ -245,6 +245,29 @@ class ServiciosController {
         INNER JOIN tipos_servicio on servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio;`)
         res.json(activhshts);
     }
+
+    public async getTServicioForTicket(req:Request, res: Response){
+        let tiposServicio = await db.query(`SELECT idtipos_servicio, tiposervicio
+        FROM servicio_has_tipo_servicio
+        INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
+        INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
+        WHERE shts_has_servicio = ? AND servicio_has_tipo_servicio.estatus=1;`,req.body.servicio)
+        res.json(tiposServicio);
+    }
+
+    public async getActividadesForTicket(req:Request, res: Response){
+        console.log(req.body)
+        let actividades = await db.query(`SELECT id_actividad, actividades.actividad, actividad_has_servicios.tiempo
+        FROM actividad_has_servicios
+        INNER JOIN actividades ON actividad_has_servicios.ahs_has_actividad=actividades.id_actividad
+        INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio=servicio_has_tipo_servicio.idservicio_has_tipo_servicio
+        INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
+        INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
+        WHERE servicio_has_tipo_servicio.shts_has_servicio = ? AND servicio_has_tipo_servicio.shts_has_tipo_servicio = ?;`,[req.body.servicio, req.body.tipoServicio])
+        res.json(actividades);
+    }
+
+
 }
 
 const serviciosController = new ServiciosController()

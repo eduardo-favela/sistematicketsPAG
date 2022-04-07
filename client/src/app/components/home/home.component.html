@@ -3,8 +3,6 @@
     <div class="card mb-3">
       <div class="card-header text-white cardheader">REGISTRO DE TICKETS</div>
       <div class="card-body">
-<!--         <h5 class="card-title">Llene todos los campos para generar un ticket</h5>
-        <hr> -->
         <div class="row">
           <div class="col-md-3 col-sm-12 mt-3">
             <label for="ciudad">Fecha del ticket</label>
@@ -87,7 +85,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-4 mt-3">
+          <div class="col-md-3 mt-3">
             <label for="servicio">Servicio</label>
             <select (change)="getTiposServicios()" [(ngModel)]="ticket.servicio" id="servicio" class="form-control"
               name="servicio">
@@ -96,16 +94,25 @@
               value="{{ servicio.idservicios }}">{{ servicio.servicio }}</option>
             </select>
           </div>
-          <div class="col-md-4 mt-3">
+          <div class="col-md-3 mt-3">
             <label for="tipoServ">Tipo de servicio</label>
-            <select [(ngModel)]="ticket.tiposervicio" id="tipoServ" class="form-control"
+            <select (change)="getActividades()" [(ngModel)]="ticket.tiposervicio" id="tipoServ" class="form-control"
               name="tipoServ">
               <option value= null disabled selected>Selecciona un tipo de servicio...</option>
               <option *ngFor="let tiposervicio of tiposServicios"
               value="{{ tiposervicio.idtipos_servicio }}">{{ tiposervicio.tiposervicio }}</option>
             </select>
           </div>
-          <div class="col-md-4 mt-3">
+          <div class="col-md-3 mt-3">
+            <label for="actividadSelect">Actividad</label>
+            <select [(ngModel)]="ticket.actividad" id="actividadSelect" class="form-control"
+              name="actividadSelect">
+              <option value= null disabled selected>Selecciona una actividad...</option>
+              <option *ngFor="let actividad of actividades"
+              value="{{ actividad.id_actividad }}">{{ actividad.actividad }}</option>
+            </select>
+          </div>
+          <div class="col-md-3 mt-3">
             <label for="selectAsignacion">Asignar ticket a:</label>
             <select [(ngModel)]="ticket.asignacion" id="selectAsignacion" class="form-control"
               name="tipoServ">

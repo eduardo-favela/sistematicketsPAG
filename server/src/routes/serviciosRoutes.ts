@@ -20,6 +20,8 @@ class ServiciosRoutes {
         this.router.post('/updateActivShts', serviciosController.updateActivShts)
         this.router.post('/getShtsNoAsignados', serviciosController.getShtsNoAsignados)
         this.router.post('/getShtsAsignados', serviciosController.getShtsAsignados)
+
+        this.router.post('/getActividadesForTicket', serviciosController.getActividadesForTicket)
         ///////////////////////////////////////////////////////////////////
 
         /////////////////////////////SERVICIOS/////////////////////////////
@@ -29,6 +31,9 @@ class ServiciosRoutes {
         this.router.post('/updateServicio', serviciosController.updateServicio)
         this.router.post('/setServicioHTS', serviciosController.setServicioHTS)
         this.router.post('/unsetTipoServicio', serviciosController.unsetServicioHTS)
+        
+        //////////////RUTAS PARA USO DE LA PANTALLA DE TICKETS//////////////
+        this.router.post('/getTServicioForTicket', serviciosController.getTServicioForTicket)
         ///////////////////////////////////////////////////////////////////
 
         ////////////////////////TIPOS DE SERVICIO//////////////////////////

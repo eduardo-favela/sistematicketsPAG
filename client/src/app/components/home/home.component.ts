@@ -9,7 +9,6 @@ import { EquiposService } from 'src/app/services/equipos.service';
 
 import { ReportesService } from 'src/app/services/reportes.service';
 import * as moment from 'moment';
-import * as $ from 'jquery'
 
 @Component({
   selector: 'app-home',
@@ -51,6 +50,8 @@ export class HomeComponent implements OnInit {
   equipoSistemas: any = [];
   equiposUsuario: any = [];
 
+  actividades: any = [];
+
 
   uenUsuario: any = null
 
@@ -61,7 +62,8 @@ export class HomeComponent implements OnInit {
     servicio: null,
     tiposervicio: null,
     asignacion: null,
-    fecharespuesta: null
+    fecharespuesta: null,
+    actividad: null
   }
 
   tipoEquipo = null
@@ -99,7 +101,7 @@ export class HomeComponent implements OnInit {
     this.equipoticket = null
     this.tipoEquipo = null
     this.equipoSistemas = []
-    this.serviciosService.getTiposServicioAsignados({ servicio: this.ticket.servicio }).subscribe(
+    this.serviciosService.getTServicioForTicket({ servicio: this.ticket.servicio }).subscribe(
       res => {
         this.tiposServicios = res
       },
@@ -113,7 +115,7 @@ export class HomeComponent implements OnInit {
         this.getEquipoUsuario()
       }
       else {
-        $("#advertenciaModal").modal('show')
+        $('#advertenciaModal').modal('show')
       }
     }
     else {
@@ -154,6 +156,16 @@ export class HomeComponent implements OnInit {
   selectEquipoChange() {
     let item = this.equiposUsuario.find(equipo => equipo.idequipo == this.equipoticket);
     this.tipoEquipo = item.tipoEquipo
+  }
+
+  getActividades() {
+    this.ticket.actividad = null;
+    this.serviciosService.getActividadesForTicket({servicio:parseInt(this.ticket.servicio), tipoServicio:parseInt(this.ticket.tiposervicio)}).subscribe(
+      res=>{
+        this.actividades=res
+      },
+      err=>console.error(err)
+    )
   }
 
   clearInputs() {

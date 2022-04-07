@@ -92,4 +92,14 @@ export class ServiciosService {
   unSetActividadHShts(actividadhshts){
     return this.http.post(`${API_URI}/servicios/unSetActividadHShts`,actividadhshts)
   }
+
+  ////////////////////////////RUTAS DE USO DE LA PANTALLA DE TICKETS////////////////////////////
+
+  getTServicioForTicket(servicio){
+    return this.http.post(`${API_URI}/servicios/getTServicioForTicket`,servicio)
+  }
+
+  getActividadesForTicket(servicio){
+    return this.http.post(`${API_URI}/servicios/getActividadesForTicket`,servicio)
+  }
 }

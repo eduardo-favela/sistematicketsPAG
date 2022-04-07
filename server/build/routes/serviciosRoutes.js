@@ -21,6 +21,7 @@ class ServiciosRoutes {
         this.router.post('/updateActivShts', serviciosController_1.default.updateActivShts);
         this.router.post('/getShtsNoAsignados', serviciosController_1.default.getShtsNoAsignados);
         this.router.post('/getShtsAsignados', serviciosController_1.default.getShtsAsignados);
+        this.router.post('/getActividadesForTicket', serviciosController_1.default.getActividadesForTicket);
         ///////////////////////////////////////////////////////////////////
         /////////////////////////////SERVICIOS/////////////////////////////
         this.router.get('/getServicios', serviciosController_1.default.getServicios);
@@ -29,6 +30,8 @@ class ServiciosRoutes {
         this.router.post('/updateServicio', serviciosController_1.default.updateServicio);
         this.router.post('/setServicioHTS', serviciosController_1.default.setServicioHTS);
         this.router.post('/unsetTipoServicio', serviciosController_1.default.unsetServicioHTS);
+        //////////////RUTAS PARA USO DE LA PANTALLA DE TICKETS//////////////
+        this.router.post('/getTServicioForTicket', serviciosController_1.default.getTServicioForTicket);
         ///////////////////////////////////////////////////////////////////
         ////////////////////////TIPOS DE SERVICIO//////////////////////////
         this.router.get('/getDeptosSistemas', serviciosController_1.default.getDeptosSistemas);

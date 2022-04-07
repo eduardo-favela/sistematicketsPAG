@@ -287,6 +287,29 @@ class ServiciosController {
             res.json(activhshts);
         });
     }
+    getTServicioForTicket(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let tiposServicio = yield database_1.default.query(`SELECT idtipos_servicio, tiposervicio
+        FROM servicio_has_tipo_servicio
+        INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
+        INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
+        WHERE shts_has_servicio = ? AND servicio_has_tipo_servicio.estatus=1;`, req.body.servicio);
+            res.json(tiposServicio);
+        });
+    }
+    getActividadesForTicket(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(req.body);
+            let actividades = yield database_1.default.query(`SELECT id_actividad, actividades.actividad, actividad_has_servicios.tiempo
+        FROM actividad_has_servicios
+        INNER JOIN actividades ON actividad_has_servicios.ahs_has_actividad=actividades.id_actividad
+        INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio=servicio_has_tipo_servicio.idservicio_has_tipo_servicio
+        INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
+        INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
+        WHERE servicio_has_tipo_servicio.shts_has_servicio = ? AND servicio_has_tipo_servicio.shts_has_tipo_servicio = ?;`, [req.body.servicio, req.body.tipoServicio]);
+            res.json(actividades);
+        });
+    }
 }
 const serviciosController = new ServiciosController();
 exports.default = serviciosController;
