@@ -16,7 +16,17 @@ input::-webkit-inner-spin-button {
     pointer-events: none
   }
 
+  table {
+    min-width: 100% !important ;
+  }
+
   .fa-check-circle{
     font-size: xx-large;
     color: green;
+  }
+
+  thead {
+    background-color: #d13138;
+    box-shadow: 0 2px 2px -1px rgb(0 0 0 / 40%);
+    color: white;
   }

@@ -299,8 +299,8 @@ class ServiciosController {
     }
     getActividadesForTicket(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(req.body);
-            let actividades = yield database_1.default.query(`SELECT id_actividad, actividades.actividad, actividad_has_servicios.tiempo
+            let actividades = yield database_1.default.query(`SELECT actividad_has_servicios.id_actividad_has_servicios AS id_actividad, 
+        actividades.actividad, actividad_has_servicios.tiempo
         FROM actividad_has_servicios
         INNER JOIN actividades ON actividad_has_servicios.ahs_has_actividad=actividades.id_actividad
         INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio=servicio_has_tipo_servicio.idservicio_has_tipo_servicio

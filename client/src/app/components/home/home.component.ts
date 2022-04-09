@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CentroscostosService } from 'src/app/services/centroscostos.service';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { TicketsService } from 'src/app/services/tickets.service';
 import { UsuariosService } from 'src/app/services/usuarios.service';
@@ -18,7 +17,6 @@ import * as moment from 'moment';
 export class HomeComponent implements OnInit {
   constructor(private ticketsService: TicketsService, private usuariosService: UsuariosService,
     private equipoSistemasService: EquipoSistemasService, private equiposService: EquiposService,
-    private centroscostosService: CentroscostosService,
     private serviciosService: ServiciosService,
     private reportesService: ReportesService) { }
   ///////////////////////////////////AUTOCOMPLETES///////////////////////////////////
@@ -33,7 +31,6 @@ export class HomeComponent implements OnInit {
   ///////////////////////////////////VARIABLES Y PROPIEDADES GLOBALES DE LA CLASE///////////////////////////////////
 
   correo = null
-  comentarios = null
   telefono = null
   reporteid = null
   responsereporte: any
@@ -55,6 +52,8 @@ export class HomeComponent implements OnInit {
 
   uenUsuario: any = null
 
+  loading: boolean = false;
+
   ticket: any = {
     fecha: null,
     usuario: null,
@@ -63,7 +62,9 @@ export class HomeComponent implements OnInit {
     tiposervicio: null,
     asignacion: null,
     fecharespuesta: null,
-    actividad: null
+    actividad: null,
+    comentarios: null,
+    descripcion: null
   }
 
   tipoEquipo = null
@@ -98,9 +99,11 @@ export class HomeComponent implements OnInit {
   getTiposServicios() {
     this.ticket.tiposervicio = null
     this.ticket.asignacion = null
+    this.ticket.actividad = null
     this.equipoticket = null
     this.tipoEquipo = null
     this.equipoSistemas = []
+    this.actividades = []
     this.serviciosService.getTServicioForTicket({ servicio: this.ticket.servicio }).subscribe(
       res => {
         this.tiposServicios = res
@@ -115,7 +118,7 @@ export class HomeComponent implements OnInit {
         this.getEquipoUsuario()
       }
       else {
-        $('#advertenciaModal').modal('show')
+        this.showModal(2, 'Advertencia', 'Se debe seleccionar un usuario')
       }
     }
     else {
@@ -149,7 +152,7 @@ export class HomeComponent implements OnInit {
       )
     }
     else {
-      $("#advertenciaModal").modal('show')
+      this.showModal(2, 'Advertencia', 'Se debe seleccionar un usuario')
     }
   }
 
@@ -160,11 +163,12 @@ export class HomeComponent implements OnInit {
 
   getActividades() {
     this.ticket.actividad = null;
-    this.serviciosService.getActividadesForTicket({servicio:parseInt(this.ticket.servicio), tipoServicio:parseInt(this.ticket.tiposervicio)}).subscribe(
-      res=>{
-        this.actividades=res
+    this.actividades = []
+    this.serviciosService.getActividadesForTicket({ servicio: parseInt(this.ticket.servicio), tipoServicio: parseInt(this.ticket.tiposervicio) }).subscribe(
+      res => {
+        this.actividades = res
       },
-      err=>console.error(err)
+      err => console.error(err)
     )
   }
 
@@ -172,12 +176,30 @@ export class HomeComponent implements OnInit {
     this.inputUsuario.clear()
     this.correo = null
     this.telefono = null
-    this.comentarios = null
-    $('#telefono').removeClass('is-valid')
-    $('#telefono').removeClass('is-invalid')
+    this.ticket.comentarios = null
+    this.ticket.fecha = null
+    this.ticket.usuario = null
+    this.ticket.servicioparauen = null
+    this.ticket.servicio = null
+    this.ticket.tiposervicio = null
+    this.ticket.asignacion = null
+    this.ticket.fecharespuesta = null
+    this.ticket.actividad = null
+    this.ticket.descripcion = null
+    this.uenUsuario = null
+    this.asignaEquipo = false
+    this.horaTicket = { hour: parseInt(moment().format('HH')), minute: parseInt(moment().format('mm')) };
+    this.horaRespuesta = { hour: parseInt(moment().format('HH')), minute: parseInt(moment().format('mm')) };
+    this.fechaTicket = new NgbDate(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD')));
+    this.fechaRespuesta = new NgbDate(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD')));
   }
 
   registrarTicket() {
+    this.loading = true
+    let item = this.actividades.find(actividad => actividad.id_actividad == this.ticket.actividad)
+    this.ticket.tiempo_resolucion_servicio = item.tiempo
+    this.ticket.estatus = 1
+
     this.ticket.fecha = (moment().format(this.fechaTicket.year.toString() +
       '-' + this.fechaTicket.month.toString() +
       '-' + this.fechaTicket.day.toString()) + ' ' + this.horaTicket.hour.toString() +
@@ -190,33 +212,48 @@ export class HomeComponent implements OnInit {
 
     this.ticket.servicioparauen = ($('#radioButtonUsuario').is(':checked') ? 0 : 1)
 
-    console.log(this.ticket)
-    /*     if (this.nomEmp && this.idpventa && this.problema && this.correo && this.telefono && this.comentarios) {
-          if (this.telefono.toString().length == 10) {
-            this.reportesService.registraReporte({ estatus: 1, tipomaq: this.tipomaq, problema_reportado: this.problema, puntoventa: this.idpventa, nombre_report: this.nomEmp, comentarios: this.comentarios, correo_contacto: this.correo, telcontacto: this.telefono.toString() }).subscribe(
-              res => {
-                this.responsereporte = res
-                this.reporteid = this.responsereporte.insertId
-                this.enviarCorreo({ email: this.correo, folioreporte: this.reporteid })
-                this.enviarCorreoInterno({ email: this.correo, folioreporte: this.reporteid })
-                this.dia = moment().format('DD-MM-YYYY')
-                this.hora = moment().format('hh:mm A')
-                this.clearInputs()
-                $('#nuevoReporteModal').modal('show')
-              },
-              err => {
-                alert('Ocurrió un error al registrar el reporte')
-              }
-            )
+    if (this.ticket.fecha && this.ticket.fecharespuesta && this.ticket.usuario && this.ticket.servicio && this.ticket.tiposervicio && this.ticket.actividad && this.ticket.comentarios && this.ticket.descripcion) {
+
+      this.ticketsService.setTicket(this.ticket).subscribe(
+        res => {
+          if (res) {
+            this.loading = false
+            this.responsereporte = res
+            this.reporteid = this.responsereporte.insertId
+            this.clearInputs()
+            this.showModal(3, 'Ticket registrado', `El ticket se registró correctamente con el folio: <strong>${this.reporteid}</strong>`)
           }
-          else {
-            alert("El número de teléfono no es válido")
-          }
-        }
-        else {
-          console.log(this.nomEmp, this.idpventa, this.problema, this.correo, this.telefono, this.comentarios)
-          alert('Se deben llenar todos los campos para registrar un reporte')
-        } */
+        },
+        err => console.error(err)
+      )
+    }
+    else {
+      this.showModal(1, 'Error', 'Se deben llenar todos los campos para registrar el ticket')
+    }
+  }
+
+  showModal(tipo, header, text) {
+
+    //Tipo 1 -> Error
+    //Tipo 2 -> Advertencia
+    //Tipo 3 -> Success
+
+    $('#alertModal').removeClass()
+
+    if (tipo == 1) {
+      $('#alertModal').addClass('alert alert-danger')
+      $('#modalText').html('<i class="mr-2 fas fa-exclamation-circle"></i>' + text);
+    }
+    else if (tipo == 2) {
+      $('#alertModal').addClass('alert alert-warning')
+      $('#modalText').html('<i class="mr-2 fa fa-exclamation-triangle" aria-hidden="true"></i>' + text);
+    }
+    else {
+      $('#alertModal').addClass('alert alert-success')
+      $('#modalText').html('<i class="mr-2 fas fa-check-circle"></i>' + text);
+    }
+    $('#headerModal').html(header)
+    $('#advertenciaModal').modal('show')
   }
 
   enviarCorreo(reporte) {
@@ -239,7 +276,7 @@ export class HomeComponent implements OnInit {
     let maquina = $('#tipomaq option:selected').text()
     let ciudad = $('#plaza').val()
     let reportecontents = {
-      comments: this.comentarios, ciudad: ciudad, maq: maquina, problema: problema, correo: this.correo, telefono: this.telefono.toString(), sucursal: sucursal,
+      comments: this.ticket.comentarios, ciudad: ciudad, maq: maquina, problema: problema, correo: this.correo, telefono: this.telefono.toString(), sucursal: sucursal,
       fecha: moment().format('DD-MM-YYYY'), folio: reporte.folioreporte, hora: moment().format('hh:mm A'), email: emailspruebas
     }
     console.log(reportecontents)
@@ -275,11 +312,13 @@ export class HomeComponent implements OnInit {
 
   ///////////////////////////////////AUTOCOMPLETES///////////////////////////////////
   selectEventUsuario(item) {
-    this.uenUsuario = item.uen
-    this.ticket.usuario = item.idempleado
-    this.equipoticket = null
-    this.tipoEquipo = null
-    this.getEquipoUsuario()
+    this.uenUsuario = item.uen;
+    this.ticket.usuario = item.idempleado;
+    this.equipoticket = null;
+    this.tipoEquipo = null;
+    this.correo = item.correo;
+    this.telefono = item.telefono;
+    this.getEquipoUsuario();
   }
 
   onChangeSearch(val: string) {
@@ -288,11 +327,11 @@ export class HomeComponent implements OnInit {
   }
 
   onCleared(e) {
-    this.inputUsuario.close()
-    this.uenUsuario = null
-    this.equipoticket = null
-    this.tipoEquipo = null
-    this.getEquipoUsuario()
+    this.inputUsuario.close();
+    this.uenUsuario = null;
+    this.equipoticket = null;
+    this.tipoEquipo = null;
+    this.getEquipoUsuario();
   }
 
   onFocusedUsuario(e) {

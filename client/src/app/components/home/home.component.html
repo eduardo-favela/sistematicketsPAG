@@ -9,32 +9,32 @@
             <form class="row row-cols-sm-auto align-middle">
               <div class="col-12">
                 <div class="input-group">
-                  <input class="form-control" placeholder="dd/mm/aaaa"
+                  <input [disabled]="loading" class="form-control" placeholder="dd/mm/aaaa"
                   name="d2" #c2="ngModel" [(ngModel)]="fechaTicket" ngbDatepicker #d1="ngbDatepicker">
-                  <button class="btn btn-outline-secondary fas fa-calendar-alt" (click)="d1.toggle()" type="button"></button>
+                  <button [disabled]="loading" class="btn btn-outline-secondary fas fa-calendar-alt" (click)="d1.toggle()" type="button"></button>
                 </div>
               </div>
             </form>
           </div>
           <div class="col-md-3 col-sm-12 mt-3">
             <label for="ciudad">Hora del ticket</label>
-            <ngb-timepicker [(ngModel)]="horaTicket" [meridian]=true [spinners]=false></ngb-timepicker>
+            <ngb-timepicker [disabled]="loading" [(ngModel)]="horaTicket" [meridian]=true [spinners]=false></ngb-timepicker>
           </div>
           <div class="col-md-3 col-sm-12 mt-3">
             <label for="ciudad">Fecha de respuesta/contacto</label>
             <form class="row row-cols-sm-auto align-middle">
               <div class="col-12">
                 <div class="input-group">
-                  <input class="form-control" placeholder="dd/mm/aaaa"
+                  <input [disabled]="loading" class="form-control" placeholder="dd/mm/aaaa"
                   name="d2" #c2="ngModel" [(ngModel)]="fechaRespuesta" ngbDatepicker #d2="ngbDatepicker">
-                  <button class="btn btn-outline-secondary fas fa-calendar-alt" (click)="d2.toggle()" type="button"></button>
+                  <button [disabled]="loading" class="btn btn-outline-secondary fas fa-calendar-alt" (click)="d2.toggle()" type="button"></button>
                 </div>
               </div>
             </form>
           </div>
           <div class="col-md-3 col-sm-12 mt-3">
             <label for="ciudad">Hora de respuesta/contacto</label>
-            <ngb-timepicker [(ngModel)]="horaRespuesta" [meridian]=true [spinners]=false></ngb-timepicker>
+            <ngb-timepicker [disabled]="loading" [(ngModel)]="horaRespuesta" [meridian]=true [spinners]=false></ngb-timepicker>
           </div>
         </div>
         <div class="row">
@@ -43,7 +43,7 @@
             <div class="ng-autocomplete" id="inputSucursal">
               <ng-autocomplete #inputUsuario name="usuarios"
                 [data]="usuarios"
-                [disabled]="inputsDisabled"
+                [disabled]="loading"
                 [searchKeyword]="keywordUsuarios"
                 (selected)='selectEventUsuario($event)'
                 [placeholder]='placeholderUsuario'
@@ -71,13 +71,13 @@
           <div class="col-md-4 mt-3">
             <label>Asignación de ticket</label>
             <div class="form-check">
-              <input class="form-check-input" type="radio" name="flexRadioDefault" id="radioButtonUen">
+              <input [disabled]="loading" class="form-check-input" type="radio" name="flexRadioDefault" id="radioButtonUen">
               <label class="form-check-label" for="radioButtonUen">
                 UEN
               </label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="radio" name="flexRadioDefault" id="radioButtonUsuario" checked>
+              <input [disabled]="loading" class="form-check-input" type="radio" name="flexRadioDefault" id="radioButtonUsuario" checked>
               <label class="form-check-label" for="radioButtonUsuario">
                 Usuario
               </label>
@@ -87,7 +87,7 @@
         <div class="row">
           <div class="col-md-3 mt-3">
             <label for="servicio">Servicio</label>
-            <select (change)="getTiposServicios()" [(ngModel)]="ticket.servicio" id="servicio" class="form-control"
+            <select [disabled]="loading" (change)="getTiposServicios()" [(ngModel)]="ticket.servicio" id="servicio" class="form-control"
               name="servicio">
               <option value= null disabled selected>Selecciona un servicio...</option>
               <option *ngFor="let servicio of servicios"
@@ -96,7 +96,7 @@
           </div>
           <div class="col-md-3 mt-3">
             <label for="tipoServ">Tipo de servicio</label>
-            <select (change)="getActividades()" [(ngModel)]="ticket.tiposervicio" id="tipoServ" class="form-control"
+            <select [disabled]="loading" (change)="getActividades()" [(ngModel)]="ticket.tiposervicio" id="tipoServ" class="form-control"
               name="tipoServ">
               <option value= null disabled selected>Selecciona un tipo de servicio...</option>
               <option *ngFor="let tiposervicio of tiposServicios"
@@ -105,7 +105,7 @@
           </div>
           <div class="col-md-3 mt-3">
             <label for="actividadSelect">Actividad</label>
-            <select [(ngModel)]="ticket.actividad" id="actividadSelect" class="form-control"
+            <select [disabled]="loading" [(ngModel)]="ticket.actividad" id="actividadSelect" class="form-control"
               name="actividadSelect">
               <option value= null disabled selected>Selecciona una actividad...</option>
               <option *ngFor="let actividad of actividades"
@@ -114,9 +114,9 @@
           </div>
           <div class="col-md-3 mt-3">
             <label for="selectAsignacion">Asignar ticket a:</label>
-            <select [(ngModel)]="ticket.asignacion" id="selectAsignacion" class="form-control"
+            <select [disabled]="loading" [(ngModel)]="ticket.asignacion" id="selectAsignacion" class="form-control"
               name="tipoServ">
-              <option value= null disabled selected>Selecciona alguien a quien asignar el ticket...</option>
+              <option value= null disabled selected>Ing. para asignar ticket...</option>
               <option *ngFor="let ing of equipoSistemas"
               value="{{ ing.idempleado }}">{{ ing.nombre }}</option>
             </select>
@@ -125,7 +125,7 @@
         <div class="row d-flex justify-content-around">
           <div [hidden]="!asignaEquipo" class="col-md-4 mt-3">
             <label for="problemareportado">Equipo</label>
-            <select (change)="selectEquipoChange()" [(ngModel)]="equipoticket"
+            <select [disabled]="loading" (change)="selectEquipoChange()" [(ngModel)]="equipoticket"
               id="problema" class="form-control" name="problema">
               <option value=null disabled selected>Selecciona un equipo...</option>
               <option *ngFor="let equipo of equiposUsuario"
@@ -134,7 +134,7 @@
           </div>
           <div [hidden]="!asignaEquipo" class="col-md-4 mt-3">
             <label for="tipomaq">Tipo de equipo</label>
-            <input [(ngModel)]="tipoEquipo" class="form-control" [disabled]=true
+            <input [disabled]="loading" [(ngModel)]="tipoEquipo" class="form-control" [disabled]=true
             type="text" name="tipoEquipo" id="tipoEquipo" placeholder="Clasificación del equipo">
           </div>
         </div>
@@ -143,40 +143,40 @@
             <div class="row">
               <div class="col-md-12 mt-3">
                 <label for="correo">Correo de contacto</label>
-                <input id="correo" class="form-control" placeholder="Escriba su correo..." type="email" name="correo" [(ngModel)]="correo">
+                <input disabled id="correo" class="form-control" placeholder="Escriba su correo..." type="email" name="correo" [(ngModel)]="correo">
               </div>
             </div>
             <div class="row">
               <div class="col-md-12 mt-3">
                 <label for="correo">Teléfono de contacto</label>
-                <input (keyup)='onKeyUpNoTel()' id="telefono"
+                <input disabled (keyup)='onKeyUpNoTel()' id="telefono"
                   class="form-control" placeholder="Escriba su telefono..."
                   type="number" name="telefono" [(ngModel)]="telefono">
-                <div class="invalid-feedback">
-                  El número debe ser de 10 dígitos
-                </div>
               </div>
             </div>
           </div>
           <div class="col-md-4 mt-3">
             <label for="comments">Descripción del servicio</label>
-            <textarea [(ngModel)]="comentarios" placeholder="Escriba la descripción del servicio solicitado..." class="form-control" name="comments"
+            <textarea [disabled]="loading" [(ngModel)]="ticket.descripcion" placeholder="Escriba la descripción del servicio solicitado..." class="form-control" name="comments"
               id="commentsinput" cols="50" rows="5"></textarea>
           </div>
           <div class="col-md-4 mt-3">
             <label for="comments">Comentarios</label>
-            <textarea [(ngModel)]="comentarios" placeholder="Comentarios del ticket..." class="form-control" name="comments"
+            <textarea [disabled]="loading" [(ngModel)]="ticket.comentarios" placeholder="Comentarios del ticket..." class="form-control" name="comments"
               id="commentsinput" cols="50" rows="5"></textarea>
           </div>
         </div>
+        <div class="row d-flex justify-content-center">
+          <div [hidden]="!loading" class="lds-facebook"><div></div><div></div><div></div></div>
+        </div>
         <div class="row mt-4 d-flex justify-content-around">
           <div class="col-md-4 col-sm-12">
-            <button (click)="registrarTicket()" class="mt-4 form-control btn
+            <button [disabled]="loading" (click)="registrarTicket()" class="mt-4 form-control btn
               btn-success">Registrar ticket<i class="far fa-share-square
                 ml-2"></i></button>
           </div>
           <div class="col-md-4 col-sm-12">
-            <button (click)="clearInputs()" class="mt-4 form-control btn
+            <button [disabled]="loading" (click)="clearInputs()" class="mt-4 form-control btn
               btn-warning">Limpiar formulario<i class="fas fa-snowplow
                 ml-2"></i></button>
           </div>
@@ -220,14 +220,14 @@
   <div class="modal-dialog modal-md">
     <div class="modal-content">
       <div class="modal-header bg-dark text-light">
-        <h5 class="modal-title">Advertencia</h5>
+        <h5 id="headerModal" class="modal-title"></h5>
       </div>
       <div class="modal-body">
         <div class="container">
           <div class="row">
             <div class="col-12">
-              <div class="alert alert-warning" role="alert">
-                <p><i class="mr-2 fa fa-exclamation-triangle" aria-hidden="true"></i>Antes de continuar se debe seleccionar un usuario</p>
+              <div id="alertModal" class="alert alert-warning" role="alert">
+                <p id="modalText"></p>
               </div>
             </div>
           </div>

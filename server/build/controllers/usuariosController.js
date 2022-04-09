@@ -17,11 +17,11 @@ class UsuariosController {
     getUsuarios(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             yield database_1.default.query(`SELECT idempleado, CONCAT(TRIM(nombre), ' ', TRIM(apellido_paterno), ' ', TRIM(apellido_materno)) as nombre, uens.uen, 
-        puestos.puesto, departamentos.departamento 
+        puestos.puesto, departamentos.departamento, telefono, correo
         FROM sistematicketspag.empleados 
         inner join uens on empleados.UENS_idUEN = uens.idUEN
         inner join puestos on empleados.puestos_id_puesto = puestos.id_puesto
-        inner join departamentos on empleados.departamentos_id_departamento = departamentos.id_departamento order by nombre`, function (err, result, fields) {
+        inner join departamentos on empleados.departamentos_id_departamento = departamentos.id_departamento order by nombre;`, function (err, result, fields) {
                 if (err)
                     throw err;
                 res.json(result);

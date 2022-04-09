@@ -5,11 +5,11 @@ class UsuariosController {
 
     public async getUsuarios(req: Request, res: Response) {
         await db.query(`SELECT idempleado, CONCAT(TRIM(nombre), ' ', TRIM(apellido_paterno), ' ', TRIM(apellido_materno)) as nombre, uens.uen, 
-        puestos.puesto, departamentos.departamento 
+        puestos.puesto, departamentos.departamento, telefono, correo
         FROM sistematicketspag.empleados 
         inner join uens on empleados.UENS_idUEN = uens.idUEN
         inner join puestos on empleados.puestos_id_puesto = puestos.id_puesto
-        inner join departamentos on empleados.departamentos_id_departamento = departamentos.id_departamento order by nombre`, function (err: any, result: any, fields: any) {
+        inner join departamentos on empleados.departamentos_id_departamento = departamentos.id_departamento order by nombre;`, function (err: any, result: any, fields: any) {
             if (err) throw err
             res.json(result)
         })

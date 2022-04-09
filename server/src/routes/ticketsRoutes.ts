@@ -10,6 +10,8 @@ class TicketsRoutes {
 
     config(): void{
         this.router.get('/getUsuarios', ticketsController.getUsuarios)
+        this.router.get('/getTicketsForTable', ticketsController.getTicketsForTable)
+        this.router.post('/setTicket', ticketsController.setTicket)
     }
 }
 

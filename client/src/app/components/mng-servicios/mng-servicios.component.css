@@ -69,6 +69,10 @@ div.table-wrapper {
   display: block;
 }
 
+table {
+  min-width: 100% !important ;
+}
+
 div.lists-wrapper {
   overflow-y: scroll;
   max-height: 18rem;

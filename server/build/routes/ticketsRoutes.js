@@ -12,6 +12,8 @@ class TicketsRoutes {
     }
     config() {
         this.router.get('/getUsuarios', ticketsController_1.default.getUsuarios);
+        this.router.get('/getTicketsForTable', ticketsController_1.default.getTicketsForTable);
+        this.router.post('/setTicket', ticketsController_1.default.setTicket);
     }
 }
 const ticketsRoutes = new TicketsRoutes();

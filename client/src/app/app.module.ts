@@ -54,7 +54,7 @@ const routes:Route[]=[
     NgbModule,
     NgbPaginationModule,
     NgbAlertModule,
-    DataTablesModule
+    DataTablesModule,
   ],
   providers: [
   ],
