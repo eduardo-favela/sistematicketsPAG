@@ -27,6 +27,7 @@ class ServiciosRoutes {
         /////////////////////////////SERVICIOS/////////////////////////////
         this.router.get('/getServicios', serviciosController.getServicios)
         this.router.get('/getServiciosTable', serviciosController.getServiciosTable)
+        this.router.post('/getServiciosDepto', serviciosController.getServiciosDepto)
         this.router.post('/setServicio', serviciosController.setServicio)
         this.router.post('/updateServicio', serviciosController.updateServicio)
         this.router.post('/setServicioHTS', serviciosController.setServicioHTS)

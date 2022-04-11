@@ -23,6 +23,15 @@ class ServiciosController {
             });
         });
     }
+    getServiciosDepto(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield database_1.default.query(`SELECT * FROM servicios WHERE depto = ? AND estatus = 1;`, req.body.depto, function (err, result, fields) {
+                if (err)
+                    throw err;
+                res.json(result);
+            });
+        });
+    }
     getActividades(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             yield database_1.default.query(`SELECT * FROM actividades;`, function (err, result, fields) {

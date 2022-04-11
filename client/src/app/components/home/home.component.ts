@@ -70,6 +70,8 @@ export class HomeComponent implements OnInit {
   tipoEquipo = null
   equipoticket = null
 
+  sessionStorage = sessionStorage;
+
   ///////////////////////////////////VARIABLES Y PROPIEDADES GLOBALES DE LA CLASE///////////////////////////////////
 
   ngOnInit(): void {
@@ -88,12 +90,23 @@ export class HomeComponent implements OnInit {
   }
 
   getServicios() {
-    this.serviciosService.getServicios().subscribe(
-      res => {
-        this.servicios = res
-      },
-      err => console.error(err)
-    )
+    let depto = ((parseInt(this.sessionStorage.getItem('depto')))== 3 ? (1) : (parseInt(this.sessionStorage.getItem('depto'))))
+    if (depto == 2 || depto == 1) {
+      this.serviciosService.getServiciosDepto({ depto: depto }).subscribe(
+        res => {
+          this.servicios = res
+        },
+        err => console.error(err)
+      )
+    }
+    else if (depto == 4) {
+      this.serviciosService.getServicios().subscribe(
+        res => {
+          this.servicios = res
+        },
+        err => console.error(err)
+      )
+    }
   }
 
   getTiposServicios() {
@@ -196,8 +209,12 @@ export class HomeComponent implements OnInit {
 
   registrarTicket() {
     this.loading = true
-    let item = this.actividades.find(actividad => actividad.id_actividad == this.ticket.actividad)
-    this.ticket.tiempo_resolucion_servicio = item.tiempo
+
+    if (this.ticket.actividad) {
+      let item = this.actividades.find(actividad => actividad.id_actividad == this.ticket.actividad)
+      this.ticket.tiempo_resolucion_servicio = item.tiempo
+    }
+
     this.ticket.estatus = 1
 
     this.ticket.fecha = (moment().format(this.fechaTicket.year.toString() +
@@ -214,7 +231,7 @@ export class HomeComponent implements OnInit {
 
     if (this.ticket.fecha && this.ticket.fecharespuesta && this.ticket.usuario && this.ticket.servicio && this.ticket.tiposervicio && this.ticket.actividad && this.ticket.comentarios && this.ticket.descripcion) {
 
-      this.ticketsService.setTicket(this.ticket).subscribe(
+      this.ticketsService.setTicket({ ticket: this.ticket, equipoticket: this.equipoticket }).subscribe(
         res => {
           if (res) {
             this.loading = false
@@ -228,6 +245,7 @@ export class HomeComponent implements OnInit {
       )
     }
     else {
+      this.loading = false
       this.showModal(1, 'Error', 'Se deben llenar todos los campos para registrar el ticket')
     }
   }

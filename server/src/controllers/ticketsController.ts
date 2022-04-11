@@ -18,11 +18,19 @@ class TicketsController {
     public async setTicket(req: Request, res: Response) {
         await db.query(`INSERT INTO tickets SET fecha=?, fecha_respuesta=?, tiempo_resolucion_servicio=?,
         descripcion_servicio=?, comentarios=?, servicio_para_uen=?, empleados_idempleado=?,
-        estatus_idestatus=?, asignacion=?, actividad_has_shts=?`,[req.body.fecha,req.body.fecharespuesta,req.body.tiempo_resolucion_servicio,
-        req.body.descripcion, req.body.comentarios,req.body.servicioparauen,req.body.usuario,req.body.estatus,req.body.asignacion,
-        req.body.actividad], function (err: any, result: any, fields: any) {
+        estatus_idestatus=?, asignacion=?, actividad_has_shts=?`,[req.body.ticket.fecha,req.body.ticket.fecharespuesta,req.body.ticket.tiempo_resolucion_servicio,
+        req.body.ticket.descripcion, req.body.ticket.comentarios,req.body.ticket.servicioparauen,req.body.ticket.usuario,req.body.ticket.estatus,req.body.ticket.asignacion,
+        req.body.ticket.actividad], async function (err: any, result: any, fields: any) {
             if (err) throw err
-            res.json(result)
+            if(req.body.equipoticket){
+                await db.query(`INSERT INTO ticket_has_equipo SET ticket_id_ticket = ?, equipo_id_equipo = ?;`, [result.insertId,
+                req.body.equipoticket], function (err: any, results: any, fields: any){
+                    res.json(result)
+                })
+            }
+            else{
+                res.json(result)
+            }
         });
     }
 

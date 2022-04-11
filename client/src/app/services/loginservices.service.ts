@@ -16,4 +16,8 @@ export class LoginservicesService {
   setUser(userdata){
     return this.http.post(`${API_URI}/login/setUser`,userdata)
   }
+
+  getDeptoId(user){
+    return this.http.post(`${API_URI}/login/getDeptoUserId`,user)
+  }
 }

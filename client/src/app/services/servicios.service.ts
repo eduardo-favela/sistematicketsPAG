@@ -13,6 +13,10 @@ export class ServiciosService {
     return this.http.get(`${API_URI}/servicios/getServicios`)
   }
 
+  getServiciosDepto(depto){
+    return this.http.post(`${API_URI}/servicios/getServiciosDepto`, depto)
+  }
+
   getServiciosTable(){
     return this.http.get(`${API_URI}/servicios/getServiciosTable`)
   }

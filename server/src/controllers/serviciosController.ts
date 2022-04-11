@@ -10,6 +10,13 @@ class ServiciosController {
         });
     }
 
+    public async getServiciosDepto(req: Request, res: Response) {
+        await db.query(`SELECT * FROM servicios WHERE depto = ? AND estatus = 1;`,req.body.depto,function (err: any, result: any, fields: any) {
+            if (err) throw err
+            res.json(result)
+        });
+    }
+
     public async getActividades(req: Request, res: Response) {
         await db.query(`SELECT * FROM actividades;`, function (err: any, result: any, fields: any) {
             if (err) throw err

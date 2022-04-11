@@ -10,45 +10,53 @@ import { Location } from '@angular/common';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private loginServicesService:LoginservicesService, private location:Location, private router:Router) { }
+  constructor(private loginServicesService: LoginservicesService, private location: Location, private router: Router) { }
 
   usuario = {
-    user : null,
-    pass : null
+    user: null,
+    pass: null,
   }
-  isDisabled:boolean=true
-  loaderhidden:boolean=true
-  btnDisabled:boolean=false
-  public sessionStorage=sessionStorage
+  id_departamento: any = null
+  isDisabled: boolean = true
+  loaderhidden: boolean = true
+  btnDisabled: boolean = false
+  public sessionStorage = sessionStorage
 
   ngOnInit(): void {
   }
 
-  login(){
-    this.loaderhidden=false
-    this.btnDisabled=true
-    this.isDisabled=true
-    if(this.usuario.user && this.usuario.pass){
+  login() {
+    this.loaderhidden = false
+    this.btnDisabled = true
+    this.isDisabled = true
+    if (this.usuario.user && this.usuario.pass) {
       this.loginServicesService.login(this.usuario).subscribe(
-        res=>{
-          if(res){
-            sessionStorage.setItem('user',this.usuario.user)
-            this.isDisabled=true
-            this.loaderhidden=true
+        res => {
+          if (res) {
+            this.loginServicesService.getDeptoId({ user: this.usuario.user }).subscribe(
+              res => {
+                this.id_departamento = res
+                sessionStorage.setItem('user', this.usuario.user)
+                sessionStorage.setItem('depto', this.id_departamento)
+                this.isDisabled = true
+                this.loaderhidden = true
+              },
+              err => console.error(err)
+            )
           }
-          else{
-            this.btnDisabled=false
-            this.loaderhidden=true
-            this.isDisabled=false
+          else {
+            this.btnDisabled = false
+            this.loaderhidden = true
+            this.isDisabled = false
           }
         },
-        err=>console.error(err)
+        err => console.error(err)
       )
     }
-    else{
-      this.btnDisabled=false
-      this.loaderhidden=true
-      this.isDisabled=false
+    else {
+      this.btnDisabled = false
+      this.loaderhidden = true
+      this.isDisabled = false
     }
   }
 }

@@ -17,7 +17,7 @@ const database_1 = __importDefault(require("../database"));
 class LoginController {
     login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.query(`select * from usuarios where user= ?`, req.body.user, function (err, result, fields) {
+            yield database_1.default.query(`SELECT * FROM usuarios WHERE user = ?;`, req.body.user, function (err, result, fields) {
                 if (err)
                     throw err;
                 if (result.length > 0) {
@@ -28,6 +28,19 @@ class LoginController {
                 else {
                     res.json(false);
                 }
+            });
+        });
+    }
+    getDeptoUserId(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield database_1.default.query(`SELECT user, idempleado, tipo_usuario, departamentos_sistema_iddepartamento AS id_departamento
+        FROM usuarios
+        INNER JOIN empleados ON usuarios.empleados_idempleado = empleados.idempleado
+        INNER JOIN equipo_sistemas ON equipo_sistemas.empleados_idempleado = empleados.idempleado
+        WHERE user = ?;`, req.body.user, function (err, result, fields) {
+                if (err)
+                    throw err;
+                res.json(result[0].id_departamento);
             });
         });
     }

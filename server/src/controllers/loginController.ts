@@ -5,7 +5,7 @@ import db from '../database'
 
 class LoginController {
     public async login(req: Request, res: Response) {
-        await db.query(`select * from usuarios where user= ?`, req.body.user, function (err: any, result: string | any[], fields: any) {
+        await db.query(`SELECT * FROM usuarios WHERE user = ?;`, req.body.user, function (err: any, result: string | any[], fields: any) {
             if (err) throw err
             if (result.length > 0) {
                 bcrypt.compare(req.body.pass, result[0].pass, function (err, response) {
@@ -16,6 +16,17 @@ class LoginController {
                 res.json(false)
             }
         });
+    }
+
+    public async getDeptoUserId(req:Request, res:Response){
+        await db.query(`SELECT user, idempleado, tipo_usuario, departamentos_sistema_iddepartamento AS id_departamento
+        FROM usuarios
+        INNER JOIN empleados ON usuarios.empleados_idempleado = empleados.idempleado
+        INNER JOIN equipo_sistemas ON equipo_sistemas.empleados_idempleado = empleados.idempleado
+        WHERE user = ?;`,req.body.user, function (err: any, result: string | any[], fields: any){
+            if(err) throw err
+            res.json(result[0].id_departamento)
+        })
     }
 
     public async setUser(req: Request, res: Response) {
