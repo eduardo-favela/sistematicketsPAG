@@ -125,6 +125,9 @@ export class VerreportesComponent implements OnInit {
           this.noInfo = false
           this.dtTrigger.next()
         }
+        else {
+          this.noInfo = true
+        }
       },
       err => console.error(err)
     )
@@ -162,7 +165,7 @@ export class VerreportesComponent implements OnInit {
   onEditRptBtnClick(reporte) {
     this.horaRespuesta = { hour: parseInt(moment().format('HH')), minute: parseInt(moment().format('mm')) };
     this.editingTicket = { ...reporte }
-    if(reporte.estatus_idestatus != 3){
+    if (reporte.estatus_idestatus != 3) {
       if (reporte.comentarios && reporte.fecha_respuesta) {
         this.horaSeguimiento = { hour: parseInt(moment().format('HH')), minute: parseInt(moment().format('mm')) };
         $('#agregaSeguimiento').modal('show')
@@ -171,8 +174,8 @@ export class VerreportesComponent implements OnInit {
         $('#editareportemodal').modal('show')
       }
     }
-    else{
-      this.showModal(4, 'Ticket atendido','No se puede agregar seguimientos a este ticket, ya que está cerrado')
+    else {
+      this.showModal(4, 'Ticket atendido', 'No se puede agregar seguimientos a este ticket, ya que está cerrado')
     }
   }
 
@@ -214,21 +217,21 @@ export class VerreportesComponent implements OnInit {
     this.destroyTableSegs()
     this.ticketSelected = reporte.idticket
     if (reporte.estatus_idestatus != 1) {
-      this.ticketsService.getSeguimientosTicket({idticket : this.ticketSelected}).subscribe(
+      this.ticketsService.getSeguimientosTicket({ idticket: this.ticketSelected }).subscribe(
         res => {
           this.seguimientosTicket = res
           if (this.seguimientosTicket.length > 0) {
             this.dtTriggerSeg.next()
             $('#verSeguimientosModal').modal('show')
           }
-          else{
+          else {
             this.showModal(2, 'No existen registros', 'Aún no se han registrado seguimientos a este ticket')
           }
         },
         err => console.error(err)
       )
     }
-    else{
+    else {
       this.showModal(2, 'No existen registros', 'Aún no se han registrado seguimientos a este ticket')
     }
   }
@@ -303,11 +306,11 @@ export class VerreportesComponent implements OnInit {
       $('#alertModal').addClass('alert alert-warning')
       $('#modalText').html('<i class="mr-2 fa fa-exclamation-triangle" aria-hidden="true"></i>' + text);
     }
-    else if(tipo==3) {
+    else if (tipo == 3) {
       $('#alertModal').addClass('alert alert-success')
       $('#modalText').html('<i class="mr-2 fas fa-check-circle"></i>' + text);
     }
-    else if(tipo==4){
+    else if (tipo == 4) {
       $('#alertModal').addClass('alert alert-primary')
       $('#modalText').html('<i class="mr-2 fas fa-exclamation-circle"></i>' + text);
     }
