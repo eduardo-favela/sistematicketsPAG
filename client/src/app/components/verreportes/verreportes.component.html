@@ -31,7 +31,7 @@
               </form>
             </div>
             <div class="col-md-4 col-sm-12 mt-4">
-              <div class="btn-group" role="group" ngbRadioGroup name="estatusTickets" [(ngModel)]="estatusFilter">
+              <div class="btn-group" role="group" ngbRadioGroup name="estatusTickets" [(ngModel)]="estatusFilter" (ngModelChange)="searchTicketsForTable()">
                 <label ngbButtonLabel class="btn btn-outline-primary">
                   <input ngbButton type="radio" class="btn-check" [value]="0"> TODOS
                 </label>
