@@ -61,7 +61,8 @@
                   <th>Empleado</th>
                   <th>Servicio</th>
                   <th>Estatus</th>
-                  <th>Tiempo de respuesta al servicio</th>
+                  <th>Tiempo de resolución</th>
+                  <th>Tiempo dedicado</th>
                   <th>Editar ticket</th>
                 </tr>
               </thead>
@@ -77,6 +78,7 @@
                   <td>{{ticket.servicio}}</td>
                   <td>{{ticket.estatus}}</td>
                   <td>{{ticket.tiempo_res_serv}}</td>
+                  <td>{{ticket.tiempo_Res}}</td>
                   <td>
                     <button style="height:auto;"
                       (click)="onEditRptBtnClick(ticket)"

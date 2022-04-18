@@ -95,7 +95,8 @@ class TicketsController {
                 WHEN servicio_para_uen = 1 THEN 'SI'
                 WHEN servicio_para_uen= 0 THEN 'NO'
             END AS servpuen,
-            CONCAT(SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', -1)*60),2),'.',-1)) AS tiempo_res_serv
+            CONCAT(SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', -1)*60),2),'.',-1)) AS tiempo_res_serv,
+            CONCAT(SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', -1)*60),2),'.',-1)) AS tiempo_Res
             FROM tickets
             INNER JOIN empleados AS emp ON tickets.empleados_idempleado = emp.idempleado
             INNER JOIN estatus ON tickets.estatus_idestatus = estatus.idestatus
@@ -106,7 +107,7 @@ class TicketsController {
             INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio = servicio_has_tipo_servicio.idservicio_has_tipo_servicio
             INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
             INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
-            WHERE estatus_idestatus = ? AND tickets.fecha BETWEEN ? AND ?
+            WHERE estatus_idestatus = ? AND tickets.fecha BETWEEN '2022-03-15' AND '2022-04-19'
             LIMIT 100;`, [req.body.estatus,req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
         }
         else {
@@ -119,7 +120,8 @@ class TicketsController {
                 WHEN servicio_para_uen = 1 THEN 'SI'
                 WHEN servicio_para_uen= 0 THEN 'NO'
             END AS servpuen,
-            CONCAT(SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', -1)*60),2),'.',-1)) AS tiempo_res_serv
+            CONCAT(SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', -1)*60),2),'.',-1)) AS tiempo_res_serv,
+            CONCAT(SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', -1)*60),2),'.',-1)) AS tiempo_Res
             FROM tickets
             INNER JOIN empleados AS emp ON tickets.empleados_idempleado = emp.idempleado
             INNER JOIN estatus ON tickets.estatus_idestatus = estatus.idestatus
@@ -130,7 +132,7 @@ class TicketsController {
             INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio = servicio_has_tipo_servicio.idservicio_has_tipo_servicio
             INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
             INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
-            WHERE tickets.fecha BETWEEN ? AND ?
+            WHERE tickets.fecha BETWEEN '2022-03-15' AND '2022-04-19'
             LIMIT 100;`, [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
         }
         res.json(tickets);
