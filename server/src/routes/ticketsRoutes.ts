@@ -10,8 +10,13 @@ class TicketsRoutes {
 
     config(): void{
         this.router.get('/getUsuarios', ticketsController.getUsuarios)
-        this.router.get('/getTicketsForTable', ticketsController.getTicketsForTable)
+        this.router.get('/geEstatusTickets', ticketsController.geEstatusTickets)
+        this.router.post('/getTicketsForTable', ticketsController.getTicketsForTable)
         this.router.post('/setTicket', ticketsController.setTicket)
+        this.router.post('/setCommentsFecha', ticketsController.setCommentsFecha)
+        this.router.post('/setSeguimiento', ticketsController.setSeguimiento)
+        this.router.post('/getSeguimientosTicket', ticketsController.getSeguimientosTicket)
+        this.router.post('/ticketSolucionado', ticketsController.ticketSolucionado)
     }
 }
 

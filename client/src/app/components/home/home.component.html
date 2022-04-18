@@ -3,7 +3,7 @@
     <div class="card mb-3">
       <div class="card-header text-white cardheader">REGISTRO DE TICKETS</div>
       <div class="card-body">
-        <div class="row">
+        <div class="row flex justify-content-center">
           <div class="col-md-3 col-sm-12 mt-3">
             <label for="ciudad">Fecha del ticket</label>
             <form class="row row-cols-sm-auto align-middle">
@@ -19,22 +19,6 @@
           <div class="col-md-3 col-sm-12 mt-3">
             <label for="ciudad">Hora del ticket</label>
             <ngb-timepicker [disabled]="loading" [(ngModel)]="horaTicket" [meridian]=true [spinners]=false></ngb-timepicker>
-          </div>
-          <div class="col-md-3 col-sm-12 mt-3">
-            <label for="ciudad">Fecha de respuesta/contacto</label>
-            <form class="row row-cols-sm-auto align-middle">
-              <div class="col-12">
-                <div class="input-group">
-                  <input [disabled]="loading" class="form-control" placeholder="dd/mm/aaaa"
-                  name="d2" #c2="ngModel" [(ngModel)]="fechaRespuesta" ngbDatepicker #d2="ngbDatepicker">
-                  <button [disabled]="loading" class="btn btn-outline-secondary fas fa-calendar-alt" (click)="d2.toggle()" type="button"></button>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="col-md-3 col-sm-12 mt-3">
-            <label for="ciudad">Hora de respuesta/contacto</label>
-            <ngb-timepicker [disabled]="loading" [(ngModel)]="horaRespuesta" [meridian]=true [spinners]=false></ngb-timepicker>
           </div>
         </div>
         <div class="row">
@@ -137,6 +121,11 @@
             <input [(ngModel)]="tipoEquipo" class="form-control" [disabled]=true
             type="text" name="tipoEquipo" id="tipoEquipo" placeholder="Clasificación del equipo">
           </div>
+          <div [hidden]="!asignaEquipo" class="col-md-4 mt-3">
+            <label for="tipomaq">Número de serie</label>
+            <input [(ngModel)]="noSerieEquipo" class="form-control" [disabled]=true
+            type="text" name="noSerieEquipo" id="noSerieEquipo" placeholder="N° de serie del equipo">
+          </div>
         </div>
         <div class="row">
           <div class="col-md-4">
@@ -158,11 +147,6 @@
           <div class="col-md-4 mt-3">
             <label for="comments">Descripción del servicio</label>
             <textarea [disabled]="loading" [(ngModel)]="ticket.descripcion" placeholder="Escriba la descripción del servicio solicitado..." class="form-control" name="comments"
-              id="commentsinput" cols="50" rows="5"></textarea>
-          </div>
-          <div class="col-md-4 mt-3">
-            <label for="comments">Comentarios</label>
-            <textarea [disabled]="loading" [(ngModel)]="ticket.comentarios" placeholder="Comentarios del ticket..." class="form-control" name="comments"
               id="commentsinput" cols="50" rows="5"></textarea>
           </div>
         </div>

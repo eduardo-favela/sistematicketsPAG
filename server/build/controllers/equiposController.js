@@ -16,12 +16,12 @@ const database_1 = __importDefault(require("../database"));
 class EquiposController {
     getEquipos(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.query(`SELECT idequipo, equipo, tipo.tipo_equipo as tipoEquipo
+            yield database_1.default.query(`SELECT idequipo, equipo, tipo.tipo_equipo as tipoEquipo, no_serie
         FROM empleados_has_equipos
         inner join empleados on empleados_has_equipos.empleados_idempleado=empleados.idempleado
         inner join equipos on empleados_has_equipos.equipos_idequipo=equipos.idequipo
         inner join tipo on equipos.tipo_idtipo=tipo.idtipo
-        where empleados_idempleado = ?`, req.body.idusuario, function (err, result, fields) {
+        where empleados_idempleado = ?;`, req.body.idusuario, function (err, result, fields) {
                 if (err)
                     throw err;
                 res.json(result);

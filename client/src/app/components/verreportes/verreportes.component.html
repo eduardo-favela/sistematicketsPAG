@@ -5,8 +5,8 @@
       <div class="card mb-3">
         <div class="card-header text-light text-white cardheader">VER REPORTES</div>
         <div class="card-body">
-          <div class="row d-flex bd-highlight">
-            <div class="col-md-3 col-sm-12 mt-3 p-2 bd-highlight">
+          <div class="row d-flex justify-content-between">
+            <div class="col-md-3 col-sm-12 mt-3">
               <label for="ciudad">Rango de fecha 1</label>
               <form class="row row-cols-sm-auto align-middle">
                 <div class="col-12">
@@ -18,7 +18,7 @@
                 </div>
               </form>
             </div>
-            <div class="col-md-3 col-sm-12 mt-3 p-2 bd-highlight">
+            <div class="col-md-3 col-sm-12 mt-3">
               <label for="ciudad">Rango de fecha 2</label>
               <form class="row row-cols-sm-auto align-middle">
                 <div class="col-12">
@@ -30,151 +30,87 @@
                 </div>
               </form>
             </div>
-            <div class="col-md-3 col-sm-12 mt-3 ms-auto p-2 bd-highlight">
-              <button class="mt-4 form-control btn
-              btn-primary">Buscar por fechas</button>
-            </div>
+            <div class="col-md-4 col-sm-12 mt-4">
+              <div class="btn-group" role="group" ngbRadioGroup name="estatusTickets" [(ngModel)]="estatusFilter">
+                <label ngbButtonLabel class="btn btn-outline-primary">
+                  <input ngbButton type="radio" class="btn-check" [value]="0"> TODOS
+                </label>
+                <label *ngFor="let estatus of estatusTickets" ngbButtonLabel class="btn btn-outline-primary">
+                  <input ngbButton type="radio" class="btn-check" [value]=estatus.idestatus> {{estatus.estatus}}
+                </label>
+              </div>
           </div>
-          <div class="row d-flex justify-content-center mt-4" [hidden]="noInfo">
-            <label for="tableTickets">Tickets</label>
-            <div class="col-md-12 table-responsive">
-              <table id="tableTickets" class="table table-striped table-bordered
-                table-sm row-border hover" datatable [dtTrigger]="dtTrigger"
-                [dtOptions]="dtOptions">
-                <thead>
-                  <tr>
-                    <th>Id del ticket</th>
-                    <th>Fecha del ticket</th>
-                    <th>Fecha de respuesta</th>
-                    <th>Descripción</th>
-                    <th>Comentarios</th>
-                    <th>Asignación</th>
-                    <th>Empleado</th>
-                    <th>Servicio</th>
-                    <th>Estatus</th>
-                    <th>Servicio para UEN</th>
-                    <th>Tiempo de respuesta al servicio</th>
-                    <th>Editar ticket</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let ticket of tickets" class="table-active">
-                    <td>{{ticket.idticket}}</td>
-                    <td>{{ticket.fecha | date : 'dd/MM/yyyy h:mm a'}}</td>
-                    <td>{{ticket.fecha_respuesta | date : 'dd/MM/yyyy h:mm a'}}</td>
-                    <td>{{ticket.descripcion_servicio}}</td>
-                    <td>{{ticket.comentarios}}</td>
-                    <td>{{ticket.asignacion}}</td>
-                    <td>{{ticket.empleado}}</td>
-                    <td>{{ticket.servicio}}</td>
-                    <td>{{ticket.estatus}}</td>
-                    <td>{{ticket.servpuen}}</td>
-                    <td>{{ticket.tiempo_res_serv}}</td>
-                    <td class="text-center">
-                      <button style="height:auto;"
-                        (click)="onEditServicioButtonClick(ticket)"
-                        type="button" class="ml-2 btn btn-primary"
-                        data-bs-toggle="tooltip" data-bs-placement="top"
-                        title="Editar el reporte"> <i class="fas fa-edit"></i>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div [style]="{'text-align':'center'}" class="col-md-1 col-sm-12 mt-4">
+            <button [style]="{'height': '3rem', 'width':'3rem'}" (click)="searchTicketsForTable()" type="button" class="form-control btn btn-outline-primary"><i class="fas fa-search"></i></button>
+          </div>
+        </div>
+        <div class="row d-flex justify-content-center mt-4" [hidden]="noInfo">
+          <label for="tableTickets">Tickets</label>
+          <div class="col-md-12 table-responsive">
+            <table id="tableTickets" class="table table-striped table-bordered
+              table-sm row-border hover" datatable [dtTrigger]="dtTrigger"
+              [dtOptions]="dtOptions">
+              <thead>
+                <tr>
+                  <th>Id del ticket</th>
+                  <th>Fecha del ticket</th>
+                  <th>Fecha de respuesta</th>
+                  <th>Descripción</th>
+                  <th>Comentarios</th>
+                  <th>Asignación</th>
+                  <th>Empleado</th>
+                  <th>Servicio</th>
+                  <th>Estatus</th>
+                  <th>Tiempo de respuesta al servicio</th>
+                  <th>Editar ticket</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let ticket of tickets" class="table-active">
+                  <td>{{ticket.idticket}}</td>
+                  <td>{{ticket.fecha | date : 'dd/MM/yyyy h:mm a'}}</td>
+                  <td>{{ticket.fecha_respuesta | date : 'dd/MM/yyyy h:mm a'}}</td>
+                  <td>{{ticket.descripcion_servicio}}</td>
+                  <td>{{ticket.comentarios}}</td>
+                  <td>{{ticket.asignacion}}</td>
+                  <td>{{ticket.empleado}}</td>
+                  <td>{{ticket.servicio}}</td>
+                  <td>{{ticket.estatus}}</td>
+                  <td>{{ticket.tiempo_res_serv}}</td>
+                  <td>
+                    <button style="height:auto;"
+                      (click)="onEditRptBtnClick(ticket)"
+                      type="button" class="ml-2 mt-2 btn btn-primary"
+                      data-bs-toggle="tooltip" data-bs-placement="top"
+                      title="Editar el reporte"> <i class="fas fa-edit"></i>
+                    </button>
+                    <button style="height:auto;"
+                      (click)="getSeguimientos(ticket)"
+                      type="button" class="ml-2 mt-2 btn btn-success"
+                      data-bs-toggle="tooltip" data-bs-placement="top"
+                      title="Ver seguimientos"> <i class="fas fa-project-diagram"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
         <div class="jumbotron shadow-sm" [hidden]="!noInfo">
-          <h3><i class="fas fa-info-circle pr-3"></i>No hay información para
-            mostrar.</h3>
+          <h3><i class="fas fa-info-circle pr-3"></i>No hay información para mostrar.</h3>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-----------------------------------------MODAL DE ERROR DE REPORTE DE ERROR------------------------------------------>
-<div class="modal" id="noreportemodal" role="dialog" tabindex="-1"
-  aria-labelledby="noreportemodal" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header cardheader text-light">
-        <h5 class="modal-title">Aviso</h5>
-        <button type="button" class="close" data-dismiss="modal"
-          aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="container">
-          <div class="row">
-            <div class="col-12">
-              <div class="alert alert-warning" role="alert"><i class="mr-2 fa
-                  fa-exclamation-triangle" aria-hidden="true"></i> No se encontraron reportes con los datos proporcionados</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-block btn-primary"
-          data-bs-dismiss="modal">Aceptar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-----------------------------------------MODAL DE HISTORIAL DE REPORTES------------------------------------------>
-<div class="modal" id="detallereportemodal" role="dialog" tabindex="-1"
-  aria-labelledby="noreportemodal" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header cardheader text-light">
-        <h5 class="modal-title">Historial de cambios en el reporte con el folio: {{idReporte}}</h5>
-        <button type="button" class="close" data-bs-dismiss="modal"
-          aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-12">
-              <table class="table table-responsive-lg table-hover text-white">
-                <thead>
-                  <tr>
-                    <th scope="col">Estatus</th>
-                    <th scope="col">Fecha del cambio</th>
-                    <th scope="col">Comentarios</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let detallereporte of detallesreporte"
-                    class="table-active">
-                    <td>{{detallereporte.estatus}}</td>
-                    <td>{{detallereporte.fecha}}</td>
-                    <td>{{detallereporte.comentarios}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-block btn-primary col-md-3"
-          data-bs-dismiss="modal">Aceptar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-----------------------------------------MODAL DE CAMBIOS A REPORTES------------------------------------------>
+<!---------------------------MODAL DE REGISTRO DE FECHA DE RESPUESTA Y COMENTARIOS DE TICKET--------------------------->
 <div class="modal" id="editareportemodal" role="dialog" tabindex="-1"
   aria-labelledby="noreportemodal" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header cardheader text-light">
-        <h5 class="modal-title">Hacer cambios en el reporte con el folio: {{idReporte}}</h5>
+        <h5 class="modal-title">Registrar fecha/hora de contacto y comentarios del ticket</h5>
         <button type="button" class="close" data-bs-dismiss="modal"
           aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -183,26 +119,25 @@
       <div class="modal-body">
         <div class="container">
           <div class="row d-flex justify-content-between">
-            <div class="mb-3 col-md-5">
-              <label id="selectstatus_label" for="selectstatus"></label>
-              <div class="input-group mb-3">
-                <label for="estatus" class="form-label">Seleccione un nuevo
-                  estatus para el reporte</label>
-                <select [(ngModel)]="estatusnuevo" id="selectstatus"
-                  name="selectstatus" class="form-control form-select"
-                  aria-label="selectestatus">
-                  <option value= null disabled selected>Seleccione un estatus...</option>
-                  <option *ngFor="let estado of estatus"value="{{estado.idestatus }}">{{ estado.estatus }}</option>
-                </select>
-                <div class="invalid-feedback">
-                  Debe seleccionar un estatus nuevo
+            <div class="col-md-3 col-sm-12 mt-3">
+              <label for="ciudad">Fecha de respuesta/contacto</label>
+              <form class="row row-cols-sm-auto align-middle">
+                <div class="col-12">
+                  <div class="input-group">
+                    <input class="form-control" placeholder="dd/mm/aaaa"
+                    name="d3" #c3="ngModel" [(ngModel)]="fechaRespuesta" ngbDatepicker #d3="ngbDatepicker">
+                    <button class="btn btn-outline-secondary fas fa-calendar-alt" (click)="d3.toggle()" type="button"></button>
+                  </div>
                 </div>
-              </div>
+              </form>
+            </div>
+            <div class="col-md-3 col-sm-12 mt-3">
+              <label for="ciudad">Hora de respuesta/contacto</label>
+              <ngb-timepicker [(ngModel)]="horaRespuesta" [meridian]=true [spinners]=false></ngb-timepicker>
             </div>
             <div class="mb-3 col-md-5">
-              <label for="comentarios" class="form-label">Ingrese sus comentarios sobre el reporte</label>
-              <textarea [(ngModel)]="commentsnew" placeholder="Escriba sus
-                comentarios..." id="inputcomments" name="comments" rows="5"
+              <label for="comentarios" class="form-label">Ingrese sus comentarios sobre el ticket</label>
+              <textarea [(ngModel)]="commentsnew" placeholder="Escriba sus comentarios..." id="inputcomments" name="comments" rows="5"
                 class="form-control"></textarea>
               <div class="invalid-feedback">
                 Debe ingresar comentarios de la actualizacion del reporte
@@ -212,7 +147,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button (click)="cancelarCambios()" type="button" class="btn btn-block
+        <button (click)="guardarCambiosReporte()" type="button" class="btn btn-block
           btn-primary col-md-3">Guardar cambios</button>
         <button (click)="cancelarCambios()" type="button" class="btn btn-block
           btn-danger col-md-3" data-bs-dismiss="modal">Cancelar</button>
@@ -221,13 +156,13 @@
   </div>
 </div>
 
-<!-----------------------------------------MODAL DE CAMBIOS A REPORTES------------------------------------------>
-<div class="modal" id="confirmload" role="dialog" tabindex="-1"
-  aria-labelledby="noreportemodal" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
+<!---------------------------MODAL PARA VER SEGUIMIENTOS--------------------------->
+<div class="modal" id="verSeguimientosModal" role="dialog" tabindex="-1"
+  aria-labelledby="verSeguimientosModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header cardheader text-light">
-        <h5 class="modal-title">Cambios guardados</h5>
+        <h5 class="modal-title">Ver seguimientos del ticket: {{ticketSelected}}</h5>
         <button type="button" class="close" data-bs-dismiss="modal"
           aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -236,12 +171,158 @@
       <div class="modal-body">
         <div class="container">
           <div class="row d-flex justify-content-between">
-            <h5 class="modal-title">Cambios guardados exitosamente <i class="ml-2 far fa-check-circle"></i></h5>
+            <label for="tableSeguimientos">Seguimientos</label>
+            <div class="col-md-12 table-responsive">
+              <table id="tableSeguimientos" class="table table-striped table-bordered
+                table-sm row-border hover" datatable [dtTrigger]="dtTriggerSeg"
+                [dtOptions]="dtOptions">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Fecha</th>
+                    <th>Duración</th>
+                    <th>Comentarios</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let seguimiento of seguimientosTicket" class="table-active">
+                    <td>{{seguimiento.idseguimiento}}</td>
+                    <td>{{seguimiento.fecha | date : 'dd/MM/yyyy h:mm a'}}</td>
+                    <td>{{seguimiento.tiempoResolucion}}</td>
+                    <td>{{seguimiento.comentarios}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-block btn-success col-md-5" data-bs-dismiss="modal">Aceptar</button>
+        <button (click)="cerrarModalSegs()" type="button" class="btn btn-block
+          btn-danger col-md-3" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-----------------------------------------MODAL DE REGISTRO DE SEGUIMIENTOS------------------------------------------>
+<div class="modal" id="agregaSeguimiento" data-bs-backdrop="static" role="dialog" tabindex="-1"
+  aria-labelledby="noagregaSeguimientoModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header cardheader text-light">
+        <h5 class="modal-title">Agregar seguimiento al ticket</h5>
+        <button type="button" class="close" data-bs-dismiss="modal"
+          aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row d-flex justify-content-between">
+            <div class="col-md-6 col-sm-12 mt-3">
+              <label for="ciudad">Fecha de seguimiento</label>
+              <form class="row row-cols-sm-auto align-middle">
+                <div class="col-12">
+                  <div class="input-group">
+                    <input class="form-control" placeholder="dd/mm/aaaa"
+                    name="d4" #c4="ngModel" [(ngModel)]="fechaSeguimiento" ngbDatepicker #d4="ngbDatepicker">
+                    <button class="btn btn-outline-secondary fas fa-calendar-alt" (click)="d4.toggle()" type="button"></button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-6 col-sm-12 mt-3">
+              <label for="ciudad">Hora del seguimiento</label>
+              <ngb-timepicker [(ngModel)]="horaSeguimiento" [meridian]=true [spinners]=false></ngb-timepicker>
+            </div>
+          </div>
+          <div class="row d-flex justify-content-between">
+            <div class="col-md-6 col-sm-12 mt-3">
+              <label for="comentarios" class="form-label">Tiempo de duración del seguimiento</label>
+              <div class="input-group mb-3">
+                <input #horas id="horasSeguimiento" type="text" class="form-control" placeholder="Horas" aria-label="Horas">
+                <span class="input-group-text">:</span>
+                <input #minutos id="minutosSeguimiento" type="text" class="form-control" placeholder="Minutos" aria-label="Minutos">
+              </div>
+            </div>
+            <div class="mt-3 col-md-6">
+              <label for="seguimientoComments" class="form-label">Comentarios del seguimiento</label>
+              <textarea [(ngModel)]="seguimiento.comentarios" placeholder="Escriba sus comentarios..." id="seguimientoComments" name="seguimientoComments" rows="5"
+              class="form-control"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="setSeguimiento(horas.value, minutos.value)" type="button" class="btn btn-block
+          btn-primary col-md-3">Guardar cambios</button>
+        <button (click)="cancelarSeguimiento()" type="button" class="btn btn-block
+          btn-danger col-md-3" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-----------------------------------------MODAL DE CONFIRMAR SOLUCIÓN DEL TICKET------------------------------------------>
+<div class="modal fade" id="solucionTicketModal" tabindex="-1"
+  aria-labelledby="solucionTicketModalLabel" data-bs-backdrop="static" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 class="modal-title">Confirmación</h5>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <div class="alert alert-warning" role="alert" [style]="{'font-size': 'large', 'font-weight': 'bolder'}">
+                <p><i class="mr-2 far fa-question-circle"></i> Este seguimiento ¿solucionó el ticket?</p>
+              </div>
+            </div>
+          </div>
+          <div class="row d-flex justify-content-center">
+            <div class="col-3">
+              <div class="btn-group" role="group" ngbRadioGroup name="radioBasic" [(ngModel)]="solucionTicket">
+                <label ngbButtonLabel class="btn btn-outline-primary">
+                  <input ngbButton type="radio" class="btn-check" [value]=1> Si
+                </label>
+                <label ngbButtonLabel class="btn btn-outline-primary">
+                  <input ngbButton type="radio" class="btn-check" [value]=2> No
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="setSolucionTicket()">Continuar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-----------------------------------------MODAL MULTIUSOS------------------------------------------>
+<div class="modal fade" id="advertenciaModal" tabindex="-1"
+  aria-labelledby="advertenciaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 id="headerModal" class="modal-title"></h5>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <div id="alertModal" class="alert alert-warning" role="alert">
+                <p id="modalText"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>

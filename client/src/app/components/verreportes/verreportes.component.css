@@ -3,30 +3,32 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.cardheader{
-    background-color: #d13138;
-    text-align: center;
-  }
+.cardheader {
+  background-color: #d13138;
+  text-align: center;
+}
 
-  thead{
-    background-color: #d13138;
-  }
+i {
+  pointer-events: none;
+}
 
-  i {
-    pointer-events: none
-  }
+table {
+  min-width: 100% !important ;
+}
 
-  table {
-    min-width: 100% !important ;
-  }
+.fa-check-circle {
+  font-size: xx-large;
+  color: green;
+}
 
-  .fa-check-circle{
-    font-size: xx-large;
-    color: green;
-  }
+thead {
+  background-color: #d13138;
+  box-shadow: 0 2px 2px -1px rgb(0 0 0 / 40%);
+  color: white;
+}
 
-  thead {
-    background-color: #d13138;
-    box-shadow: 0 2px 2px -1px rgb(0 0 0 / 40%);
-    color: white;
-  }
+th,td {
+  font-size: small;
+  text-align: center;
+  vertical-align: middle !important;
+}

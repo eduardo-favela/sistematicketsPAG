@@ -34,11 +34,9 @@ export class HomeComponent implements OnInit {
   telefono = null
   reporteid = null
   responsereporte: any
-
   horaTicket = { hour: parseInt(moment().format('HH')), minute: parseInt(moment().format('mm')) };
-  horaRespuesta = { hour: parseInt(moment().format('HH')), minute: parseInt(moment().format('mm')) };
   fechaTicket: NgbDate = new NgbDate(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD')));
-  fechaRespuesta: NgbDate = new NgbDate(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD')));
+
 
   servicios: any = [];
   tiposServicios: any = [];
@@ -46,7 +44,6 @@ export class HomeComponent implements OnInit {
   resEquipoSistemas: any = [];
   equipoSistemas: any = [];
   equiposUsuario: any = [];
-
   actividades: any = [];
 
 
@@ -61,14 +58,13 @@ export class HomeComponent implements OnInit {
     servicio: null,
     tiposervicio: null,
     asignacion: null,
-    fecharespuesta: null,
     actividad: null,
-    comentarios: null,
     descripcion: null
   }
 
   tipoEquipo = null
   equipoticket = null
+  noSerieEquipo = null
 
   sessionStorage = sessionStorage;
 
@@ -90,7 +86,7 @@ export class HomeComponent implements OnInit {
   }
 
   getServicios() {
-    let depto = ((parseInt(this.sessionStorage.getItem('depto')))== 3 ? (1) : (parseInt(this.sessionStorage.getItem('depto'))))
+    let depto = ((parseInt(this.sessionStorage.getItem('depto'))) == 3 ? (1) : (parseInt(this.sessionStorage.getItem('depto'))))
     if (depto == 2 || depto == 1) {
       this.serviciosService.getServiciosDepto({ depto: depto }).subscribe(
         res => {
@@ -115,6 +111,7 @@ export class HomeComponent implements OnInit {
     this.ticket.actividad = null
     this.equipoticket = null
     this.tipoEquipo = null
+    this.noSerieEquipo = null;
     this.equipoSistemas = []
     this.actividades = []
     this.serviciosService.getTServicioForTicket({ servicio: this.ticket.servicio }).subscribe(
@@ -172,6 +169,7 @@ export class HomeComponent implements OnInit {
   selectEquipoChange() {
     let item = this.equiposUsuario.find(equipo => equipo.idequipo == this.equipoticket);
     this.tipoEquipo = item.tipoEquipo
+    this.noSerieEquipo = item.no_serie
   }
 
   getActividades() {
@@ -196,15 +194,12 @@ export class HomeComponent implements OnInit {
     this.ticket.servicio = null
     this.ticket.tiposervicio = null
     this.ticket.asignacion = null
-    this.ticket.fecharespuesta = null
     this.ticket.actividad = null
     this.ticket.descripcion = null
     this.uenUsuario = null
     this.asignaEquipo = false
     this.horaTicket = { hour: parseInt(moment().format('HH')), minute: parseInt(moment().format('mm')) };
-    this.horaRespuesta = { hour: parseInt(moment().format('HH')), minute: parseInt(moment().format('mm')) };
     this.fechaTicket = new NgbDate(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD')));
-    this.fechaRespuesta = new NgbDate(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD')));
   }
 
   registrarTicket() {
@@ -222,14 +217,9 @@ export class HomeComponent implements OnInit {
       '-' + this.fechaTicket.day.toString()) + ' ' + this.horaTicket.hour.toString() +
       ':' + this.horaTicket.minute.toString() + ':00');
 
-    this.ticket.fecharespuesta = (moment().format(this.fechaRespuesta.year.toString() +
-      '-' + this.fechaRespuesta.month.toString() +
-      '-' + this.fechaRespuesta.day.toString()) + ' ' + this.horaRespuesta.hour.toString() +
-      ':' + this.horaRespuesta.minute.toString() + ':00');
-
     this.ticket.servicioparauen = ($('#radioButtonUsuario').is(':checked') ? 0 : 1)
 
-    if (this.ticket.fecha && this.ticket.fecharespuesta && this.ticket.usuario && this.ticket.servicio && this.ticket.tiposervicio && this.ticket.actividad && this.ticket.comentarios && this.ticket.descripcion) {
+    if (this.ticket.fecha && this.ticket.usuario && this.ticket.servicio && this.ticket.tiposervicio && this.ticket.actividad && this.ticket.descripcion) {
 
       this.ticketsService.setTicket({ ticket: this.ticket, equipoticket: this.equipoticket }).subscribe(
         res => {
@@ -334,6 +324,7 @@ export class HomeComponent implements OnInit {
     this.ticket.usuario = item.idempleado;
     this.equipoticket = null;
     this.tipoEquipo = null;
+    this.noSerieEquipo = null;
     this.correo = item.correo;
     this.telefono = item.telefono;
     this.getEquipoUsuario();
@@ -349,6 +340,7 @@ export class HomeComponent implements OnInit {
     this.uenUsuario = null;
     this.equipoticket = null;
     this.tipoEquipo = null;
+    this.noSerieEquipo = null;
     this.getEquipoUsuario();
   }
 

@@ -12,8 +12,13 @@ class TicketsRoutes {
     }
     config() {
         this.router.get('/getUsuarios', ticketsController_1.default.getUsuarios);
-        this.router.get('/getTicketsForTable', ticketsController_1.default.getTicketsForTable);
+        this.router.get('/geEstatusTickets', ticketsController_1.default.geEstatusTickets);
+        this.router.post('/getTicketsForTable', ticketsController_1.default.getTicketsForTable);
         this.router.post('/setTicket', ticketsController_1.default.setTicket);
+        this.router.post('/setCommentsFecha', ticketsController_1.default.setCommentsFecha);
+        this.router.post('/setSeguimiento', ticketsController_1.default.setSeguimiento);
+        this.router.post('/getSeguimientosTicket', ticketsController_1.default.getSeguimientosTicket);
+        this.router.post('/ticketSolucionado', ticketsController_1.default.ticketSolucionado);
     }
 }
 const ticketsRoutes = new TicketsRoutes();

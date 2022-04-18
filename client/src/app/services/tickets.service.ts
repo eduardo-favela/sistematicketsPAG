@@ -13,8 +13,28 @@ export class TicketsService {
     return this.http.post(`${API_URI}/tickets/setTicket`,ticket)
   }
 
-  getTicketsForTable(){
-    return this.http.get(`${API_URI}/tickets/getTicketsForTable`)
+  getTicketsForTable(fechas){
+    return this.http.post(`${API_URI}/tickets/getTicketsForTable`, fechas)
+  }
+
+  geEstatusTickets(){
+    return this.http.get(`${API_URI}/tickets/geEstatusTickets`)
+  }
+
+  getSeguimientosTicket(ticket){
+    return this.http.post(`${API_URI}/tickets/getSeguimientosTicket`, ticket)
+  }
+
+  setCommentsFecha(comentarios){
+    return this.http.post(`${API_URI}/tickets/setCommentsFecha`,comentarios)
+  }
+
+  setSeguimiento(seguimiento){
+    return this.http.post(`${API_URI}/tickets/setSeguimiento`,seguimiento)
+  }
+
+  ticketSolucionado(ticket){
+    return this.http.post(`${API_URI}/tickets/ticketSolucionado`,ticket)
   }
 
   downloadexcelfile(reportes){
