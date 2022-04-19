@@ -270,7 +270,8 @@ class ServiciosController {
         INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio=servicio_has_tipo_servicio.idservicio_has_tipo_servicio
         INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
         INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
-        WHERE servicio_has_tipo_servicio.shts_has_servicio = ? AND servicio_has_tipo_servicio.shts_has_tipo_servicio = ?;`,[req.body.servicio, req.body.tipoServicio])
+        WHERE servicio_has_tipo_servicio.shts_has_servicio = ? AND servicio_has_tipo_servicio.shts_has_tipo_servicio = ? 
+        AND actividad_has_servicios.estatus = 1;`,[req.body.servicio, req.body.tipoServicio])
         res.json(actividades);
     }
 }
