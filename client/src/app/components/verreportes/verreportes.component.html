@@ -61,9 +61,9 @@
                   <th>Empleado</th>
                   <th>Servicio</th>
                   <th>Estatus</th>
+                  <th>Editar ticket</th>
                   <th>Tiempo de resolución</th>
                   <th>Tiempo dedicado</th>
-                  <th>Editar ticket</th>
                 </tr>
               </thead>
               <tbody>
@@ -77,8 +77,6 @@
                   <td>{{ticket.empleado}}</td>
                   <td>{{ticket.servicio}}</td>
                   <td>{{ticket.estatus}}</td>
-                  <td>{{ticket.tiempo_res_serv}}</td>
-                  <td>{{ticket.tiempo_Res}}</td>
                   <td>
                     <button style="height:auto;"
                       (click)="onEditRptBtnClick(ticket)"
@@ -93,6 +91,8 @@
                       title="Ver seguimientos"> <i class="fas fa-project-diagram"></i>
                     </button>
                   </td>
+                  <td>{{ticket.tiempo_res_serv}}</td>
+                  <td>{{ticket.tiempo_Res}}</td>
                 </tr>
               </tbody>
             </table>

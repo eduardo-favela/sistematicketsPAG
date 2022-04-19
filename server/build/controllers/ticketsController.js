@@ -131,7 +131,7 @@ class TicketsController {
             INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio = servicio_has_tipo_servicio.idservicio_has_tipo_servicio
             INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
             INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
-            WHERE estatus_idestatus = ? AND tickets.fecha BETWEEN '2022-03-15' AND '2022-04-19'
+            WHERE estatus_idestatus = ? AND tickets.fecha BETWEEN ? AND ?
             LIMIT 100;`, [req.body.estatus, req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
             }
             else {
@@ -156,7 +156,7 @@ class TicketsController {
             INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio = servicio_has_tipo_servicio.idservicio_has_tipo_servicio
             INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
             INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
-            WHERE tickets.fecha BETWEEN '2022-03-15' AND '2022-04-19'
+            WHERE tickets.fecha BETWEEN ? AND ?
             LIMIT 100;`, [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
             }
             res.json(tickets);
