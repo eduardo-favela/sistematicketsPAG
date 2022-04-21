@@ -21,6 +21,7 @@ import { MngServiciosComponent } from './components/mng-servicios/mng-servicios.
 import * as $ from 'jquery';
 import { DataTablesModule } from 'angular-datatables';
 import * as bootstrap from 'bootstrap';
+import { EmpleadosEquiposComponent } from './components/empleados-equipos/empleados-equipos.component';
 
 registerLocaleData(localeEs)
 
@@ -29,7 +30,8 @@ const routes: Route[] = [
   { path: '', component: HomeComponent },
   { path: 'vereportes', component: VerreportesComponent },
   { path: 'mngusuarios', component: UsuariosComponent },
-  { path: 'mngservicios', component: MngServiciosComponent }
+  { path: 'mngservicios', component: MngServiciosComponent },
+  { path: 'mngcolaboradores', component: EmpleadosEquiposComponent },
 ]
 
 @NgModule({
@@ -39,7 +41,8 @@ const routes: Route[] = [
     VerreportesComponent,
     LoginComponent,
     UsuariosComponent,
-    MngServiciosComponent
+    MngServiciosComponent,
+    EmpleadosEquiposComponent
   ],
   imports: [
     BrowserModule,

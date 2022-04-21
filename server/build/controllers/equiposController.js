@@ -21,7 +21,25 @@ class EquiposController {
         inner join empleados on empleados_has_equipos.empleados_idempleado=empleados.idempleado
         inner join equipos on empleados_has_equipos.equipos_idequipo=equipos.idequipo
         inner join tipo on equipos.tipo_idtipo=tipo.idtipo
-        where empleados_idempleado = ?;`, req.body.idusuario, function (err, result, fields) {
+        where empleados_idempleado = ? and empleados_has_equipos.empleados_has_estatus = 'ACTIVO';`, req.body.idusuario, function (err, result, fields) {
+                if (err)
+                    throw err;
+                res.json(result);
+            });
+        });
+    }
+    getTiposEquipos(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield database_1.default.query(`SELECT * FROM tipo ORDER BY tipo_equipo;`, req.body.idusuario, function (err, result, fields) {
+                if (err)
+                    throw err;
+                res.json(result);
+            });
+        });
+    }
+    getMarcasEquipos(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield database_1.default.query(`SELECT * FROM marcas ORDER BY marca;`, req.body.idusuario, function (err, result, fields) {
                 if (err)
                     throw err;
                 res.json(result);

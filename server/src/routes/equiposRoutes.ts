@@ -10,6 +10,8 @@ class EquiposRouter {
 
     config(): void{
         this.router.post('/getEquipos', equiposController.getEquipos)
+        this.router.get('/getTiposEquipos', equiposController.getTiposEquipos)
+        this.router.get('/getMarcasEquipos', equiposController.getMarcasEquipos)
     }
 }
 

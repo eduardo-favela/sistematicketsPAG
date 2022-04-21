@@ -12,6 +12,8 @@ class EquiposRouter {
     }
     config() {
         this.router.post('/getEquipos', equiposController_1.default.getEquipos);
+        this.router.get('/getTiposEquipos', equiposController_1.default.getTiposEquipos);
+        this.router.get('/getMarcasEquipos', equiposController_1.default.getMarcasEquipos);
     }
 }
 const equiposRouter = new EquiposRouter();

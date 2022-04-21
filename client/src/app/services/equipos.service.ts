@@ -12,4 +12,12 @@ export class EquiposService {
   getEquipos(usuario){
     return this.http.post(`${API_URI}/equipos/getEquipos`,usuario)
   }
+
+  getTiposEquipos(){
+    return this.http.get(`${API_URI}/equipos/getTiposEquipos`)
+  }
+
+  getMarcasEquipos(){
+    return this.http.get(`${API_URI}/equipos/getMarcasEquipos`)
+  }
 }

@@ -11,6 +11,15 @@ class UsuariosRoutes {
     config(): void{
         this.router.get('/getUsuarios', usuariosController.getUsuarios)
         this.router.get('/getTiposUsuario', usuariosController.getTiposUsuario)
+        this.router.get('/getUens', usuariosController.getUens)
+        this.router.get('/getPuestos', usuariosController.getPuestos)
+        this.router.get('/getDeptos', usuariosController.getDeptos)
+
+        this.router.post('/setColaborador', usuariosController.setColaborador)
+
+        this.router.post('/updateColaborador', usuariosController.updateColaborador)
+        
+        this.router.post('/disableColab', usuariosController.disableColab)
     }
 }
 
