@@ -16,21 +16,21 @@
                 <div class="row d-flex justify-content-between">
                   <div class="col-md-4 mt-3">
                     <label for="nombresInput">Nombre(s)</label>
-                    <input [disabled]="loading" [(ngModel)]="colaborador.nombres" (keyup)="checkForm()" type="text" name="nombres" id="nombresInput" class="form-control" placeholder="Escriba el nombre(s) del colaborador">
+                    <input [disabled]="loading" [(ngModel)]="colaborador.nombres" (keyup)="checkForm('nombres')" type="text" name="nombres" id="nombresInput" class="form-control" placeholder="Escriba el nombre(s) del colaborador">
                     <div class="invalid-feedback">
                       Por favor, ingrese un nombre.
                     </div>
                   </div>
                   <div class="col-md-4 mt-3">
                     <label for="apellidoPat">Apellido paterno</label>
-                    <input [disabled]="loading" [(ngModel)]="colaborador.apellido_paterno" (keyup)="checkForm()" type="text" name="apellidoPaterno" id="apellidoPat" class="form-control" placeholder="Escriba el apellido paterno del colaborador">
+                    <input [disabled]="loading" [(ngModel)]="colaborador.apellido_paterno" (keyup)="checkForm('apellido_p')" type="text" name="apellidoPaterno" id="apellidoPat" class="form-control" placeholder="Escriba el apellido paterno del colaborador">
                     <div class="invalid-feedback">
                       Por favor, ingrese el apellido paterno.
                     </div>
                   </div>
                   <div class="col-md-4 mt-3">
                     <label for="apellidoMat">Apellido materno</label>
-                    <input [disabled]="loading" [(ngModel)]="colaborador.apellido_materno" (keyup)="checkForm()" type="text" name="apellidoMaterno" id="apellidoMat" class="form-control" placeholder="Escriba el apellido materno del colaborador">
+                    <input [disabled]="loading" [(ngModel)]="colaborador.apellido_materno" (keyup)="checkForm('apellido_m')" type="text" name="apellidoMaterno" id="apellidoMat" class="form-control" placeholder="Escriba el apellido materno del colaborador">
                     <div class="invalid-feedback">
                       Por favor, ingrese el apellido materno.
                     </div>
@@ -132,17 +132,17 @@
             </h2>
             <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
               <div class="accordion-body">
-<!--                 <div class="row d-flex justify-content-between">
+                <div class="row d-flex justify-content-between">
                   <div class="col-md-4 mt-3">
                     <label for="modeloInput">Modelo</label>
-                    <input [disabled]="loadingE" [(ngModel)]="equipo.equipo" (keyup)="checkFormE()" type="text" name="modelo" id="modeloInput" class="form-control" placeholder="Ingrese el modelo del equipo">
+                    <input [disabled]="loadingE" [(ngModel)]="equipo.equipo" (keyup)="checkFormE('equipo')" type="text" name="modelo" id="modeloInput" class="form-control" placeholder="Ingrese el modelo del equipo">
                     <div class="invalid-feedback">
                       Por favor, ingrese el modelo del equipo.
                     </div>
                   </div>
                   <div class="col-md-4 mt-3">
                     <label for="propiedadInput">Propiedad</label>
-                    <select [disabled]="loadingE" [(ngModel)]="equipo.propiedad" (change)="checkFormE()" id="propiedadInput" class="form-select" aria-label="Default select example">
+                    <select [disabled]="loadingE" [(ngModel)]="equipo.propiedad" (change)="checkFormE('propiedad')" id="propiedadInput" class="form-select" aria-label="Default select example">
                       <option selected disabled value = null>Seleccione una opción...</option>
                       <option value = "PROPIO">PROPIO</option>
                       <option value = "ARRENDADO">ARRENDADO</option>
@@ -156,7 +156,7 @@
                     <input [disabled]="loadingE" [(ngModel)]="equipo.no_serie" type="text" name="noSerie" id="noSerieInput" class="form-control" placeholder="Escriba el número de serie del equipo">
                   </div>
                 </div>
-                <div class="row d-flex flex justify-content-center">
+                <div class="row">
                   <div class="col-md-4 mt-3">
                     <label for="tipoEquipo" class="form-label">Tipo de equipo</label>
                     <input [disabled]="loadingE" #tipoEquipoInput class="form-control" list="datalistTipoEq" (change)="tipoEqChanged(tipoEquipoInput.value)" id="tipoEquipoInput" placeholder="Selecciona un tipo de equipo...">
@@ -178,6 +178,15 @@
                     </datalist>
                   </div>
                 </div>
+                <div class="row">
+                  <div class="col-md-6 mt-3">
+                    <label for="descripcionTA" class="form-label">Descripción</label>
+                    <textarea [disabled]="loadingE" (keyup)="checkFormE('descripcion')" id="descripcionTA" placeholder="Ingrese la descripción del equipo..." class="form-control" id="descripcionTA" rows="3" [(ngModel)]="equipo.descripcion"></textarea>
+                    <div class="invalid-feedback">
+                      Por favor, escriba una descripción del equipo.
+                    </div>
+                  </div>
+                </div>
                 <div class="row d-flex justify-content-center">
                   <div [hidden]="!loadingE" class="lds-facebook"><div></div><div></div><div></div></div>
                 </div>
@@ -186,7 +195,42 @@
                     <button [disabled]="loadingE" (click)="registrarEquipo()" class="mt-4 form-control btn
                     btn-success">Registrar equipo<i class="far fa-save ml-2"></i></button>
                   </div>
-                </div> -->
+                </div>
+                <div class="row d-flex justify-content-center mt-4">
+                  <div class="col-md-12 table-responsive">
+                    <table id="tablaEquipos" class="table table-striped table-bordered table-sm row-border hover" datatable [dtTrigger]="dtTriggerE" [dtOptions]="dtOptions">
+                      <thead>
+                        <tr>
+                          <th>Id</th>
+                          <th>Modelo</th>
+                          <th>Tipo</th>
+                          <th>Marca</th>
+                          <th>N°Serie</th>
+                          <th>Descripcion</th>
+                          <th>Propiedad</th>
+                          <th>Estatus</th>
+                          <th>Editar</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                       <tr *ngFor="let equipo of equiposTable">
+                          <td>{{equipo.idequipo}}</td>
+                          <td>{{equipo.equipo}}</td>
+                          <td>{{equipo.tipo}}</td>
+                          <td>{{equipo.marca}}</td>
+                          <td>{{equipo.no_serie}}</td>
+                          <td>{{equipo.descripcion}}</td>
+                          <td>{{equipo.propiedad}}</td>
+                          <td>{{equipo.estatus}}</td>
+                          <td class="text-center">
+                          <button style="height:auto;" (click)="editEquipo(equipo)" type="button" class="ml-2 mt-2 btn btn-primary"> <i class="fas fa-edit"></i> </button>
+                          <button style="height:auto;" (click)="eliminaEq(equipo.idequipo)" type="button" class="ml-2 mt-2 btn btn-danger"> <i class="fas fa-window-close"></i> </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -287,21 +331,21 @@
           <div class="row d-flex justify-content-between">
             <div class="col-md-4 mt-3">
               <label for="nombresInput">Nombre(s)</label>
-              <input [disabled]="loadingEC" [(ngModel)]="colabEditing.nombres" (keyup)="checkFormEC()" type="text" name="nombres" id="nombresInputEC" class="form-control" placeholder="Escriba el nombre(s) del colaborador">
+              <input [disabled]="loadingEC" [(ngModel)]="colabEditing.nombres" (keyup)="checkFormEC('nombres')" type="text" name="nombres" id="nombresInputEC" class="form-control" placeholder="Escriba el nombre(s) del colaborador">
               <div class="invalid-feedback">
                 Por favor, ingrese un nombre.
               </div>
             </div>
             <div class="col-md-4 mt-3">
               <label for="apellidoPat">Apellido paterno</label>
-              <input [disabled]="loadingEC" [(ngModel)]="colabEditing.apellido_p" (keyup)="checkFormEC()" type="text" name="apellidoPaterno" id="apellidoPatEC" class="form-control" placeholder="Escriba el apellido paterno del colaborador">
+              <input [disabled]="loadingEC" [(ngModel)]="colabEditing.apellido_p" (keyup)="checkFormEC('apellido_p')" type="text" name="apellidoPaterno" id="apellidoPatEC" class="form-control" placeholder="Escriba el apellido paterno del colaborador">
               <div class="invalid-feedback">
                 Por favor, ingrese el apellido paterno.
               </div>
             </div>
             <div class="col-md-4 mt-3">
               <label for="apellidoMat">Apellido materno</label>
-              <input [disabled]="loadingEC" [(ngModel)]="colabEditing.apellido_m" (keyup)="checkFormEC()" type="text" name="apellidoMaterno" id="apellidoMatEC" class="form-control" placeholder="Escriba el apellido materno del colaborador">
+              <input [disabled]="loadingEC" [(ngModel)]="colabEditing.apellido_m" (keyup)="checkFormEC('apellido_m')" type="text" name="apellidoMaterno" id="apellidoMatEC" class="form-control" placeholder="Escriba el apellido materno del colaborador">
               <div class="invalid-feedback">
                 Por favor, ingrese el apellido materno.
               </div>
@@ -349,11 +393,130 @@
               </datalist>
             </div>
           </div>
+          <div class="row d-flex justify-content-center">
+            <div [hidden]="!loadingEC" class="lds-facebook"><div></div><div></div><div></div></div>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
         <button [disabled]="loadingEC" (click)="guardarCambiosEC()" type="button" class="btn btn-success">Guardar cambios</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+        <button (click)="clearFormEC()" type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-----------------------------------------MODAL EDICIÓN EQUIPOS------------------------------------------>
+<div class="modal fade" id="editEqModal" tabindex="-1"
+  aria-labelledby="editEqModalLabel" data-bs-backdrop="static" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 class="modal-title">Editar el equipo {{ equipoEditing.idequipo }}</h5>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row d-flex justify-content-between">
+            <div class="col-md-4 mt-3">
+              <label for="modeloInputEE">Modelo</label>
+              <input [disabled]="loadingEE" [(ngModel)]="equipoEditing.equipo" (keyup)="checkFormEE('equipo')" type="text" name="modeloEE" id="modeloInputEE" class="form-control" placeholder="Ingrese el modelo del equipo">
+              <div class="invalid-feedback">
+                Por favor, ingrese el modelo del equipo.
+              </div>
+            </div>
+            <div class="col-md-4 mt-3">
+              <label for="propiedadInputEE">Propiedad</label>
+              <select [disabled]="loadingEE" [(ngModel)]="equipoEditing.propiedad" (change)="checkFormEE('propiedad')" id="propiedadInputEE" class="form-select" aria-label="Default select example">
+                <option selected disabled value = null>Seleccione una opción...</option>
+                <option value = "PROPIO">PROPIO</option>
+                <option value = "ARRENDADO">ARRENDADO</option>
+              </select>
+              <div class="invalid-feedback">
+                Por favor, seleccione una opción
+              </div>
+            </div>
+            <div class="col-md-4 mt-3">
+              <label for="noSerieInputEE">Número de serie</label>
+              <input [disabled]="loadingEE" [(ngModel)]="equipoEditing.no_serie" type="text" name="noSerieEE" id="noSerieInputEE" class="form-control" placeholder="Escriba el número de serie del equipo">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 mt-3">
+              <label for="tipoEquipoInputEE" class="form-label">Tipo de equipo</label>
+              <input [(ngModel)]="eqEditingTipo" [disabled]="loadingEE" #tipoEquipoInputEE class="form-control" list="datalistTipoEqEE" (change)="tipoEqChangedEE(tipoEquipoInputEE.value)" id="tipoEquipoInputEE" placeholder="Selecciona un tipo de equipo...">
+              <div class="invalid-feedback">
+                Por favor, elija un tipo de equipo.
+              </div>
+              <datalist id="datalistTipoEqEE">
+                <option *ngFor="let tipoeq of tipos" value = {{tipoeq.tipo_equipo}}></option>
+              </datalist>
+            </div>
+            <div class="col-md-4 mt-3">
+              <label for="marcaEquipoInputEE" class="form-label">Marca</label>
+              <input [(ngModel)]="eqEditingMarca" [disabled]="loadingEE" #marcaEquipoInputEE class="form-control" list="datalistMarcaEqEE" (change)="marcaEqChangedEE(marcaEquipoInputEE.value)" id="marcaEquipoInputEE" placeholder="Selecciona una marca...">
+              <div class="invalid-feedback">
+                Por favor, elija una marca.
+              </div>
+              <datalist id="datalistMarcaEqEE">
+                <option *ngFor="let marca of marcas" value = {{marca.marca}}></option>
+              </datalist>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mt-3">
+              <label for="descripcionTAEE" class="form-label">Descripción</label>
+              <textarea [disabled]="loadingEE" (keyup)="checkFormEE('descripcion')" id="descripcionTAEE" placeholder="Ingrese la descripción del equipo..." class="form-control" rows="3" [(ngModel)]="equipoEditing.descripcion"></textarea>
+              <div class="invalid-feedback">
+                Por favor, escriba una descripción del equipo.
+              </div>
+            </div>
+          </div>
+          <div class="row d-flex justify-content-center">
+            <div [hidden]="!loadingEE" class="lds-facebook"><div></div><div></div><div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button [disabled]="loadingEE" (click)="guardarCambiosEE()" type="button" class="btn btn-success">Guardar cambios</button>
+        <button (click)="clearFormEE()" type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-----------------------------------------MODAL DE CONFIRMAR ELIMINACIÓN DE COLABORADOR------------------------------------------>
+<div class="modal fade" id="eliminaEqModal" tabindex="-1"
+  aria-labelledby="eliminaEqModalLabel" data-bs-backdrop="static" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 class="modal-title">Confirmación</h5>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <div class="alert alert-warning" role="alert" [style]="{'font-size': 'large', 'font-weight': 'bolder'}">
+                <p><i class="mr-2 far fa-question-circle"></i> ¿Está seguro que quiere deshabilitar el equipo?</p>
+              </div>
+            </div>
+          </div>
+          <div class="row d-flex justify-content-center">
+            <div class="col-3">
+              <div class="btn-group" role="group" ngbRadioGroup name="radioBasic" [(ngModel)]="eliminaEquipo">
+                <label ngbButtonLabel class="btn btn-outline-primary">
+                  <input ngbButton type="radio" class="btn-check" [value]=1> Si
+                </label>
+                <label ngbButtonLabel class="btn btn-outline-primary">
+                  <input ngbButton type="radio" class="btn-check" [value]=2> No
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="eliminarEquipo()">Continuar</button>
       </div>
     </div>
   </div>

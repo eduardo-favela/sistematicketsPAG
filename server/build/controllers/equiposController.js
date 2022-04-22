@@ -46,6 +46,50 @@ class EquiposController {
             });
         });
     }
+    setEquipo(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield database_1.default.query(`INSERT INTO equipos SET equipo = ?, propiedad = ?, no_serie = ?, descripcion = ?,
+         estatus = 'ACTIVO', tipo_idtipo = ?, marcas_id_marca = ?;`, [req.body.equipo, req.body.propiedad, req.body.no_serie,
+                req.body.descripcion, req.body.tipo, req.body.marca], function (err, result, fields) {
+                if (err)
+                    throw err;
+                res.json(result);
+            });
+        });
+    }
+    updateEquipo(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield database_1.default.query(`UPDATE equipos SET equipo = ?, propiedad = ?, no_serie = ?, descripcion = ?,
+        tipo_idtipo = ?, marcas_id_marca = ? WHERE idequipo = ?;`, [req.body.equipo, req.body.propiedad, req.body.no_serie,
+                req.body.descripcion, req.body.tipo, req.body.marca, req.body.idequipo], function (err, result, fields) {
+                if (err)
+                    throw err;
+                res.json(result);
+            });
+        });
+    }
+    deleteEquipo(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield database_1.default.query(`UPDATE equipos SET estatus = 'STOCK' WHERE idequipo = ?;`, [req.body.id], function (err, result, fields) {
+                if (err)
+                    throw err;
+                res.json(result);
+            });
+        });
+    }
+    getEquiposTable(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield database_1.default.query(`SELECT idequipo, equipo, propiedad, no_serie, descripcion, estatus, tipo_equipo AS tipo, marca
+        FROM equipos
+        INNER JOIN tipo ON equipos.tipo_idtipo = tipo.idtipo
+        INNER JOIN marcas ON equipos.marcas_id_marca = marcas.id_marca
+        WHERE estatus = 'ACTIVO';`, function (err, result, fields) {
+                if (err)
+                    throw err;
+                res.json(result);
+            });
+        });
+    }
 }
 const equiposController = new EquiposController();
 exports.default = equiposController;

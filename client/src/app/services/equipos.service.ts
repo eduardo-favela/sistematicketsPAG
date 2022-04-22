@@ -13,11 +13,27 @@ export class EquiposService {
     return this.http.post(`${API_URI}/equipos/getEquipos`,usuario)
   }
 
+  getEquiposTable(){
+    return this.http.get(`${API_URI}/equipos/getEquiposTable`)
+  }
+
   getTiposEquipos(){
     return this.http.get(`${API_URI}/equipos/getTiposEquipos`)
   }
 
   getMarcasEquipos(){
     return this.http.get(`${API_URI}/equipos/getMarcasEquipos`)
+  }
+
+  setEquipo(equipo){
+    return this.http.post(`${API_URI}/equipos/setEquipo`, equipo)
+  }
+
+  updateEquipo(equipo){
+    return this.http.post(`${API_URI}/equipos/updateEquipo`, equipo)
+  }
+
+  deleteEquipo(equipo){
+    return this.http.post(`${API_URI}/equipos/deleteEquipo`, equipo)
   }
 }
