@@ -10,10 +10,13 @@ class EquiposRouter {
 
     config(): void{
         this.router.post('/getEquipos', equiposController.getEquipos)
+        this.router.post('/getEquiposFormngEq', equiposController.getEquiposFormngEq)
         this.router.get('/getTiposEquipos', equiposController.getTiposEquipos)
         this.router.get('/getMarcasEquipos', equiposController.getMarcasEquipos)
         this.router.get('/getEquiposTable', equiposController.getEquiposTable)
         this.router.post('/setEquipo', equiposController.setEquipo)
+        this.router.post('/asignarEquipo', equiposController.asignarEquipo)
+        this.router.post('/desAsignarEquipo', equiposController.desAsignarEquipo)
         this.router.post('/updateEquipo', equiposController.updateEquipo)
         this.router.post('/deleteEquipo', equiposController.deleteEquipo)
     }

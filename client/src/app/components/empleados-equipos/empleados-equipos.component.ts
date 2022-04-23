@@ -14,6 +14,9 @@ export class EmpleadosEquiposComponent implements OnInit {
   loadingEC: boolean = false;
   loadingE: boolean = false;
   loadingEE: boolean = false;
+  loadingChasE: boolean = false;
+  loadingAE: boolean = false;
+  loadingDAE: boolean = false;
 
   colabEditing: any = {}
   equipoEditing: any = {}
@@ -59,10 +62,22 @@ export class EmpleadosEquiposComponent implements OnInit {
   equipoAEliminar = null
   eliminaEquipo: any = 2
 
+  equiposResponse: any = {}
+
   dtOptions: DataTables.Settings = {};
 
   dtTrigger: Subject<any> = new Subject<any>();
   dtTriggerE: Subject<any> = new Subject<any>();
+  dtTriggerChasEA: Subject<any> = new Subject<any>();
+  dtTriggerChasENA: Subject<any> = new Subject<any>();
+
+  colabAsignando: any = null;
+
+  equiposNoAsignados: any = [];
+  equiposAsignados: any = [];
+
+  equipoAsignando: any = {};
+  equipoDesasignando: any = {};
 
   constructor(private usuariosService: UsuariosService, private equiposService: EquiposService) { }
 
@@ -84,6 +99,12 @@ export class EmpleadosEquiposComponent implements OnInit {
       },
       responsive: true
     }
+
+  }
+
+  ngAfterViewInit() {
+    this.dtTriggerChasEA.next()
+    this.dtTriggerChasENA.next()
   }
 
   registrarColab() {
@@ -191,11 +212,11 @@ export class EmpleadosEquiposComponent implements OnInit {
     if (this.eliminaEquipo == 1) {
       this.equiposService.deleteEquipo({ id: this.equipoAEliminar }).subscribe(
         res => {
-          if(res){
+          if (res) {
             this.destroyTableEquipos()
             this.getEquiposTable()
             $('#eliminaEqModal').modal('hide')
-            this.showModal(3,'Equipo deshabilitado', 'El equipo se deshabilitó correctamente')
+            this.showModal(3, 'Equipo deshabilitado', 'El equipo se deshabilitó correctamente')
           }
         },
         err => console.error(err)
@@ -944,6 +965,9 @@ export class EmpleadosEquiposComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
+    this.dtTriggerE.unsubscribe();
+    this.dtTriggerChasEA.unsubscribe();
+    this.dtTriggerChasENA.unsubscribe();
   }
 
   getPuestos() {
@@ -980,5 +1004,97 @@ export class EmpleadosEquiposComponent implements OnInit {
     let depto = this.departamentos.find(departamentos => departamentos.depto === deptoSelected)
     this.colaborador.departamento = ((depto) ? (depto.id) : (null))
     this.checkForm('departamento')
+  }
+
+  colabHasEqInputChange(colaborador) {
+    let colab = this.colaboradores.find(colaboradores => colaboradores.nombre === colaborador)
+    let colabId = ((colab) ? (colab.idempleado) : (null))
+    this.destroyTablesChasEq()
+    this.getEquiposColab(colabId)
+  }
+
+  getEquiposColab(colabId) {
+    this.loadingChasE = true;
+    this.colabAsignando = colabId;
+    if (this.colabAsignando) {
+      this.equiposService.getEquiposFormngEq({ idusuario: colabId }).subscribe(
+        res => {
+          this.equiposResponse = res
+          this.equiposAsignados = [...this.equiposResponse.asignados]
+          this.equiposNoAsignados = [...this.equiposResponse.noasignados]
+          this.dtTriggerChasEA.next();
+          this.dtTriggerChasENA.next();
+          this.loadingChasE = false
+        },
+        err => console.error(err)
+      )
+    }
+    else {
+      this.loadingChasE = false;
+    }
+  }
+
+  destroyTablesChasEq() {
+    let table1 = $('#tablaEquiposAsignados').DataTable();
+    table1.destroy();
+    let table2 = $('#tablaEquiposNoAsignados').DataTable();
+    table2.destroy();
+  }
+
+  asignarEquipo(equipo) {
+    this.equipoAsignando = { ...equipo }
+    $('#asignaEquipoModal').modal('show')
+  }
+
+  asignaEquipo() {
+    this.loadingAE = true;
+    this.equipoAsignando.fechaAsign = ((this.equipoAsignando.fecha_asign) ? ((this.equipoAsignando.fecha_asign.year).toString() + '-' + (this.equipoAsignando.fecha_asign.month).toString() + '-' + (this.equipoAsignando.fecha_asign.day).toString()) : (null))
+    this.equipoAsignando.idempleado = this.colabAsignando
+    if (this.equipoAsignando.fechaAsign && this.equipoAsignando.idequipo && this.equipoAsignando.responsiva != null && this.equipoAsignando.idempleado) {
+      this.equiposService.asignarEquipo(this.equipoAsignando).subscribe(
+        res => {
+          if (res) {
+            this.destroyTablesChasEq()
+            this.getEquiposColab(this.colabAsignando)
+            this.equipoAsignando = {};
+            this.loadingAE = false;
+            $('#asignaEquipoModal').modal('hide')
+            this.showModal(3, 'Registro exitoso', 'El equipo se asignó correctamente')
+          }
+        },
+        err => { console.error(err); this.loadingAE = false; }
+      )
+    }
+    else {
+      this.loadingAE = false;
+      alert('Faltan datos de la asignación')
+    }
+  }
+
+  desasignarEquipo(equipo) {
+    this.equipoDesasignando = { ...equipo }
+    $('#desAsignaEquipoModal').modal('show')
+  }
+
+  desAsignaEquipo() {
+    this.loadingDAE = true;
+    this.equipoDesasignando.fecha_desasign = ((this.equipoDesasignando.fecha_desasign) ? ((this.equipoDesasignando.fecha_desasign.year).toString() + '-' + (this.equipoDesasignando.fecha_desasign.month).toString() + '-' + (this.equipoDesasignando.fecha_desasign.day).toString()) : (null))
+    if (this.equipoDesasignando.fecha_desasign && this.equipoDesasignando.idequipo && this.equipoDesasignando.id_c_has_e) {
+      this.equiposService.desAsignarEquipo(this.equipoDesasignando).subscribe(
+        res => {
+          this.destroyTablesChasEq()
+          this.getEquiposColab(this.colabAsignando)
+          this.equipoDesasignando = {};
+          this.loadingDAE = false;
+          $('#desAsignaEquipoModal').modal('hide')
+          this.showModal(3, 'Registro exitoso', 'El equipo se desasignó correctamente')
+        },
+        err => { console.error(err); this.loadingDAE = false; }
+      )
+    }
+    else {
+      this.loadingDAE = false;
+      alert('Faltan datos de la desasignación')
+    }
   }
 }

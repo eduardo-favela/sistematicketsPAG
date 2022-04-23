@@ -13,6 +13,10 @@ export class EquiposService {
     return this.http.post(`${API_URI}/equipos/getEquipos`,usuario)
   }
 
+  getEquiposFormngEq(usuario){
+    return this.http.post(`${API_URI}/equipos/getEquiposFormngEq`,usuario)
+  }
+
   getEquiposTable(){
     return this.http.get(`${API_URI}/equipos/getEquiposTable`)
   }
@@ -35,5 +39,13 @@ export class EquiposService {
 
   deleteEquipo(equipo){
     return this.http.post(`${API_URI}/equipos/deleteEquipo`, equipo)
+  }
+
+  asignarEquipo(equipo){
+    return this.http.post(`${API_URI}/equipos/asignarEquipo`, equipo)
+  }
+
+  desAsignarEquipo(equipo){
+    return this.http.post(`${API_URI}/equipos/desAsignarEquipo`, equipo)
   }
 }
