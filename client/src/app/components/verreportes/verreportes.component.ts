@@ -14,7 +14,7 @@ import { TicketsService } from 'src/app/services/tickets.service';
 export class VerreportesComponent implements OnInit {
 
   ///////////////////////////////////VARIABLES Y PROPIEDADES GLOBALES DE LA CLASE///////////////////////////////////
-  fechaRespuesta: NgbDate = new NgbDate(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD')));
+  fechaRespuesta: NgbDate = null
   horaRespuesta = null;
   commentsnew = null
   noInfo = true
@@ -25,7 +25,7 @@ export class VerreportesComponent implements OnInit {
 
   editingTicket: any = null
 
-  fechaSeguimiento: NgbDate = new NgbDate(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD')));
+  fechaSeguimiento: NgbDate = null
   horaSeguimiento = null;
 
   seguimiento: any = {
@@ -34,7 +34,7 @@ export class VerreportesComponent implements OnInit {
     tiemporesolucion: null
   }
 
-  solucionTicket: any = 2
+  solucionTicket: any = 1
 
   estatusTickets: any = []
 
@@ -168,12 +168,15 @@ export class VerreportesComponent implements OnInit {
   onEditRptBtnClick(reporte) {
     this.horaRespuesta = { hour: parseInt(moment().format('HH')), minute: parseInt(moment().format('mm')) };
     this.editingTicket = { ...reporte }
+    console.log(this.editingTicket)
     if (reporte.estatus_idestatus != 3) {
       if (reporte.comentarios && reporte.fecha_respuesta) {
         this.horaSeguimiento = { hour: parseInt(moment().format('HH')), minute: parseInt(moment().format('mm')) };
+        this.fechaSeguimiento = new NgbDate(parseInt(moment(this.editingTicket.fecha).format('YYYY')), parseInt(moment(this.editingTicket.fecha).format('MM')), parseInt(moment(this.editingTicket.fecha).format('DD')));
         $('#agregaSeguimiento').modal('show')
       }
       else {
+        this.fechaRespuesta = new NgbDate(parseInt(moment(this.editingTicket.fecha).format('YYYY')), parseInt(moment(this.editingTicket.fecha).format('MM')), parseInt(moment(this.editingTicket.fecha).format('DD')));
         $('#editareportemodal').modal('show')
       }
     }

@@ -99,7 +99,6 @@ export class EmpleadosEquiposComponent implements OnInit {
       },
       responsive: true
     }
-
   }
 
   ngAfterViewInit() {
