@@ -18,7 +18,7 @@ class ServiciosController {
     }
 
     public async getActividades(req: Request, res: Response) {
-        await db.query(`SELECT * FROM actividades;`, function (err: any, result: any, fields: any) {
+        await db.query(`SELECT * FROM actividades ORDER BY actividad;`, function (err: any, result: any, fields: any) {
             if (err) throw err
             res.json(result)
         });
@@ -249,7 +249,7 @@ class ServiciosController {
         INNER JOIN actividades ON actividad_has_servicios.ahs_has_actividad=actividades.id_actividad
         INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio=servicio_has_tipo_servicio.idservicio_has_tipo_servicio
         INNER JOIN servicios  on servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
-        INNER JOIN tipos_servicio on servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio;`)
+        INNER JOIN tipos_servicio on servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio WHERE actividad_has_servicios. estatus = 1;`)
         res.json(activhshts);
     }
 
