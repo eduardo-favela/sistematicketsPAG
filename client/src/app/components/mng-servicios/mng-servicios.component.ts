@@ -397,6 +397,12 @@ export class MngServiciosComponent implements OnInit {
     ////PARA AL MOMENTO DE VOLVER A ASIGNARLO, QUITARLO DE ESA LISTA Y QUE NO LO DESASIGNE CUANDO SE GUARDEN LOS CAMBIOS
     /* let itemAsignado = this.shtsPDesasignar.findIndex(shts => shts.idshts == this.actividadHasShtsSettingTime.idshts)
     if (itemAsignado) { this.shtsPDesasignar.push(this.actividadHasShtsSettingTime) } */
+    if (!horas) {
+      horas = 0
+    }
+    if (!minutos) {
+      minutos = 0
+    }
     this.actividadHasShtsSettingTime.displayTime = horas + ':' + minutos
     minutos = ((parseFloat(minutos) == 0) ? (0) : (parseFloat(minutos) / 60))
     this.actividadHasShtsSettingTime.tiempo = (horas + '.' + ((minutos == 0) ? (minutos.toString()) : (minutos.toString().split('.')[1])));
@@ -497,26 +503,26 @@ export class MngServiciosComponent implements OnInit {
   }
 
   editarHoraActividad(item) {
-    this.activshtsEdittingTime = {...item}
+    this.activshtsEdittingTime = { ...item }
     $('#AHSHTShE').val(this.activshtsEdittingTime.displayTime.split(':')[0])
     $('#AHSHTSmE').val(this.activshtsEdittingTime.displayTime.split(':')[1])
     $('#editTimeAModal').modal('show')
   }
 
-  guardarCambiosEditTimeModal(horas,minutos) {
+  guardarCambiosEditTimeModal(horas, minutos) {
     minutos = ((parseFloat(minutos) == 0) ? (0) : (parseFloat(minutos) / 60))
     let tiempo = (horas + '.' + ((minutos == 0) ? (minutos.toString()) : (minutos.toString().split('.')[1])));
 
-    this.serviciosService.updateActivShts({tiempo: tiempo, ahshts: this.activshtsEdittingTime.id_actividad_has_servicios}).subscribe(
-      res=>{
-        if(res){
+    this.serviciosService.updateActivShts({ tiempo: tiempo, ahshts: this.activshtsEdittingTime.id_actividad_has_servicios }).subscribe(
+      res => {
+        if (res) {
           this.destroyTableActhshts()
           this.getactividadHasShtsTable()
           $('#editTimeAModal').modal('hide')
-          this.showModal(2,'Registro guardado', 'Los cambios se guardaron correctamente')
+          this.showModal(2, 'Registro guardado', 'Los cambios se guardaron correctamente')
         }
       },
-      err=>console.error(err)
+      err => console.error(err)
     )
   }
 
