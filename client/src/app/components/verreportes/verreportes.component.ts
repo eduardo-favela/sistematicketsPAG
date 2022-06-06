@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import * as FileSaver from 'file-saver'
+import * as XLSX from 'xlsx';
 import { Subject } from 'rxjs';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 
@@ -52,9 +53,8 @@ export class VerreportesComponent implements OnInit {
       language: {
         url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
       },
-
-      columnDefs : [
-        { targets:'_all', width: '20%'}
+      columnDefs: [
+        { targets: '_all', width: '20%' }
       ]
     }
 
@@ -96,8 +96,15 @@ export class VerreportesComponent implements OnInit {
   }
 
   downloadExcelFile() {
-    let fecha = moment().format('DDMMYYYYhhmmA')
-    this.ticketsService.downloadexcelfile({ reportes: this.tickets, fecha: fecha }).subscribe(
+    let fecha1 = (moment().format(this.fechaInicial.year.toString() +
+      '-' + this.fechaInicial.month.toString() +
+      '-' + this.fechaInicial.day.toString()));
+    let fecha2 = (moment().format(this.fechaFinal.year.toString() +
+      '-' + this.fechaFinal.month.toString() +
+      '-' + this.fechaFinal.day.toString()));
+
+    let fecha = 'Reportes tickets '+moment().format('DDMMYYYYhhmmA')
+    this.ticketsService.downloadexcelfile({ fecha1: fecha1, fecha2: fecha2, fecha:fecha }).subscribe(
       res => {
         /* console.log(res) */
         FileSaver.saveAs(res, fecha + ".xlsx")
@@ -186,6 +193,14 @@ export class VerreportesComponent implements OnInit {
   }
 
   setSeguimiento(horas, minutos) {
+
+    if (!horas) {
+      horas = 0;
+    }
+    if (!minutos) {
+      minutos = 0;
+    }
+
     minutos = ((parseFloat(minutos) == 0) ? (0) : (parseFloat(minutos) / 60))
     this.seguimiento.tiemporesolucion = (horas + '.' + ((minutos == 0) ? (minutos.toString()) : (minutos.toString().split('.')[1])));
     this.seguimiento.fecha = (moment().format(this.fechaSeguimiento.year.toString() +

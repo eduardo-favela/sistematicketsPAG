@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,6 +32,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
+const xl = require('excel4node');
+const fs = __importStar(require("fs"));
 class TicketsController {
     getUsuarios(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -160,6 +181,108 @@ class TicketsController {
             LIMIT 250;`, [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
             }
             res.json(tickets);
+        });
+    }
+    downloadExcelFile(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let wb = new xl.Workbook();
+            const headingColumnNames = [
+                "Folio",
+                "Fecha de ticket",
+                "Fecha de respuesta",
+                "Descripcion",
+                "Comentarios",
+                "Asignación",
+                "Empleado",
+                "Servicio",
+                "Tipo de servicio",
+                "Actividad",
+                "Estatus",
+                "Servicio para uen",
+                "Tiempo de resolución",
+                "Tiempo dedicado"
+            ];
+            const myStyle3 = wb.createStyle({
+                font: {
+                    bold: true,
+                    size: 14,
+                    color: 'FFFFFF'
+                },
+                fill: {
+                    type: 'pattern',
+                    patternType: 'solid',
+                    bgColor: '#2F75B5',
+                    fgColor: '#2F75B5',
+                }
+            });
+            ///////////Se crea la hoja en el libro de excel///////////
+            let ws = wb.addWorksheet("REPORTES");
+            ///////////Se asignan nombres a las columnas de la tabla///////////
+            let headingColumnIndex = 1;
+            headingColumnNames.forEach(heading => {
+                ws.cell(1, headingColumnIndex++)
+                    .style(myStyle3)
+                    .string(heading);
+            });
+            ///////////Se consultan los reportes que tienen asignado un departamento///////////
+            let reportesfexcel = yield database_1.default.query(`SELECT concat(idticket,'') as folio, date_format(fecha,'%d-%m-%Y %h:%i:%s %p') as 'fecha de ticket', 
+        date_format(fecha_respuesta,'%d-%m-%Y %h:%i:%s %p') as 'fecha de respuesta',
+         descripcion_servicio, comentarios,
+                    CONCAT(TRIM(empl.nombre), ' ',TRIM(empl.apellido_paterno), ' ', TRIM(empl.apellido_materno)) AS asignacion,
+                    CONCAT(TRIM(emp.nombre), ' ',TRIM(emp.apellido_paterno), ' ', TRIM(emp.apellido_materno)) AS empleado,
+                    servicios.servicio,tipos_servicio.tiposervicio,actividades.actividad,
+                    estatus.estatus,
+                    CASE
+                        WHEN servicio_para_uen = 1 THEN 'SI'
+                        WHEN servicio_para_uen= 0 THEN 'NO'
+                    END AS 'servicio para uen',
+                    CONCAT(SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', -1)*60),2),'.',-1)) AS tiempo_res_serv,
+                    CONCAT(SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', -1)*60),2),'.',-1)) AS tiempo_Res
+                    FROM tickets
+                    INNER JOIN empleados AS emp ON tickets.empleados_idempleado = emp.idempleado
+                    INNER JOIN estatus ON tickets.estatus_idestatus = estatus.idestatus
+                    INNER JOIN equipo_sistemas ON tickets.asignacion = equipo_sistemas.empleados_idempleado
+                    INNER JOIN empleados AS empl ON equipo_sistemas.empleados_idempleado = empl.idempleado
+                    INNER JOIN actividad_has_servicios ON tickets.actividad_has_shts = actividad_has_servicios.id_actividad_has_servicios
+                    INNER JOIN actividades ON actividad_has_servicios.ahs_has_actividad = actividades.id_actividad
+                    INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio = servicio_has_tipo_servicio.idservicio_has_tipo_servicio
+                    INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
+                    INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
+                    WHERE tickets.fecha BETWEEN '2022/05/06 00:00' AND '2022/06/06 00:59'
+                    LIMIT 250;`, [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
+            /*  console.log(reportesfexcel) */
+            let rowIndex = 2;
+            ///////////Se escriben las filas/registros en la hoja de excel///////////
+            reportesfexcel.forEach((record) => {
+                let columnIndex = 1;
+                Object.keys(record).forEach(columnName => {
+                    ws.cell(rowIndex, columnIndex++)
+                        .string(record[columnName]);
+                });
+                rowIndex++;
+            });
+            let fecha = req.body.fecha;
+            let dir = `${__dirname}/../../assets/reportesdescargados`;
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir);
+            }
+            wb.write(dir + '/' + fecha + '.xlsx', function (err, stats) {
+                if (err) {
+                    console.log('exportareportesexcelresult', { respuesta: false, error: "Error al guardar el archivo" });
+                }
+                else {
+                    console.log('exportareportesexcelresult', { respuesta: true });
+                    res.download(dir + '/' + fecha + '.xlsx', (err) => {
+                        if (err)
+                            throw err;
+                        fs.unlink(dir + '/' + fecha + '.xlsx', (err) => {
+                            if (err)
+                                throw err;
+                            console.log('a file was deleted');
+                        });
+                    });
+                }
+            });
         });
     }
 }

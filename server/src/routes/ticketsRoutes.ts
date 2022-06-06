@@ -17,6 +17,7 @@ class TicketsRoutes {
         this.router.post('/setSeguimiento', ticketsController.setSeguimiento)
         this.router.post('/getSeguimientosTicket', ticketsController.getSeguimientosTicket)
         this.router.post('/ticketSolucionado', ticketsController.ticketSolucionado)
+        this.router.post('/downloadExcelFile', ticketsController.downloadExcelFile)
     }
 }
 

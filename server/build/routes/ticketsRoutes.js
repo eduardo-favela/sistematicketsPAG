@@ -19,6 +19,7 @@ class TicketsRoutes {
         this.router.post('/setSeguimiento', ticketsController_1.default.setSeguimiento);
         this.router.post('/getSeguimientosTicket', ticketsController_1.default.getSeguimientosTicket);
         this.router.post('/ticketSolucionado', ticketsController_1.default.ticketSolucionado);
+        this.router.post('/downloadExcelFile', ticketsController_1.default.downloadExcelFile);
     }
 }
 const ticketsRoutes = new TicketsRoutes();

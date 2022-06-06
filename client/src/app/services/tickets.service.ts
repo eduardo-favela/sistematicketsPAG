@@ -38,6 +38,6 @@ export class TicketsService {
   }
 
   downloadexcelfile(reportes){
-    return this.http.post(`${API_URI}/reportes/downloadexcel`,reportes,{responseType:'blob'})
+    return this.http.post(`${API_URI}/tickets/downloadExcelFile`,reportes,{responseType:'blob'})
   }
 }
