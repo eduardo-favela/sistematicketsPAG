@@ -224,10 +224,9 @@ class TicketsController {
                     .style(myStyle3)
                     .string(heading);
             });
-            ///////////Se consultan los reportes que tienen asignado un departamento///////////
-            let reportesfexcel = yield database_1.default.query(`SELECT concat(idticket,'') as folio, date_format(fecha,'%d-%m-%Y %h:%i:%s %p') as 'fecha de ticket', 
-        date_format(fecha_respuesta,'%d-%m-%Y %h:%i:%s %p') as 'fecha de respuesta',
-         descripcion_servicio, comentarios,
+            ///////////Se consultan los reportes///////////
+            let reportesfexcel = yield database_1.default.query(`SELECT concat(idticket,'') as folio, concat(date_format(fecha,'%d-%m-%Y %h:%i:%s %p'),'') as 'fecha de ticket', concat(date_format(fecha_respuesta,'%d-%m-%Y %h:%i:%s %p'),'') as 'fecha de respuesta',
+        descripcion_servicio, concat(comentarios,'') as comentarios,
                     CONCAT(TRIM(empl.nombre), ' ',TRIM(empl.apellido_paterno), ' ', TRIM(empl.apellido_materno)) AS asignacion,
                     CONCAT(TRIM(emp.nombre), ' ',TRIM(emp.apellido_paterno), ' ', TRIM(emp.apellido_materno)) AS empleado,
                     servicios.servicio,tipos_servicio.tiposervicio,actividades.actividad,
@@ -248,8 +247,7 @@ class TicketsController {
                     INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio = servicio_has_tipo_servicio.idservicio_has_tipo_servicio
                     INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
                     INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
-                    WHERE tickets.fecha BETWEEN '2022/05/06 00:00' AND '2022/06/06 00:59'
-                    LIMIT 250;`, [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
+                    WHERE tickets.fecha BETWEEN ? AND ? ORDER BY folio;`, [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
             /*  console.log(reportesfexcel) */
             let rowIndex = 2;
             ///////////Se escriben las filas/registros en la hoja de excel///////////
