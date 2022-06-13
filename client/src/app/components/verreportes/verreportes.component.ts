@@ -128,7 +128,7 @@ export class VerreportesComponent implements OnInit {
     let fecha2 = (moment().format(this.fechaFinal.year.toString() +
       '-' + this.fechaFinal.month.toString() +
       '-' + this.fechaFinal.day.toString()));
-    this.ticketsService.getTicketsForTable({ estatus: this.estatusFilter, fecha1: fecha1, fecha2: fecha2 }).subscribe(
+    this.ticketsService.getTicketsForTable({ estatus: this.estatusFilter, fecha1: fecha1, fecha2: fecha2, usuario: parseInt(sessionStorage.getItem('userid')), depto: parseInt(sessionStorage.getItem('depto')) }).subscribe(
       res => {
         this.tickets = res
         if (this.tickets.length > 0) {

@@ -25,7 +25,7 @@ class LoginController {
         INNER JOIN equipo_sistemas ON equipo_sistemas.empleados_idempleado = empleados.idempleado
         WHERE user = ?;`,req.body.user, function (err: any, result: string | any[], fields: any){
             if(err) throw err
-            res.json(result[0].id_departamento)
+            res.json(result[0])
         })
     }
 

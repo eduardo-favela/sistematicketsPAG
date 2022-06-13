@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
     user: null,
     pass: null,
   }
-  id_departamento: any = null
+  resdepto: any = null
   isDisabled: boolean = true
   loaderhidden: boolean = true
   btnDisabled: boolean = false
@@ -35,9 +35,10 @@ export class LoginComponent implements OnInit {
           if (res) {
             this.loginServicesService.getDeptoId({ user: this.usuario.user }).subscribe(
               res => {
-                this.id_departamento = res
+                this.resdepto = res
                 sessionStorage.setItem('user', this.usuario.user)
-                sessionStorage.setItem('depto', this.id_departamento)
+                sessionStorage.setItem('userid', this.resdepto.idempleado)
+                sessionStorage.setItem('depto', this.resdepto.id_departamento)
                 this.isDisabled = true
                 this.loaderhidden = true
               },

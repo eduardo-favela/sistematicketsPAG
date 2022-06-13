@@ -87,6 +87,10 @@ class TicketsController {
 
         let tickets = []
 
+        console.log(req.body.depto)
+
+        let condition = ((req.body.depto!=4)?('AND empl.idempleado = ' + req.body.usuario):(''))
+
         if (req.body.estatus != 0) {
             tickets = await db.query(`SELECT idticket, fecha, fecha_respuesta, descripcion_servicio, comentarios,
             CONCAT(TRIM(empl.nombre), ' ',TRIM(empl.apellido_paterno), ' ', TRIM(empl.apellido_materno)) AS asignacion,
@@ -109,8 +113,8 @@ class TicketsController {
             INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio = servicio_has_tipo_servicio.idservicio_has_tipo_servicio
             INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
             INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
-            WHERE estatus_idestatus = ? AND tickets.fecha BETWEEN ? AND ?
-            LIMIT 250;`, [req.body.estatus,req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
+            WHERE estatus_idestatus = ? AND tickets.fecha BETWEEN ? AND ? ${condition};`,
+            [req.body.estatus,req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
         }
         else {
             tickets = await db.query(`SELECT idticket, fecha, fecha_respuesta, descripcion_servicio, comentarios,
@@ -134,8 +138,8 @@ class TicketsController {
             INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio = servicio_has_tipo_servicio.idservicio_has_tipo_servicio
             INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
             INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
-            WHERE tickets.fecha BETWEEN ? AND ?
-            LIMIT 250;`, [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
+            WHERE tickets.fecha BETWEEN ? AND ? ${condition};`,
+            [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
         }
         res.json(tickets);
     }

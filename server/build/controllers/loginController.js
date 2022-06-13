@@ -40,7 +40,7 @@ class LoginController {
         WHERE user = ?;`, req.body.user, function (err, result, fields) {
                 if (err)
                     throw err;
-                res.json(result[0].id_departamento);
+                res.json(result[0]);
             });
         });
     }

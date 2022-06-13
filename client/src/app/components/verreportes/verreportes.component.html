@@ -23,8 +23,7 @@
               <form class="row row-cols-sm-auto align-middle">
                 <div class="col-12">
                   <div class="input-group">
-                    <input class="form-control" placeholder="dd/mm/aaaa"
-                    name="d2" #c2="ngModel" [(ngModel)]="fechaFinal" ngbDatepicker #d2="ngbDatepicker">
+                    <input class="form-control" placeholder="dd/mm/aaaa" name="d2" #c2="ngModel" [(ngModel)]="fechaFinal" ngbDatepicker #d2="ngbDatepicker">
                     <button class="btn btn-outline-secondary fas fa-calendar-alt" (click)="d2.toggle()" type="button"></button>
                   </div>
                 </div>
@@ -45,7 +44,7 @@
           </div>
         </div>
         <div class="row d-flex justify-content-end" [hidden]="noInfo">
-          <div class="col-md-1 col-sm-3">
+          <div *ngIf="[sessionStorage.getItem('depto')]=='4'" class="col-md-1 col-sm-3">
             <a (click)="downloadExcelFile()" class="btn"><img src="../../../assets/excel.png" alt="excel"></a>
           </div>
         </div>
