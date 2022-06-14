@@ -87,8 +87,6 @@ class TicketsController {
 
         let tickets = []
 
-        console.log(req.body.depto)
-
         let condition = ((req.body.depto!=4)?('AND empl.idempleado = ' + req.body.usuario):(''))
 
         if (req.body.estatus != 0) {
@@ -159,6 +157,7 @@ class TicketsController {
              "Actividad",
              "Estatus",
              "Servicio para uen",
+             "UEN",
              "Tiempo de resolución",
              "Tiempo dedicado"
         ]
@@ -197,10 +196,12 @@ class TicketsController {
                         WHEN servicio_para_uen = 1 THEN 'SI'
                         WHEN servicio_para_uen= 0 THEN 'NO'
                     END AS 'servicio para uen',
+                    uens.uen,
                     CONCAT(SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', -1)*60),2),'.',-1)) AS tiempo_res_serv,
                     CONCAT(SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', -1)*60),2),'.',-1)) AS tiempo_Res
                     FROM tickets
                     INNER JOIN empleados AS emp ON tickets.empleados_idempleado = emp.idempleado
+                    INNER JOIN uens ON emp.UENS_idUEN = uens.iduen
                     INNER JOIN estatus ON tickets.estatus_idestatus = estatus.idestatus
                     INNER JOIN equipo_sistemas ON tickets.asignacion = equipo_sistemas.empleados_idempleado
                     INNER JOIN empleados AS empl ON equipo_sistemas.empleados_idempleado = empl.idempleado
