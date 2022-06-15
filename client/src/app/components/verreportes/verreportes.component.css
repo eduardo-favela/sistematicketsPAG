@@ -32,3 +32,9 @@ th,td {
   text-align: center;
   vertical-align: middle !important;
 }
+
+.ticketatrasado {
+  background: red !important;
+  color: white !important;
+  font-weight: bold !important;
+}

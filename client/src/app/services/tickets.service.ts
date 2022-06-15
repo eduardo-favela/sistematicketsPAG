@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import API_URI from './API_URI'
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +10,19 @@ export class TicketsService {
 
   constructor(private http: HttpClient) { }
 
+  private data = new BehaviorSubject('0');
+  data$ = this.data.asObservable();
+
+  changeData(data: string) {
+    this.data.next(data)
+  }
+
   setTicket(ticket){
     return this.http.post(`${API_URI}/tickets/setTicket`,ticket)
+  }
+
+  getTicketsOpen(usuario){
+    return this.http.post(`${API_URI}/tickets/getTicketsOpen`,usuario)
   }
 
   getTicketsForTable(fechas){

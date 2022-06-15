@@ -268,7 +268,7 @@ export class HomeComponent implements OnInit {
     this.reportesService.enviarEmail({ fecha: moment().format('DD-MM-YYYY'), folio: reporte.folioreporte, hora: moment().format('hh:mm A'), email: reporte.email }).subscribe(
       res => {
         if (res.hasOwnProperty('Ok')) {
-          console.log('se envió el correo con éxito')
+          /* console.log('se envió el correo con éxito') */
         }
       },
       err => {
@@ -287,11 +287,11 @@ export class HomeComponent implements OnInit {
       comments: this.ticket.comentarios, ciudad: ciudad, maq: maquina, problema: problema, correo: this.correo, telefono: this.telefono.toString(), sucursal: sucursal,
       fecha: moment().format('DD-MM-YYYY'), folio: reporte.folioreporte, hora: moment().format('hh:mm A'), email: emailspruebas
     }
-    console.log(reportecontents)
+   /*  console.log(reportecontents) */
     this.reportesService.enviarEmailinterno(reportecontents).subscribe(
       res => {
         if (res.hasOwnProperty('Ok')) {
-          console.log('se envió el correo con éxito')
+          /* console.log('se envió el correo con éxito') */
         }
       },
       err => {

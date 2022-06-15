@@ -68,7 +68,7 @@ class TicketsController {
         fecha, comentarios
         FROM seguimientos
         WHERE tickets_idticket = ?;`, [req.body.idticket]);
-        
+
         res.json(seguimientos);
     }
 
@@ -87,7 +87,7 @@ class TicketsController {
 
         let tickets = []
 
-        let condition = ((req.body.depto!=4)?('AND empl.idempleado = ' + req.body.usuario):(''))
+        let condition = ((req.body.depto != 4) ? ('AND empl.idempleado = ' + req.body.usuario) : (''))
 
         if (req.body.estatus != 0) {
             tickets = await db.query(`SELECT idticket, fecha, fecha_respuesta, descripcion_servicio, comentarios,
@@ -99,6 +99,10 @@ class TicketsController {
                 WHEN servicio_para_uen = 1 THEN 'SI'
                 WHEN servicio_para_uen= 0 THEN 'NO'
             END AS servpuen,
+            CASE
+				WHEN (fecha < SUBTIME(current_timestamp, '24:00:00') AND estatus_idestatus != 3) THEN 1
+                ELSE 0
+			END AS atrasado,
             CONCAT(SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', -1)*60),2),'.',-1)) AS tiempo_res_serv,
             CONCAT(SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', -1)*60),2),'.',-1)) AS tiempo_Res
             FROM tickets
@@ -112,7 +116,7 @@ class TicketsController {
             INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
             INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
             WHERE estatus_idestatus = ? AND tickets.fecha BETWEEN ? AND ? ${condition};`,
-            [req.body.estatus,req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
+                [req.body.estatus, req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
         }
         else {
             tickets = await db.query(`SELECT idticket, fecha, fecha_respuesta, descripcion_servicio, comentarios,
@@ -124,6 +128,10 @@ class TicketsController {
                 WHEN servicio_para_uen = 1 THEN 'SI'
                 WHEN servicio_para_uen= 0 THEN 'NO'
             END AS servpuen,
+            CASE
+				WHEN (fecha < SUBTIME(current_timestamp, '24:00:00') AND estatus_idestatus != 3) THEN 1
+                ELSE 0
+			END AS atrasado,
             CONCAT(SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', -1)*60),2),'.',-1)) AS tiempo_res_serv,
             CONCAT(SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', -1)*60),2),'.',-1)) AS tiempo_Res
             FROM tickets
@@ -137,35 +145,44 @@ class TicketsController {
             INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
             INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
             WHERE tickets.fecha BETWEEN ? AND ? ${condition};`,
-            [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
+                [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
         }
         res.json(tickets);
     }
 
-    public async downloadExcelFile(req: Request, res: Response){
-        let wb=new xl.Workbook()
+    public async getTicketsOpen(req: Request, res: Response) {
+        const cantidad = await db.query(`SELECT count(*) as cantidad from tickets
+        INNER JOIN estatus ON tickets.estatus_idestatus = estatus.idestatus
+        INNER JOIN equipo_sistemas ON tickets.asignacion = equipo_sistemas.empleados_idempleado
+        INNER JOIN empleados AS empl ON equipo_sistemas.empleados_idempleado = empl.idempleado
+        where empl.idempleado = ? AND fecha < SUBTIME(current_timestamp, '24:00:00') AND estatus.idestatus != 3;`, [req.body.usuario]);
+        res.json(cantidad[0].cantidad);
+    }
+
+    public async downloadExcelFile(req: Request, res: Response) {
+        let wb = new xl.Workbook()
         const headingColumnNames = [
-             "Folio",
-             "Fecha de ticket",
-             "Fecha de respuesta",
-             "Descripcion",
-             "Comentarios",
-             "Asignación",
-             "Empleado",
-             "Servicio",
-             "Tipo de servicio",
-             "Actividad",
-             "Estatus",
-             "Servicio para uen",
-             "UEN",
-             "Tiempo de resolución",
-             "Tiempo dedicado"
+            "Folio",
+            "Fecha de ticket",
+            "Fecha de respuesta",
+            "Descripcion",
+            "Comentarios",
+            "Asignación",
+            "Empleado",
+            "Servicio",
+            "Tipo de servicio",
+            "Actividad",
+            "Estatus",
+            "Servicio para uen",
+            "UEN",
+            "Tiempo de resolución",
+            "Tiempo dedicado"
         ]
         const myStyle3 = wb.createStyle({
-            font:{
+            font: {
                 bold: true,
                 size: 14,
-                color:'FFFFFF'
+                color: 'FFFFFF'
             },
             fill: {
                 type: 'pattern',
@@ -176,14 +193,14 @@ class TicketsController {
         })
 
         ///////////Se crea la hoja en el libro de excel///////////
-        let ws=wb.addWorksheet("REPORTES")
+        let ws = wb.addWorksheet("REPORTES")
 
         ///////////Se asignan nombres a las columnas de la tabla///////////
         let headingColumnIndex = 1;
         headingColumnNames.forEach(heading => {
             ws.cell(1, headingColumnIndex++)
-            .style(myStyle3)
-            .string(heading)
+                .style(myStyle3)
+                .string(heading)
         })
         ///////////Se consultan los reportes///////////
         let reportesfexcel = await db.query(`SELECT concat(idticket,'') as folio, concat(date_format(fecha,'%d-%m-%Y %h:%i:%s %p'),'') as 'fecha de ticket', concat(date_format(fecha_respuesta,'%d-%m-%Y %h:%i:%s %p'),'') as 'fecha de respuesta',
@@ -211,35 +228,35 @@ class TicketsController {
                     INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
                     INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
                     WHERE tickets.fecha BETWEEN ? AND ? ORDER BY folio;`,
-                    [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
-       /*  console.log(reportesfexcel) */
+            [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
+        /*  console.log(reportesfexcel) */
         let rowIndex = 2
         ///////////Se escriben las filas/registros en la hoja de excel///////////
-        reportesfexcel.forEach( (record:any) => {
+        reportesfexcel.forEach((record: any) => {
             let columnIndex = 1
-            Object.keys(record).forEach(columnName =>{
-                ws.cell(rowIndex,columnIndex++)
-                    .string(record [columnName])
+            Object.keys(record).forEach(columnName => {
+                ws.cell(rowIndex, columnIndex++)
+                    .string(record[columnName])
             })
             rowIndex++
         })
 
-         let fecha=req.body.fecha
-         let dir = `${__dirname}/../../assets/reportesdescargados`
-         if (!fs.existsSync(dir)){
-             fs.mkdirSync(dir)
-         }
-         wb.write(dir+'/'+fecha+'.xlsx', function(err:any, stats:any) {
+        let fecha = req.body.fecha
+        let dir = `${__dirname}/../../assets/reportesdescargados`
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir)
+        }
+        wb.write(dir + '/' + fecha + '.xlsx', function (err: any, stats: any) {
             if (err) {
-            console.log('exportareportesexcelresult',{respuesta:false, error:"Error al guardar el archivo"})
+                console.log('exportareportesexcelresult', { respuesta: false, error: "Error al guardar el archivo" })
             }
             else {
-                console.log('exportareportesexcelresult',{respuesta:true})
-                res.download(dir+'/'+fecha+'.xlsx', (err)=>{
+                console.log('exportareportesexcelresult', { respuesta: true })
+                res.download(dir + '/' + fecha + '.xlsx', (err) => {
                     if (err) throw err;
-                    fs.unlink(dir+'/'+fecha+'.xlsx',(err)=>{
+                    fs.unlink(dir + '/' + fecha + '.xlsx', (err) => {
                         if (err) throw err;
-                        console.log('a file was deleted');   
+                        console.log('a file was deleted');
                     })
                 })
             }

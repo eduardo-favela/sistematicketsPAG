@@ -56,7 +56,7 @@ class EquiposController {
         return __awaiter(this, void 0, void 0, function* () {
             let asignacion = yield database_1.default.query(`SELECT * FROM empleados_has_equipos 
         WHERE empleados_idempleado = ? AND equipos_idequipo = ? AND empleados_has_estatus = 'INACTIVO';`, [req.body.idempleado, req.body.idequipo]);
-            console.log(asignacion, req.body);
+            /* console.log(asignacion, req.body) */
             if (asignacion.length > 0) {
                 yield database_1.default.query(`UPDATE empleados_has_equipos SET empleados_has_estatus = 'ACTIVO' 
             WHERE id_empleados_has_equipos = ?`, [asignacion[0].id_empleados_has_equipos], function (err, result, fields) {

@@ -141,6 +141,10 @@ class TicketsController {
                 WHEN servicio_para_uen = 1 THEN 'SI'
                 WHEN servicio_para_uen= 0 THEN 'NO'
             END AS servpuen,
+            CASE
+				WHEN (fecha < SUBTIME(current_timestamp, '24:00:00') AND estatus_idestatus != 3) THEN 1
+                ELSE 0
+			END AS atrasado,
             CONCAT(SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', -1)*60),2),'.',-1)) AS tiempo_res_serv,
             CONCAT(SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', -1)*60),2),'.',-1)) AS tiempo_Res
             FROM tickets
@@ -165,6 +169,10 @@ class TicketsController {
                 WHEN servicio_para_uen = 1 THEN 'SI'
                 WHEN servicio_para_uen= 0 THEN 'NO'
             END AS servpuen,
+            CASE
+				WHEN (fecha < SUBTIME(current_timestamp, '24:00:00') AND estatus_idestatus != 3) THEN 1
+                ELSE 0
+			END AS atrasado,
             CONCAT(SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', -1)*60),2),'.',-1)) AS tiempo_res_serv,
             CONCAT(SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', -1)*60),2),'.',-1)) AS tiempo_Res
             FROM tickets
@@ -180,6 +188,16 @@ class TicketsController {
             WHERE tickets.fecha BETWEEN ? AND ? ${condition};`, [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
             }
             res.json(tickets);
+        });
+    }
+    getTicketsOpen(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const cantidad = yield database_1.default.query(`SELECT count(*) as cantidad from tickets
+        INNER JOIN estatus ON tickets.estatus_idestatus = estatus.idestatus
+        INNER JOIN equipo_sistemas ON tickets.asignacion = equipo_sistemas.empleados_idempleado
+        INNER JOIN empleados AS empl ON equipo_sistemas.empleados_idempleado = empl.idempleado
+        where empl.idempleado = ? AND fecha < SUBTIME(current_timestamp, '24:00:00') AND estatus.idestatus != 3;`, [req.body.usuario]);
+            res.json(cantidad[0].cantidad);
         });
     }
     downloadExcelFile(req, res) {

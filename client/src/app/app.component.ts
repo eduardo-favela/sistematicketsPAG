@@ -2,6 +2,7 @@ import { Component, Inject, Injectable, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { on } from 'events';
 import { Location } from '@angular/common';
+import { TicketsService } from 'src/app/services/tickets.service';
 
 @Component({
   selector: 'app-root',
@@ -12,15 +13,34 @@ import { Location } from '@angular/common';
 export class AppComponent implements OnInit {
 
 
-  constructor(private location: Location, private router: Router) { }
+  constructor(private location: Location, private router: Router, private ticketsService: TicketsService) { }
 
   title = 'client';
-  curDate: Date = new Date()
+  curDate: Date = new Date();
   public sessionStorage = sessionStorage;
-  estatussidebar: string = 'Ocultar'
+  estatussidebar: string = 'Ocultar';
   status: boolean = false;
 
+  cantidadTA : any = null;
+
   ngOnInit(): void {
+    this.ticketsService.data$.subscribe(res => this.cantidadTA = res)  //read the invoked data or default data
+    //this.getTicketsOpen()
+  }
+
+  eventListener(){
+    alert('Evento escuchado');
+  }
+
+  getTicketsOpen(){
+    this.ticketsService.getTicketsOpen({usuario: this.sessionStorage.getItem('userid')}).subscribe(
+      res=>{
+        this.cantidadTA = res;
+      },
+      err=>{
+        console.error(err)
+      }
+    )
   }
 
   ngAfterViewInit() {

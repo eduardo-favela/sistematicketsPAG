@@ -71,7 +71,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let ticket of tickets" class="table-active">
+                <tr *ngFor="let ticket of tickets" [ngClass]="{ 'ticketatrasado' : ticket.atrasado == 1}" class="table-active">
                   <td>{{ticket.idticket}}</td>
                   <td>{{ticket.fecha | date : 'dd/MM/yyyy h:mm a'}}</td>
                   <td>{{ticket.fecha_respuesta | date : 'dd/MM/yyyy h:mm a'}}</td>

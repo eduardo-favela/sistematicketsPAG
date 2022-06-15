@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
 import * as FileSaver from 'file-saver'
 import * as XLSX from 'xlsx';
@@ -41,6 +41,8 @@ export class VerreportesComponent implements OnInit {
 
   ticketSelected: any = null
 
+  cantidadTA: any = null;
+
   constructor(private ticketsService: TicketsService) { }
 
   ngOnInit(): void {
@@ -57,7 +59,6 @@ export class VerreportesComponent implements OnInit {
         { targets: '_all', width: '20%' }
       ]
     }
-
 
     const current = new Date();
     const prior = new Date().setDate(current.getDate() - 30);
@@ -103,14 +104,26 @@ export class VerreportesComponent implements OnInit {
       '-' + this.fechaFinal.month.toString() +
       '-' + this.fechaFinal.day.toString()));
 
-    let fecha = 'Reportes tickets '+moment().format('DDMMYYYYhhmmA')
-    this.ticketsService.downloadexcelfile({ fecha1: fecha1, fecha2: fecha2, fecha:fecha }).subscribe(
+    let fecha = 'Reportes tickets ' + moment().format('DDMMYYYYhhmmA')
+    this.ticketsService.downloadexcelfile({ fecha1: fecha1, fecha2: fecha2, fecha: fecha }).subscribe(
       res => {
         /* console.log(res) */
         FileSaver.saveAs(res, fecha + ".xlsx")
       },
       err => {
         console.log(err)
+      }
+    )
+  }
+
+  getTicketsOpen() {
+    this.ticketsService.getTicketsOpen({ usuario: sessionStorage.getItem('userid') }).subscribe(
+      res => {
+        this.cantidadTA = res
+        this.ticketsService.changeData(this.cantidadTA.toString());
+      },
+      err=>{
+        console.error(err)
       }
     )
   }
@@ -128,6 +141,7 @@ export class VerreportesComponent implements OnInit {
     let fecha2 = (moment().format(this.fechaFinal.year.toString() +
       '-' + this.fechaFinal.month.toString() +
       '-' + this.fechaFinal.day.toString()));
+    this.getTicketsOpen()
     this.ticketsService.getTicketsForTable({ estatus: this.estatusFilter, fecha1: fecha1, fecha2: fecha2, usuario: parseInt(sessionStorage.getItem('userid')), depto: parseInt(sessionStorage.getItem('depto')) }).subscribe(
       res => {
         this.tickets = res
@@ -175,7 +189,7 @@ export class VerreportesComponent implements OnInit {
   onEditRptBtnClick(reporte) {
     this.horaRespuesta = { hour: parseInt(moment().format('HH')), minute: parseInt(moment().format('mm')) };
     this.editingTicket = { ...reporte }
-    console.log(this.editingTicket)
+    /* console.log(this.editingTicket) */
     if (reporte.estatus_idestatus != 3) {
       if (reporte.comentarios && reporte.fecha_respuesta) {
         this.horaSeguimiento = { hour: parseInt(moment().format('HH')), minute: parseInt(moment().format('mm')) };
@@ -221,7 +235,7 @@ export class VerreportesComponent implements OnInit {
           console.error(err)
         }
       )
-      console.log(this.seguimiento)
+      /* console.log(this.seguimiento) */
     }
     else {
       alert('Se deben llenar todos los campos')
@@ -258,7 +272,7 @@ export class VerreportesComponent implements OnInit {
   }
 
   setSolucionTicket() {
-    console.log(this.solucionTicket)
+    /* console.log(this.solucionTicket) */
     if (this.solucionTicket == 1) {
       this.ticketsService.ticketSolucionado(this.editingTicket).subscribe(
         res => {

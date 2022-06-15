@@ -14,6 +14,7 @@ class TicketsRoutes {
         this.router.get('/getUsuarios', ticketsController_1.default.getUsuarios);
         this.router.get('/geEstatusTickets', ticketsController_1.default.geEstatusTickets);
         this.router.post('/getTicketsForTable', ticketsController_1.default.getTicketsForTable);
+        this.router.post('/getTicketsOpen', ticketsController_1.default.getTicketsOpen);
         this.router.post('/setTicket', ticketsController_1.default.setTicket);
         this.router.post('/setCommentsFecha', ticketsController_1.default.setCommentsFecha);
         this.router.post('/setSeguimiento', ticketsController_1.default.setSeguimiento);

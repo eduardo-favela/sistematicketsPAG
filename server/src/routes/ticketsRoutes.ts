@@ -12,6 +12,7 @@ class TicketsRoutes {
         this.router.get('/getUsuarios', ticketsController.getUsuarios)
         this.router.get('/geEstatusTickets', ticketsController.geEstatusTickets)
         this.router.post('/getTicketsForTable', ticketsController.getTicketsForTable)
+        this.router.post('/getTicketsOpen', ticketsController.getTicketsOpen)
         this.router.post('/setTicket', ticketsController.setTicket)
         this.router.post('/setCommentsFecha', ticketsController.setCommentsFecha)
         this.router.post('/setSeguimiento', ticketsController.setSeguimiento)
