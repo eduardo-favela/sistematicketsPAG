@@ -25,7 +25,19 @@ class ServiciosController {
     }
     getServiciosDepto(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.query(`SELECT * FROM servicios WHERE depto = ? AND estatus = 1;`, req.body.depto, function (err, result, fields) {
+            let condition = '';
+            if (req.body.depto != 4) {
+                if (req.body.depto == 1 || req.body.depto == 2 || req.body.depto == 3) {
+                    condition = 'AND depto = ' + req.body.depto;
+                }
+                else if (req.body.depto == 5) {
+                    condition = 'AND depto = 2';
+                }
+                else if (req.body.depto == 6) {
+                    condition = 'AND depto = 1';
+                }
+            }
+            yield database_1.default.query(`SELECT * FROM servicios WHERE estatus = 1 ${condition};`, function (err, result, fields) {
                 if (err)
                     throw err;
                 res.json(result);

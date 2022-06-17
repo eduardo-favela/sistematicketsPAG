@@ -130,63 +130,48 @@ class TicketsController {
     getTicketsForTable(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let tickets = [];
-            let condition = ((req.body.depto != 4) ? ('AND empl.idempleado = ' + req.body.usuario) : (''));
-            if (req.body.estatus != 0) {
-                tickets = yield database_1.default.query(`SELECT idticket, fecha, fecha_respuesta, descripcion_servicio, comentarios,
-            CONCAT(TRIM(empl.nombre), ' ',TRIM(empl.apellido_paterno), ' ', TRIM(empl.apellido_materno)) AS asignacion,
-            CONCAT(TRIM(emp.nombre), ' ',TRIM(emp.apellido_paterno), ' ', TRIM(emp.apellido_materno)) AS empleado,
-            CONCAT(servicios.servicio,', ',tipos_servicio.tiposervicio,', ' ,actividades.actividad) AS servicio,
-            estatus.estatus, estatus_idestatus,
-            CASE
-                WHEN servicio_para_uen = 1 THEN 'SI'
-                WHEN servicio_para_uen= 0 THEN 'NO'
-            END AS servpuen,
-            CASE
-				WHEN (fecha < SUBTIME(current_timestamp, '24:00:00') AND estatus_idestatus != 3) THEN 1
-                ELSE 0
-			END AS atrasado,
-            CONCAT(SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', -1)*60),2),'.',-1)) AS tiempo_res_serv,
-            CONCAT(SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', -1)*60),2),'.',-1)) AS tiempo_Res
-            FROM tickets
-            INNER JOIN empleados AS emp ON tickets.empleados_idempleado = emp.idempleado
-            INNER JOIN estatus ON tickets.estatus_idestatus = estatus.idestatus
-            INNER JOIN equipo_sistemas ON tickets.asignacion = equipo_sistemas.empleados_idempleado
-            INNER JOIN empleados AS empl ON equipo_sistemas.empleados_idempleado = empl.idempleado
-            INNER JOIN actividad_has_servicios ON tickets.actividad_has_shts = actividad_has_servicios.id_actividad_has_servicios
-            INNER JOIN actividades ON actividad_has_servicios.ahs_has_actividad = actividades.id_actividad
-            INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio = servicio_has_tipo_servicio.idservicio_has_tipo_servicio
-            INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
-            INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
-            WHERE estatus_idestatus = ? AND tickets.fecha BETWEEN ? AND ? ${condition};`, [req.body.estatus, req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
+            let condition = "";
+            let conditionStatus = "";
+            if (req.body.depto != 4 && req.body.depto != 5 && req.body.depto != 6) {
+                condition = 'AND empl.idempleado = ' + req.body.usuario;
             }
             else {
-                tickets = yield database_1.default.query(`SELECT idticket, fecha, fecha_respuesta, descripcion_servicio, comentarios,
-            CONCAT(TRIM(empl.nombre), ' ',TRIM(empl.apellido_paterno), ' ', TRIM(empl.apellido_materno)) AS asignacion,
-            CONCAT(TRIM(emp.nombre), ' ',TRIM(emp.apellido_paterno), ' ', TRIM(emp.apellido_materno)) AS empleado,
-            CONCAT(servicios.servicio,', ',tipos_servicio.tiposervicio,', ' ,actividades.actividad) AS servicio,
-            estatus.estatus, estatus_idestatus,
-            CASE
-                WHEN servicio_para_uen = 1 THEN 'SI'
-                WHEN servicio_para_uen= 0 THEN 'NO'
-            END AS servpuen,
-            CASE
-				WHEN (fecha < SUBTIME(current_timestamp, '24:00:00') AND estatus_idestatus != 3) THEN 1
-                ELSE 0
-			END AS atrasado,
-            CONCAT(SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', -1)*60),2),'.',-1)) AS tiempo_res_serv,
-            CONCAT(SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', -1)*60),2),'.',-1)) AS tiempo_Res
-            FROM tickets
-            INNER JOIN empleados AS emp ON tickets.empleados_idempleado = emp.idempleado
-            INNER JOIN estatus ON tickets.estatus_idestatus = estatus.idestatus
-            INNER JOIN equipo_sistemas ON tickets.asignacion = equipo_sistemas.empleados_idempleado
-            INNER JOIN empleados AS empl ON equipo_sistemas.empleados_idempleado = empl.idempleado
-            INNER JOIN actividad_has_servicios ON tickets.actividad_has_shts = actividad_has_servicios.id_actividad_has_servicios
-            INNER JOIN actividades ON actividad_has_servicios.ahs_has_actividad = actividades.id_actividad
-            INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio = servicio_has_tipo_servicio.idservicio_has_tipo_servicio
-            INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
-            INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
-            WHERE tickets.fecha BETWEEN ? AND ? ${condition};`, [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
+                if (req.body.depto == 5) {
+                    'AND servicios.depto = 2';
+                }
+                else if (req.body.depto == 6) {
+                    'AND servicios.depto = 1';
+                }
             }
+            if (req.body.estatus != 0) {
+                conditionStatus = 'AND estatus_idestatus = ' + req.body.estatus;
+            }
+            tickets = yield database_1.default.query(`SELECT idticket, fecha, fecha_respuesta, descripcion_servicio, comentarios,
+        CONCAT(TRIM(empl.nombre), ' ',TRIM(empl.apellido_paterno), ' ', TRIM(empl.apellido_materno)) AS asignacion,
+        CONCAT(TRIM(emp.nombre), ' ',TRIM(emp.apellido_paterno), ' ', TRIM(emp.apellido_materno)) AS empleado,
+        CONCAT(servicios.servicio,', ',tipos_servicio.tiposervicio,', ' ,actividades.actividad) AS servicio,
+        estatus.estatus, estatus_idestatus,
+        CASE
+            WHEN servicio_para_uen = 1 THEN 'SI'
+            WHEN servicio_para_uen= 0 THEN 'NO'
+        END AS servpuen,
+        CASE
+            WHEN (fecha < SUBTIME(current_timestamp, '24:00:00') AND estatus_idestatus != 3) THEN 1
+            ELSE 0
+        END AS atrasado,
+        CONCAT(SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo_resolucion_servicio, '.', -1)*60),2),'.',-1)) AS tiempo_res_serv,
+        CONCAT(SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX((SELECT ROUND(SUM(tiemporesolucion),2) FROM seguimientos WHERE tickets_idticket = idticket), '.', -1)*60),2),'.',-1)) AS tiempo_Res
+        FROM tickets
+        INNER JOIN empleados AS emp ON tickets.empleados_idempleado = emp.idempleado
+        INNER JOIN estatus ON tickets.estatus_idestatus = estatus.idestatus
+        INNER JOIN equipo_sistemas ON tickets.asignacion = equipo_sistemas.empleados_idempleado
+        INNER JOIN empleados AS empl ON equipo_sistemas.empleados_idempleado = empl.idempleado
+        INNER JOIN actividad_has_servicios ON tickets.actividad_has_shts = actividad_has_servicios.id_actividad_has_servicios
+        INNER JOIN actividades ON actividad_has_servicios.ahs_has_actividad = actividades.id_actividad
+        INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio = servicio_has_tipo_servicio.idservicio_has_tipo_servicio
+        INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
+        INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
+        WHERE tickets.fecha BETWEEN ? AND ? ${condition} ${conditionStatus};`, [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
             res.json(tickets);
         });
     }

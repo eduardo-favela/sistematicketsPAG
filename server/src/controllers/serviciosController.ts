@@ -11,7 +11,21 @@ class ServiciosController {
     }
 
     public async getServiciosDepto(req: Request, res: Response) {
-        await db.query(`SELECT * FROM servicios WHERE depto = ? AND estatus = 1;`,req.body.depto,function (err: any, result: any, fields: any) {
+
+        let condition = ''
+
+        if (req.body.depto != 4) {
+            if (req.body.depto == 1 || req.body.depto == 2 || req.body.depto == 3) {
+                condition = 'AND depto = ' + req.body.depto
+            }
+            else if (req.body.depto == 5) {
+                condition = 'AND depto = 2'
+            }
+            else if(req.body.depto == 6){
+                condition = 'AND depto = 1'
+            }
+        }
+        await db.query(`SELECT * FROM servicios WHERE estatus = 1 ${condition};`, function (err: any, result: any, fields: any) {
             if (err) throw err
             res.json(result)
         });
@@ -134,11 +148,11 @@ class ServiciosController {
 
     public async updateServicio(req: Request, res: Response) {
         await db.query(`UPDATE servicios SET servicio = ?, asignar_equipo = ?, depto = ?, estatus = ? 
-        WHERE idservicios = ?`, [req.body.servicio,req.body.asignar_equipoid,req.body.depto,req.body.estatusid,req.body.idservicios],
-        function (err: any, result: any, fields: any) {
-            if (err) throw err
-            res.json(true)
-        });
+        WHERE idservicios = ?`, [req.body.servicio, req.body.asignar_equipoid, req.body.depto, req.body.estatusid, req.body.idservicios],
+            function (err: any, result: any, fields: any) {
+                if (err) throw err
+                res.json(true)
+            });
     }
 
     //REGISTRA EL TIPO DE SERVICIO INGRESADO, PERO PRIMERO VERIFICA SI YA EXISTE, PARA NO DUPLICARLO
@@ -158,10 +172,10 @@ class ServiciosController {
     public async updateTipoServicio(req: Request, res: Response) {
         await db.query(`UPDATE tipos_servicio SET tiposervicio = ?, estatus = ?
         WHERE idtipos_servicio = ?`, [req.body.tiposervicio, req.body.estatus, req.body.idtipos_servicio],
-        function(err: any, result: any, fields: any){
-            if (err) throw err
-            res.json(true)
-        });
+            function (err: any, result: any, fields: any) {
+                if (err) throw err
+                res.json(true)
+            });
     }
 
     //REGISTRA LA RELACIÓN DE UN SERVICIO Y UN TIPO DE SERVICIO, PERO ANTES REVISA SI YA EXISTE Y SOLO LA ACTUALIZA PARA NO DUPLICARLA
@@ -181,7 +195,7 @@ class ServiciosController {
         }
         res.json(true);
     }
-    
+
     //DESHABILITA LA RELACIÓN DEL SERVICIO Y TIPO DE SERVICIO
     public async unsetServicioHTS(req: Request, res: Response) {
         for (let i = 0; i < req.body.length; i++) {
@@ -215,11 +229,11 @@ class ServiciosController {
         res.json(true)
     }
 
-    public async setActividadHShts(req:Request, res: Response){
+    public async setActividadHShts(req: Request, res: Response) {
         for (let i = 0; i < req.body.length; i++) {
             let result = await db.query(`SELECT * FROM actividad_has_servicios 
             WHERE ahs_has_actividad = ? AND ahs_has_servicio = ?;`,
-            [req.body[i].id_actividad, req.body[i].idshts]);
+                [req.body[i].id_actividad, req.body[i].idshts]);
             if (result.length > 0) {
                 await db.query(`UPDATE actividad_has_servicios SET estatus = 1 
                 WHERE id_actividad_has_servicios = ?;`, result[0].id_actividad_has_servicios);
@@ -227,13 +241,13 @@ class ServiciosController {
             else {
                 await db.query(`INSERT INTO actividad_has_servicios SET 
                 ahs_has_actividad = ?, ahs_has_servicio = ?, tiempo = ?, estatus = 1;`,
-                [req.body[i].id_actividad, req.body[i].idshts ,req.body[i].tiempo]);
+                    [req.body[i].id_actividad, req.body[i].idshts, req.body[i].tiempo]);
             }
         }
         res.json(true);
     }
 
-    public async unSetActividadHShts(req:Request, res: Response){
+    public async unSetActividadHShts(req: Request, res: Response) {
         for (let i = 0; i < req.body.length; i++) {
             await db.query(`UPDATE actividad_has_servicios SET estatus = 0
             WHERE ahs_has_actividad = ? and ahs_has_servicio = ?;`, [req.body[i].id_actividad, req.body[i].idshts])
@@ -241,7 +255,7 @@ class ServiciosController {
         res.json(true);
     }
 
-    public async getActividadesHShtsTable(req:Request, res: Response){
+    public async getActividadesHShtsTable(req: Request, res: Response) {
         let activhshts = await db.query(`SELECT actividad_has_servicios.id_actividad_has_servicios,
         servicios.servicio, tipos_servicio.tiposervicio, actividades.actividad,
         CONCAT(SUBSTRING_INDEX(tiempo, '.', 1), ':', SUBSTRING_INDEX(ROUND(CONCAT(0,'.',SUBSTRING_INDEX(tiempo, '.', -1)*60),2),'.',-1)) AS displayTime
@@ -253,16 +267,16 @@ class ServiciosController {
         res.json(activhshts);
     }
 
-    public async getTServicioForTicket(req:Request, res: Response){
+    public async getTServicioForTicket(req: Request, res: Response) {
         let tiposServicio = await db.query(`SELECT idtipos_servicio, tiposervicio
         FROM servicio_has_tipo_servicio
         INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
         INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
-        WHERE shts_has_servicio = ? AND servicio_has_tipo_servicio.estatus=1;`,req.body.servicio)
+        WHERE shts_has_servicio = ? AND servicio_has_tipo_servicio.estatus=1;`, req.body.servicio)
         res.json(tiposServicio);
     }
 
-    public async getActividadesForTicket(req:Request, res: Response){
+    public async getActividadesForTicket(req: Request, res: Response) {
         let actividades = await db.query(`SELECT actividad_has_servicios.id_actividad_has_servicios AS id_actividad, 
         actividades.actividad, actividad_has_servicios.tiempo
         FROM actividad_has_servicios
@@ -271,7 +285,7 @@ class ServiciosController {
         INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
         INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
         WHERE servicio_has_tipo_servicio.shts_has_servicio = ? AND servicio_has_tipo_servicio.shts_has_tipo_servicio = ? 
-        AND actividad_has_servicios.estatus = 1;`,[req.body.servicio, req.body.tipoServicio])
+        AND actividad_has_servicios.estatus = 1;`, [req.body.servicio, req.body.tipoServicio])
         res.json(actividades);
     }
 }

@@ -87,22 +87,12 @@ export class HomeComponent implements OnInit {
 
   getServicios() {
     let depto = ((parseInt(this.sessionStorage.getItem('depto'))) == 3 ? (1) : (parseInt(this.sessionStorage.getItem('depto'))))
-    if (depto == 2 || depto == 1) {
-      this.serviciosService.getServiciosDepto({ depto: depto }).subscribe(
-        res => {
-          this.servicios = res
-        },
-        err => console.error(err)
-      )
-    }
-    else if (depto == 4) {
-      this.serviciosService.getServicios().subscribe(
-        res => {
-          this.servicios = res
-        },
-        err => console.error(err)
-      )
-    }
+    this.serviciosService.getServiciosDepto({ depto: depto }).subscribe(
+      res => {
+        this.servicios = res
+      },
+      err => console.error(err)
+    )
   }
 
   getTiposServicios() {
@@ -134,12 +124,14 @@ export class HomeComponent implements OnInit {
     else {
       this.asignaEquipo = false
     }
-    if (item.depto == 1) {
+    if (item.depto == 1 || item.depto == 6) {
       this.equipoSistemas = this.resEquipoSistemas.filter(ing => ing.depto == 1);
       this.equipoSistemas.push(...this.resEquipoSistemas.filter(ing => ing.depto == 3));
+      this.equipoSistemas.push(...this.resEquipoSistemas.filter(ing => ing.depto == 6));
     }
-    else if (item.depto == 2) {
+    else if (item.depto == 2 || item.depto == 5) {
       this.equipoSistemas = this.resEquipoSistemas.filter(ing => ing.depto == 2);
+      this.equipoSistemas.push(...this.resEquipoSistemas.filter(ing => ing.depto == 5));
     }
   }
 
@@ -264,20 +256,20 @@ export class HomeComponent implements OnInit {
     $('#advertenciaModal').modal('show')
   }
 
-  enviarCorreo(reporte) {
+/*   enviarCorreo(reporte) {
     this.reportesService.enviarEmail({ fecha: moment().format('DD-MM-YYYY'), folio: reporte.folioreporte, hora: moment().format('hh:mm A'), email: reporte.email }).subscribe(
       res => {
         if (res.hasOwnProperty('Ok')) {
-          /* console.log('se envió el correo con éxito') */
+          console.log('se envió el correo con éxito')
         }
       },
       err => {
         alert('ocurrió un error')
       }
     )
-  }
+  } */
 
-  enviarCorreoInterno(reporte) {
+/*   enviarCorreoInterno(reporte) {
     let emailspruebas = 'e.favela@kiosko.com.mx'
     let sucursal = $('#inputSucursal').find('input:text').val()
     let problema = $('#problema option:selected').text()
@@ -287,18 +279,18 @@ export class HomeComponent implements OnInit {
       comments: this.ticket.comentarios, ciudad: ciudad, maq: maquina, problema: problema, correo: this.correo, telefono: this.telefono.toString(), sucursal: sucursal,
       fecha: moment().format('DD-MM-YYYY'), folio: reporte.folioreporte, hora: moment().format('hh:mm A'), email: emailspruebas
     }
-   /*  console.log(reportecontents) */
+    console.log(reportecontents)
     this.reportesService.enviarEmailinterno(reportecontents).subscribe(
       res => {
         if (res.hasOwnProperty('Ok')) {
-          /* console.log('se envió el correo con éxito') */
+          console.log('se envió el correo con éxito')
         }
       },
       err => {
         alert('ocurrió un error')
       }
     )
-  }
+  } */
 
   onKeyUpNoTel() {
     if (this.telefono) {
@@ -341,6 +333,8 @@ export class HomeComponent implements OnInit {
     this.equipoticket = null;
     this.tipoEquipo = null;
     this.noSerieEquipo = null;
+    this.telefono = null;
+    this.correo = null;
     this.getEquipoUsuario();
   }
 
