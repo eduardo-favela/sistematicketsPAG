@@ -124,10 +124,11 @@ export class HomeComponent implements OnInit {
     else {
       this.asignaEquipo = false
     }
-    if (item.depto == 1 || item.depto == 6) {
+    if (item.depto == 1 || item.depto == 6 || item.depto == 7) {
       this.equipoSistemas = this.resEquipoSistemas.filter(ing => ing.depto == 1);
       this.equipoSistemas.push(...this.resEquipoSistemas.filter(ing => ing.depto == 3));
       this.equipoSistemas.push(...this.resEquipoSistemas.filter(ing => ing.depto == 6));
+      this.equipoSistemas.push(...this.resEquipoSistemas.filter(ing => ing.depto == 7));
     }
     else if (item.depto == 2 || item.depto == 5) {
       this.equipoSistemas = this.resEquipoSistemas.filter(ing => ing.depto == 2);
