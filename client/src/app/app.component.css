@@ -16,6 +16,10 @@ body {
   border-radius: 25px;
 }
 
+.sidebar_item{
+  color: white;
+}
+
 button.btntoggle{
   display: block;
   width: 200px;
