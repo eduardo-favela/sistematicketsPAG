@@ -22,20 +22,22 @@ export class AppComponent implements OnInit {
   status: boolean = false;
 
   cantidadTA : any = null;
+  cantidadTO : any = null;
 
   ngOnInit(): void {
     this.ticketsService.data$.subscribe(res => this.cantidadTA = res)  //read the invoked data or default data
-    //this.getTicketsOpen()
+    this.getTicketsOpen()
   }
 
   eventListener(){
     alert('Evento escuchado');
   }
 
-  getTicketsOpen(){
-    this.ticketsService.getTicketsOpen({usuario: this.sessionStorage.getItem('userid')}).subscribe(
-      res=>{
-        this.cantidadTA = res;
+  getTicketsOpen() {
+    this.ticketsService.getTicketsOpen({ usuario: sessionStorage.getItem('userid'), depto: parseInt(sessionStorage.getItem('depto')) }).subscribe(
+      res => {
+        this.cantidadTO = res
+        this.ticketsService.changeData(this.cantidadTO.toString());
       },
       err=>{
         console.error(err)

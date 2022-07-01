@@ -120,11 +120,11 @@ class EquiposController {
     }
 
     public async getEquiposTable(req: Request, res: Response) {
-        await db.query(`SELECT idequipo, equipo, propiedad, no_serie, descripcion, estatus, tipo_equipo AS tipo, marca
+        await db.query(`SELECT idequipo, equipo, propiedad, no_serie, descripcion, estatus, tipo_equipo AS tipo, marca, 
+        comentarios
         FROM equipos
         INNER JOIN tipo ON equipos.tipo_idtipo = tipo.idtipo
-        INNER JOIN marcas ON equipos.marcas_id_marca = marcas.id_marca
-        WHERE estatus = 'ACTIVO';`, function (err: any, result: any, fields: any) {
+        INNER JOIN marcas ON equipos.marcas_id_marca = marcas.id_marca;`, function (err: any, result: any, fields: any) {
             if (err) throw err
             res.json(result)
         })

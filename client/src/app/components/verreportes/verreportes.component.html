@@ -44,7 +44,10 @@
           </div>
         </div>
         <div class="row d-flex justify-content-end" [hidden]="noInfo">
-          <div *ngIf="[sessionStorage.getItem('depto')]=='4'" class="col-md-1 col-sm-3">
+          <!-- <div *ngIf="[sessionStorage.getItem('depto')]=='4' || [sessionStorage.getItem('depto')]=='5' || [sessionStorage.getItem('depto')]=='6'" class="mt-auto mb-auto col-md-3 col-sm-3">
+            <button class="form-control btn btn-primary">Enviar correo a tickets atrasados</button>
+          </div> -->
+          <div *ngIf="[sessionStorage.getItem('depto')]=='4' || [sessionStorage.getItem('depto')]=='5' || [sessionStorage.getItem('depto')]=='6'" class="col-md-1 col-sm-3">
             <a (click)="downloadExcelFile()" class="btn"><img src="../../../assets/excel.png" alt="excel"></a>
           </div>
         </div>

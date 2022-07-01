@@ -117,7 +117,7 @@ export class VerreportesComponent implements OnInit {
   }
 
   getTicketsOpen() {
-    this.ticketsService.getTicketsOpen({ usuario: sessionStorage.getItem('userid') }).subscribe(
+    this.ticketsService.getTicketsOpen({ usuario: sessionStorage.getItem('userid'), depto: parseInt(sessionStorage.getItem('depto')) }).subscribe(
       res => {
         this.cantidadTA = res
         this.ticketsService.changeData(this.cantidadTA.toString());

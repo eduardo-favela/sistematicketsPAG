@@ -145,11 +145,11 @@ class EquiposController {
     }
     getEquiposTable(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.query(`SELECT idequipo, equipo, propiedad, no_serie, descripcion, estatus, tipo_equipo AS tipo, marca
+            yield database_1.default.query(`SELECT idequipo, equipo, propiedad, no_serie, descripcion, estatus, tipo_equipo AS tipo, marca, 
+        comentarios
         FROM equipos
         INNER JOIN tipo ON equipos.tipo_idtipo = tipo.idtipo
-        INNER JOIN marcas ON equipos.marcas_id_marca = marcas.id_marca
-        WHERE estatus = 'ACTIVO';`, function (err, result, fields) {
+        INNER JOIN marcas ON equipos.marcas_id_marca = marcas.id_marca;`, function (err, result, fields) {
                 if (err)
                     throw err;
                 res.json(result);

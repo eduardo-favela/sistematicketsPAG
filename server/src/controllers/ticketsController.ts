@@ -85,7 +85,6 @@ class TicketsController {
 
     public async getTicketsForTable(req: Request, res: Response) {
 
-        let tickets = []
         let condition = ""
         let conditionStatus = ""
 
@@ -105,7 +104,7 @@ class TicketsController {
             conditionStatus = 'AND estatus_idestatus = ' + req.body.estatus
         }
 
-        tickets = await db.query(`SELECT idticket, fecha, fecha_respuesta, descripcion_servicio, comentarios,
+        let tickets = await db.query(`SELECT idticket, fecha, fecha_respuesta, descripcion_servicio, comentarios,
         CONCAT(TRIM(empl.nombre), ' ',TRIM(empl.apellido_paterno), ' ', TRIM(empl.apellido_materno)) AS asignacion,
         CONCAT(TRIM(emp.nombre), ' ',TRIM(emp.apellido_paterno), ' ', TRIM(emp.apellido_materno)) AS empleado,
         CONCAT(servicios.servicio,', ',tipos_servicio.tiposervicio,', ' ,actividades.actividad) AS servicio,
@@ -137,11 +136,36 @@ class TicketsController {
     }
 
     public async getTicketsOpen(req: Request, res: Response) {
+        /* SELECT count(*) as cantidad from tickets
+        INNER JOIN estatus ON tickets.estatus_idestatus = estatus.idestatus
+        INNER JOIN equipo_sistemas ON tickets.asignacion = equipo_sistemas.empleados_idempleado
+        INNER JOIN empleados AS empl ON equipo_sistemas.empleados_idempleado = empl.idempleado
+        where empl.idempleado = ? AND fecha < SUBTIME(current_timestamp, '24:00:00') AND estatus.idestatus != 3; */
+
+        let condition = ""
+        
+        if (req.body.depto != 4 && req.body.depto != 5 && req.body.depto != 6) {
+            condition = 'AND empl.idempleado = ' + req.body.usuario;
+        }
+        else {
+            if (req.body.depto == 5) {
+                'AND servicios.depto = 2'
+            }
+            else if (req.body.depto == 6){
+                'AND servicios.depto = 1'
+            }
+        }
+
         const cantidad = await db.query(`SELECT count(*) as cantidad from tickets
         INNER JOIN estatus ON tickets.estatus_idestatus = estatus.idestatus
         INNER JOIN equipo_sistemas ON tickets.asignacion = equipo_sistemas.empleados_idempleado
         INNER JOIN empleados AS empl ON equipo_sistemas.empleados_idempleado = empl.idempleado
-        where empl.idempleado = ? AND fecha < SUBTIME(current_timestamp, '24:00:00') AND estatus.idestatus != 3;`, [req.body.usuario]);
+        INNER JOIN actividad_has_servicios ON tickets.actividad_has_shts = actividad_has_servicios.id_actividad_has_servicios
+        INNER JOIN actividades ON actividad_has_servicios.ahs_has_actividad = actividades.id_actividad
+        INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio = servicio_has_tipo_servicio.idservicio_has_tipo_servicio
+        INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
+        INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
+        WHERE fecha < SUBTIME(current_timestamp, '24:00:00') AND estatus.idestatus != 3 ${condition};`);
         res.json(cantidad[0].cantidad);
     }
 

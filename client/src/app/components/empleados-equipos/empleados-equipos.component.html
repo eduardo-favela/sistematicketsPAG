@@ -209,6 +209,7 @@
                           <th>Descripcion</th>
                           <th>Propiedad</th>
                           <th>Estatus</th>
+                          <th>Comentarios</th>
                           <th>Editar</th>
                         </tr>
                       </thead>
@@ -222,6 +223,7 @@
                           <td>{{equipo.descripcion}}</td>
                           <td>{{equipo.propiedad}}</td>
                           <td>{{equipo.estatus}}</td>
+                          <td>{{equipo.comentarios}}</td>
                           <td class="text-center">
                           <button style="height:auto;" (click)="editEquipo(equipo)" type="button" class="ml-2 mt-2 btn btn-primary"> <i class="fas fa-edit"></i> </button>
                           <button style="height:auto;" (click)="eliminaEq(equipo.idequipo)" type="button" class="ml-2 mt-2 btn btn-danger"> <i class="fas fa-window-close"></i> </button>
