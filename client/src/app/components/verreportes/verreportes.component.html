@@ -29,24 +29,28 @@
                 </div>
               </form>
             </div>
-            <div class="col-md-4 col-sm-12 mt-4">
-              <div class="btn-group" role="group" ngbRadioGroup name="estatusTickets" [(ngModel)]="estatusFilter" (ngModelChange)="searchTicketsForTable()">
-                <label ngbButtonLabel class="btn btn-outline-primary">
-                  <input ngbButton type="radio" class="btn-check" [value]="0"> TODOS
-                </label>
-                <label *ngFor="let estatus of estatusTickets" ngbButtonLabel class="btn btn-outline-primary">
-                  <input ngbButton type="radio" class="btn-check" [value]=estatus.idestatus> {{estatus.estatus}}
-                </label>
-              </div>
-          </div>
-          <div [style]="{'text-align':'center'}" class="col-md-1 col-sm-12 mt-4">
-            <button [style]="{'height': '3rem', 'width':'3rem'}" (click)="searchTicketsForTable()" type="button" class="form-control btn btn-outline-primary"><i class="fas fa-search"></i></button>
-          </div>
+            <div class="col-md-2 col-sm-12 mt-3">
+              <label for="status">Estatus</label>
+              <select class="form-control" name="estatusTickets" id="estatusTickets" [(ngModel)]="estatusFilter" (ngModelChange)="searchTicketsForTable()">
+                <option [value]="0">TODOS</option>
+                <option *ngFor="let estatus of estatusTickets" [value]=estatus.idestatus>{{estatus.estatus}}</option>
+              </select>
+            </div>
+            <div *ngIf="[sessionStorage.getItem('depto')]=='4' || [sessionStorage.getItem('depto')]=='5' || [sessionStorage.getItem('depto')]=='6'" class="col-md-2 col-sm-12 mt-3">
+              <label for="equipoSistemas">Equipo de sistemas</label>
+              <select class="form-control" name="equipoSistemas" id="equipoSistemas" [(ngModel)]="esistemasFilter" (ngModelChange)="searchTicketsForTable()">
+                <option [value]="0">TODOS</option>
+                <option *ngFor="let ing of equipoSistemas" [value]=ing.idempleado>{{ing.nombre}}</option>
+              </select>
+            </div>
+            <div [style]="{'text-align':'center'}" class="col-md-1 col-sm-12 mt-auto">
+              <button [style]="{'height': '3rem', 'width':'3rem'}" (click)="searchTicketsForTable()" type="button" class="form-control btn btn-outline-primary"><i class="fas fa-search"></i></button>
+            </div>
         </div>
-        <div class="row d-flex justify-content-end" [hidden]="noInfo">
-          <!-- <div *ngIf="[sessionStorage.getItem('depto')]=='4' || [sessionStorage.getItem('depto')]=='5' || [sessionStorage.getItem('depto')]=='6'" class="mt-auto mb-auto col-md-3 col-sm-3">
+        <div class="row d-flex justify-content-between mt-3" [hidden]="noInfo">
+          <div *ngIf="[sessionStorage.getItem('depto')]=='4' || [sessionStorage.getItem('depto')]=='5' || [sessionStorage.getItem('depto')]=='6'" class="mt-auto mb-auto col-md-3 col-sm-3">
             <button class="form-control btn btn-primary">Enviar correo a tickets atrasados</button>
-          </div> -->
+          </div>
           <div *ngIf="[sessionStorage.getItem('depto')]=='4' || [sessionStorage.getItem('depto')]=='5' || [sessionStorage.getItem('depto')]=='6'" class="col-md-1 col-sm-3">
             <a (click)="downloadExcelFile()" class="btn"><img src="../../../assets/excel.png" alt="excel"></a>
           </div>

@@ -9,7 +9,11 @@ export class EquipoSistemasService {
 
   constructor(private http: HttpClient) { }
 
-  getEquipoSistemas(){
+  getEquipoSistemas() {
     return this.http.get(`${API_URI}/equipoSistemas/getEquipoSistemas`)
+  }
+
+  getEquipoSistemasFilter(depto) {
+    return this.http.post(`${API_URI}/equipoSistemas/getEquipoSistemasFiltro`, depto)
   }
 }

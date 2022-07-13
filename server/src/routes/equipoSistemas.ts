@@ -10,6 +10,7 @@ class EquipoSistemasRouter {
 
     config(): void{
         this.router.get('/getEquipoSistemas', equipoSistemasController.getEquipoSistemas)
+        this.router.post('/getEquipoSistemasFiltro', equipoSistemasController.getEquipoSistemasFiltro)
     }
 }
 

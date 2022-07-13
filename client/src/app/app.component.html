@@ -8,9 +8,10 @@
         <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
           <button routerLink="/" class="nav-link active text-start sidebar_item" id="generarTicket" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" >Generar ticket</button>
           <button routerLink="/vereportes" class="nav-link text-start sidebar_item" id="gestionarTicket" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" >Gestionar tickets</button>
-          <button *ngIf="[sessionStorage.getItem('depto')]=='4' || [sessionStorage.getItem('depto')]=='5' || [sessionStorage.getItem('depto')]=='6'" routerLink="/mngusuarios" class="nav-link text-start sidebar_item" id="getsionarUsuario" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" >Gestionar usuarios</button>
+          <!-- <button *ngIf="[sessionStorage.getItem('depto')]=='4' || [sessionStorage.getItem('depto')]=='5' || [sessionStorage.getItem('depto')]=='6'" routerLink="/mngusuarios" class="nav-link text-start sidebar_item" id="getsionarUsuario" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" >Gestionar usuarios</button> -->
           <button *ngIf="[sessionStorage.getItem('depto')]=='4' || [sessionStorage.getItem('depto')]=='5' || [sessionStorage.getItem('depto')]=='6'" routerLink="/mngservicios" class="nav-link text-start sidebar_item" id="gestionarServicios" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" >Gestionar servicios</button>
           <button *ngIf="[sessionStorage.getItem('depto')]=='4' || [sessionStorage.getItem('depto')]=='5' || [sessionStorage.getItem('depto')]=='6'" routerLink="/mngcolaboradores" class="nav-link text-start sidebar_item" id="gestionarColabs" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" >Gestionar colaboradores y equipos</button>
+          <button *ngIf="[sessionStorage.getItem('depto')]=='4' || [sessionStorage.getItem('depto')]=='5' || [sessionStorage.getItem('depto')]=='6'" routerLink="/estadisticos" class="nav-link text-start sidebar_item" id="estadisticos" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" >Estadísticos</button>
         </div>
       </div>
     </div>

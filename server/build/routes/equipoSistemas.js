@@ -12,6 +12,7 @@ class EquipoSistemasRouter {
     }
     config() {
         this.router.get('/getEquipoSistemas', equipoSistemas_1.default.getEquipoSistemas);
+        this.router.post('/getEquipoSistemasFiltro', equipoSistemas_1.default.getEquipoSistemasFiltro);
     }
 }
 const equipoSistemasRouter = new EquipoSistemasRouter();

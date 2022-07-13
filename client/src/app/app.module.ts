@@ -22,6 +22,7 @@ import * as $ from 'jquery';
 import { DataTablesModule } from 'angular-datatables';
 import * as bootstrap from 'bootstrap';
 import { EmpleadosEquiposComponent } from './components/empleados-equipos/empleados-equipos.component';
+import { EstadisticosComponent } from './components/estadisticos/estadisticos.component';
 
 registerLocaleData(localeEs)
 
@@ -32,6 +33,7 @@ const routes: Route[] = [
   { path: 'mngusuarios', component: UsuariosComponent },
   { path: 'mngservicios', component: MngServiciosComponent },
   { path: 'mngcolaboradores', component: EmpleadosEquiposComponent },
+  { path: 'estadisticos', component: EstadisticosComponent },
 ]
 
 @NgModule({
@@ -42,7 +44,8 @@ const routes: Route[] = [
     LoginComponent,
     UsuariosComponent,
     MngServiciosComponent,
-    EmpleadosEquiposComponent
+    EmpleadosEquiposComponent,
+    EstadisticosComponent
   ],
   imports: [
     BrowserModule,

@@ -87,16 +87,20 @@ class TicketsController {
 
         let condition = ""
         let conditionStatus = ""
+        let conditionAssigned = ""
 
         if (req.body.depto != 4 && req.body.depto != 5 && req.body.depto != 6) {
             condition = 'AND empl.idempleado = ' + req.body.usuario
         }
         else {
-            if (req.body.depto == 5) {
-                'AND servicios.depto = 2'
+            if (req.body.usuario != 0) {
+                conditionAssigned = 'AND tickets.asignacion = ' + req.body.usuario
             }
-            else if (req.body.depto == 6){
-                'AND servicios.depto = 1'
+            if (req.body.depto == 5) {
+                condition = 'AND servicios.depto = 2'
+            }
+            else if (req.body.depto == 6) {
+                condition = 'AND servicios.depto = 1'
             }
         }
 
@@ -129,8 +133,7 @@ class TicketsController {
         INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio = servicio_has_tipo_servicio.idservicio_has_tipo_servicio
         INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
         INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
-        WHERE tickets.fecha BETWEEN ? AND ? ${condition} ${conditionStatus};`,
-            [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
+        WHERE tickets.fecha BETWEEN ? AND ? ${condition} ${conditionStatus} ${conditionAssigned};`, [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
 
         res.json(tickets);
     }
@@ -143,7 +146,7 @@ class TicketsController {
         where empl.idempleado = ? AND fecha < SUBTIME(current_timestamp, '24:00:00') AND estatus.idestatus != 3; */
 
         let condition = ""
-        
+
         if (req.body.depto != 4 && req.body.depto != 5 && req.body.depto != 6) {
             condition = 'AND empl.idempleado = ' + req.body.usuario;
         }
@@ -151,7 +154,7 @@ class TicketsController {
             if (req.body.depto == 5) {
                 'AND servicios.depto = 2'
             }
-            else if (req.body.depto == 6){
+            else if (req.body.depto == 6) {
                 'AND servicios.depto = 1'
             }
         }
@@ -213,6 +216,18 @@ class TicketsController {
                 .string(heading)
         })
         ///////////Se consultan los reportes///////////
+
+        let statusCondition = ''
+        let assignedCondition = ''
+
+        if(req.body.usuario != 0){
+            assignedCondition = 'AND tickets.asignacion = ' + req.body.usuario
+        }
+
+        if(req.body.estatus!=0){
+            statusCondition = 'AND estatus_idestatus = ' + req.body.estatus
+        }
+
         let reportesfexcel = await db.query(`SELECT concat(idticket,'') as folio, concat(date_format(fecha,'%d-%m-%Y %h:%i:%s %p'),'') as 'fecha de ticket', concat(date_format(fecha_respuesta,'%d-%m-%Y %h:%i:%s %p'),'') as 'fecha de respuesta',
         descripcion_servicio, concat(comentarios,'') as comentarios,
                     CONCAT(TRIM(empl.nombre), ' ',TRIM(empl.apellido_paterno), ' ', TRIM(empl.apellido_materno)) AS asignacion,
@@ -237,9 +252,8 @@ class TicketsController {
                     INNER JOIN servicio_has_tipo_servicio ON actividad_has_servicios.ahs_has_servicio = servicio_has_tipo_servicio.idservicio_has_tipo_servicio
                     INNER JOIN servicios ON servicio_has_tipo_servicio.shts_has_servicio=servicios.idservicios
                     INNER JOIN tipos_servicio ON servicio_has_tipo_servicio.shts_has_tipo_servicio=tipos_servicio.idtipos_servicio
-                    WHERE tickets.fecha BETWEEN ? AND ? ORDER BY folio;`,
+                    WHERE tickets.fecha BETWEEN ? AND ? ${statusCondition} ${assignedCondition} ORDER BY folio;`,
             [req.body.fecha1 + ' 00:00', req.body.fecha2 + ' 23:59']);
-        /*  console.log(reportesfexcel) */
         let rowIndex = 2
         ///////////Se escriben las filas/registros en la hoja de excel///////////
         reportesfexcel.forEach((record: any) => {

@@ -1,0 +1,15 @@
+p{
+  margin-bottom: auto;
+}
+
+p, h3, label,h5{
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.cardheader{
+  background-color: #d13138;
+  text-align: center;
+}

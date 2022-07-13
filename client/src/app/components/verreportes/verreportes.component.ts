@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 
 import { TicketsService } from 'src/app/services/tickets.service';
+import { EquipoSistemasService } from 'src/app/services/equipo-sistemas.service';
 
 @Component({
   selector: 'app-verreportes',
@@ -22,6 +23,7 @@ export class VerreportesComponent implements OnInit {
   fechaInicial: NgbDate = null
   fechaFinal: NgbDate = new NgbDate(parseInt(moment().format('YYYY')), parseInt(moment().format('MM')), parseInt(moment().format('DD')));
   estatusFilter = 0;
+  esistemasFilter = 0;
   sessionStorage = sessionStorage
 
   editingTicket: any = null
@@ -39,11 +41,13 @@ export class VerreportesComponent implements OnInit {
 
   estatusTickets: any = []
 
+  equipoSistemas: any = []
+
   ticketSelected: any = null
 
   cantidadTA: any = null;
 
-  constructor(private ticketsService: TicketsService) { }
+  constructor(private ticketsService: TicketsService, private equipoSistemasService: EquipoSistemasService) { }
 
   ngOnInit(): void {
 
@@ -67,6 +71,7 @@ export class VerreportesComponent implements OnInit {
 
     this.getTicketsForTable()
     this.getEstatusTickets()
+    this.getEquipoSistemas()
   }
 
   ////////////////////////////////////////////////VARIABLES DE TABLA////////////////////////////////////////////////
@@ -92,6 +97,17 @@ export class VerreportesComponent implements OnInit {
     )
   }
 
+  getEquipoSistemas() {
+    this.equipoSistemasService.getEquipoSistemasFilter({ depto: parseInt(sessionStorage.getItem('depto')) }).subscribe(
+      res => {
+        this.equipoSistemas = res
+      },
+      err => {
+        console.error(err)
+      }
+    )
+  }
+
   cancelarCambios() {
     this.clearInputsEditModal()
   }
@@ -105,7 +121,7 @@ export class VerreportesComponent implements OnInit {
       '-' + this.fechaFinal.day.toString()));
 
     let fecha = 'Reportes tickets ' + moment().format('DDMMYYYYhhmmA')
-    this.ticketsService.downloadexcelfile({ fecha1: fecha1, fecha2: fecha2, fecha: fecha }).subscribe(
+    this.ticketsService.downloadexcelfile({ fecha1: fecha1, fecha2: fecha2, fecha: fecha, estatus: this.estatusFilter, usuario: this.esistemasFilter }).subscribe(
       res => {
         /* console.log(res) */
         FileSaver.saveAs(res, fecha + ".xlsx")
@@ -122,7 +138,7 @@ export class VerreportesComponent implements OnInit {
         this.cantidadTA = res
         this.ticketsService.changeData(this.cantidadTA.toString());
       },
-      err=>{
+      err => {
         console.error(err)
       }
     )
@@ -142,7 +158,14 @@ export class VerreportesComponent implements OnInit {
       '-' + this.fechaFinal.month.toString() +
       '-' + this.fechaFinal.day.toString()));
     this.getTicketsOpen()
-    this.ticketsService.getTicketsForTable({ estatus: this.estatusFilter, fecha1: fecha1, fecha2: fecha2, usuario: parseInt(sessionStorage.getItem('userid')), depto: parseInt(sessionStorage.getItem('depto')) }).subscribe(
+    let usuario = null
+    if (sessionStorage.getItem('depto') != '4' && sessionStorage.getItem('depto') != '5' && sessionStorage.getItem('depto') != '6') {
+      usuario = parseInt(sessionStorage.getItem('userid'))
+    }
+    else {
+      usuario = this.esistemasFilter
+    }
+    this.ticketsService.getTicketsForTable({ estatus: this.estatusFilter, fecha1: fecha1, fecha2: fecha2, usuario: usuario, depto: parseInt(sessionStorage.getItem('depto')) }).subscribe(
       res => {
         this.tickets = res
         if (this.tickets.length > 0) {

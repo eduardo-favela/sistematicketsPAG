@@ -38,6 +38,7 @@ export class AppComponent implements OnInit {
       res => {
         this.cantidadTO = res
         this.ticketsService.changeData(this.cantidadTO.toString());
+        this.ticketsService.data$.subscribe(res => this.cantidadTA = res)
       },
       err=>{
         console.error(err)
@@ -53,6 +54,7 @@ export class AppComponent implements OnInit {
         $('#getsionarUsuario').removeClass('active');
         $('#gestionarServicios').removeClass('active');
         $('#gestionarColabs').removeClass('active');
+        $('#estadisticos').removeClass('active');
         break;
       case '/vereportes':
         $('#generarTicket').removeClass('active');
@@ -60,12 +62,14 @@ export class AppComponent implements OnInit {
         $('#getsionarUsuario').removeClass('active');
         $('#gestionarServicios').removeClass('active');
         $('#gestionarColabs').removeClass('active');
+        $('#estadisticos').removeClass('active');
         break;
       case '/mngusuarios':
         $('#generarTicket').removeClass('active');
         $('#gestionarTicket').removeClass('active');
         $('#getsionarUsuario').addClass('active');
         $('#gestionarServicios').removeClass('active');
+        $('#estadisticos').removeClass('active');
         $('#gestionarColabs').removeClass('active');
         break;
       case '/mngservicios':
@@ -73,6 +77,7 @@ export class AppComponent implements OnInit {
         $('#gestionarTicket').removeClass('active');
         $('#getsionarUsuario').removeClass('active');
         $('#gestionarServicios').addClass('active');
+        $('#estadisticos').removeClass('active');
         $('#gestionarColabs').removeClass('active');
         break;
       case '/mngcolaboradores':
@@ -80,9 +85,17 @@ export class AppComponent implements OnInit {
         $('#gestionarTicket').removeClass('active');
         $('#getsionarUsuario').removeClass('active');
         $('#gestionarServicios').removeClass('active');
+        $('#estadisticos').removeClass('active');
         $('#gestionarColabs').addClass('active');
         break;
-
+      case '/estadisticos':
+        $('#generarTicket').removeClass('active');
+        $('#gestionarTicket').removeClass('active');
+        $('#getsionarUsuario').removeClass('active');
+        $('#gestionarServicios').removeClass('active');
+        $('#gestionarColabs').removeClass('active');
+        $('#estadisticos').addClass('active');
+        break;
       default:
         break;
     }
