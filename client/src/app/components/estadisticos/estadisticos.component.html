@@ -3,6 +3,36 @@
     <div class="card mb-3">
       <div class="card-header text-white cardheader">ESTADÍSTICOS</div>
       <div class="card-body">
+        <div class="row">
+          <div class="col-md-3 col-sm-12 mt-3">
+            <label for="rangoFecha1">Rango de fecha 1</label>
+            <form class="row row-cols-sm-auto align-middle">
+              <div class="col-12">
+                <div class="input-group">
+                  <input class="form-control" placeholder="dd/mm/aaaa"
+                    name="d2" #c2="ngModel" [(ngModel)]="fechaInicial"
+                    ngbDatepicker #d1="ngbDatepicker" (dateSelect)="fechaChange()">
+                  <button class="btn btn-outline-secondary fas fa-calendar-alt"
+                    (click)="d1.toggle()" type="button"></button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-3 col-sm-12 mt-3">
+            <label for="rangoFecha2">Rango de fecha 2</label>
+            <form class="row row-cols-sm-auto align-middle">
+              <div class="col-12">
+                <div class="input-group">
+                  <input class="form-control" placeholder="dd/mm/aaaa" name="d2"
+                    #c2="ngModel" [(ngModel)]="fechaFinal" ngbDatepicker
+                    #d2="ngbDatepicker" (dateSelect)="fechaChange()">
+                  <button class="btn btn-outline-secondary fas fa-calendar-alt"
+                    (click)="d2.toggle()" type="button"></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
         <hr>
       </div>
     </div>

@@ -9,6 +9,7 @@ import usuariosRoutes from './routes/usuariosRoutes';
 import serviciosRoutes from './routes/serviciosRoutes';
 import equipoSistemas from './routes/equipoSistemas';
 import equiposRoutes from './routes/equiposRoutes';
+import estadisticosRoutes from './routes/estadisticosRoutes';
 
 class Server {
 
@@ -35,6 +36,7 @@ class Server {
         this.app.use('/api/servicios',serviciosRoutes)
         this.app.use('/api/equipoSistemas',equipoSistemas)
         this.app.use('/api/equipos',equiposRoutes)
+        this.app.use('/api/estadisticos',estadisticosRoutes)
     }
     start(): void {
         this.app.listen(this.app.get('port'), () => {

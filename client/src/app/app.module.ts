@@ -23,6 +23,7 @@ import { DataTablesModule } from 'angular-datatables';
 import * as bootstrap from 'bootstrap';
 import { EmpleadosEquiposComponent } from './components/empleados-equipos/empleados-equipos.component';
 import { EstadisticosComponent } from './components/estadisticos/estadisticos.component';
+import { NgChartsModule } from 'ng2-charts';
 
 registerLocaleData(localeEs)
 
@@ -61,6 +62,7 @@ const routes: Route[] = [
     NgbPaginationModule,
     NgbAlertModule,
     DataTablesModule,
+    NgChartsModule
   ],
   providers: [
   ],
