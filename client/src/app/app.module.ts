@@ -11,7 +11,6 @@ import { FormsModule } from '@angular/forms'
 import { SidebarModule } from 'ng-sidebar';
 import { registerLocaleData } from '@angular/common'
 import localeEs from '@angular/common/locales/es-MX';
-import { NgxGaugeModule } from 'ngx-gauge';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { VerreportesComponent } from './components/verreportes/verreportes.component';
 import { LoginComponent } from './components/login/login.component';
@@ -57,7 +56,6 @@ const routes: Route[] = [
     FormsModule,
     AutocompleteLibModule,
     DpDatePickerModule,
-    NgxGaugeModule,
     NgbModule,
     NgbPaginationModule,
     NgbAlertModule,

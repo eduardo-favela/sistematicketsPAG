@@ -45,7 +45,6 @@
     "ng2-date-picker": "^11.0.0",
     "ng2-datepicker": "^11.1.0",
     "ngx-echarts": "^14.0.0",
-    "ngx-gauge": "^3.0.0",
     "popper.js": "^1.16.1",
     "rxjs": "~6.6.0",
     "tsc": "^2.0.3",
