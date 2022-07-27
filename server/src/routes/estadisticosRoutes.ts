@@ -1,15 +1,17 @@
 import { Router } from 'express'
-import estadisticosController  from '../controllers/estadisticosController'
+import estadisticosController from '../controllers/estadisticosController'
 
 class EstadisticosRouter {
     public router: Router = Router()
 
-    constructor(){
+    constructor() {
         this.config()
     }
 
-    config(): void{
+    config(): void {
         this.router.post('/getStatistics', estadisticosController.getStatistics)
+        this.router.post('/getStatsTipoServicio', estadisticosController.getStatsTipoServicio)
+        this.router.post('/getStatsActividad', estadisticosController.getStatsActividad)
     }
 }
 

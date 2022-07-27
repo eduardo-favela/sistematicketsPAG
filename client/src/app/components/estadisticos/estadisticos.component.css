@@ -1,15 +1,31 @@
-p{
+p {
   margin-bottom: auto;
 }
 
-p, h3, label,h5{
+p,
+h3,
+label,
+h5 {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
 
-.cardheader{
+.cardheader {
   background-color: #d13138;
   text-align: center;
+}
+
+.download-btn {
+  border-radius: 5rem;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+}
+
+.download-btn i {
+  margin: auto;
+  font-size: large;
+  pointer-events: none;
 }

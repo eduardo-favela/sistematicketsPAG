@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = {
     database: {
-        host: 'localhost',
-        user: 'root',
-        password: '',
+        host: '200.100.100.50',
+        user: 'admin',
+        password: '12345',
         database: 'sistematicketspag',
         connectionLimit: 30
     }

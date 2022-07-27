@@ -26,9 +26,13 @@
               "src/favicon.ico",
               "src/assets"
             ],
+            "allowedCommonJsDependencies": [
+              "moment",
+              "jquery",
+              "file-saver"
+            ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-
               "src/styles.css",
               "node_modules/datatables.net-responsive-dt/css/responsive.dataTables.css"
             ],
@@ -101,9 +105,7 @@
               "./node_modules/jqwidgets-ng/jqwidgets/styles/jqx.base.css",
               "./node_modules/jqwidgets-ng/jqwidgets/styles/jqx.material.css"
             ],
-            "scripts": [
-
-            ]
+            "scripts": []
           }
         },
         "lint": {
@@ -133,6 +135,5 @@
         }
       }
     }
-  },
-  "defaultProject": "client"
+  }
 }

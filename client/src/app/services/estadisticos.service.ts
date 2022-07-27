@@ -9,7 +9,15 @@ export class EstadisticosService {
 
   constructor(private http: HttpClient) { }
 
-  getStatistics(fechas){
-    return this.http.post(`${API_URI}/estadisticos/getStatistics`,fechas)
+  getStatistics(fechas) {
+    return this.http.post(`${API_URI}/estadisticos/getStatistics`, fechas)
+  }
+
+  getStatsTipoServicio(fechas) {
+    return this.http.post(`${API_URI}/estadisticos/getStatsTipoServicio`, fechas)
+  }
+
+  getStatsActividad(fechas) {
+    return this.http.post(`${API_URI}/estadisticos/getStatsActividad`, fechas)
   }
 }

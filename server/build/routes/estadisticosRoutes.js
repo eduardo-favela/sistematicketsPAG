@@ -12,6 +12,8 @@ class EstadisticosRouter {
     }
     config() {
         this.router.post('/getStatistics', estadisticosController_1.default.getStatistics);
+        this.router.post('/getStatsTipoServicio', estadisticosController_1.default.getStatsTipoServicio);
+        this.router.post('/getStatsActividad', estadisticosController_1.default.getStatsActividad);
     }
 }
 const estadisticosRouter = new EstadisticosRouter();

@@ -3,22 +3,23 @@
     <div class="card mb-3">
       <div class="card-header text-white cardheader">ESTADÍSTICOS</div>
       <div class="card-body">
-        <div class="row">
-          <div class="col-md-3 col-sm-12 mt-3">
+        <div class="row d-flex justify-content-around">
+          <div class="col-md-4 col-sm-12 mt-3">
             <label for="rangoFecha1">Rango de fecha 1</label>
             <form class="row row-cols-sm-auto align-middle">
               <div class="col-12">
                 <div class="input-group">
                   <input class="form-control" placeholder="dd/mm/aaaa"
                     name="d2" #c2="ngModel" [(ngModel)]="fechaInicial"
-                    ngbDatepicker #d1="ngbDatepicker" (dateSelect)="fechaChange()">
+                    ngbDatepicker #d1="ngbDatepicker"
+                    (dateSelect)="fechaChange()">
                   <button class="btn btn-outline-secondary fas fa-calendar-alt"
                     (click)="d1.toggle()" type="button"></button>
                 </div>
               </div>
             </form>
           </div>
-          <div class="col-md-3 col-sm-12 mt-3">
+          <div class="col-md-4 col-sm-12 mt-3">
             <label for="rangoFecha2">Rango de fecha 2</label>
             <form class="row row-cols-sm-auto align-middle">
               <div class="col-12">
@@ -32,8 +33,65 @@
               </div>
             </form>
           </div>
+          <div class="col-md-4 col-sm-12 mt-3">
+            <label for="tipoGrafica">Seleccionar gráfica</label>
+            <select name="tipoGrafica" id="tipoGrafica" [(ngModel)]="tipoGrafica" (change)="getStatistics()" class="form-control">
+              <option value=0 selected>Soportes por UEN</option>
+              <option value=1>Soportes por area de servicio</option>
+            </select>
+          </div>
         </div>
         <hr>
+        <div class="row d-flex justify-content-center text-center">
+
+          <div class="col-md-8">
+            <div class="row d-flex justify-content-center">
+              <div class="col-md-10">
+                <h5 class="chart-title m-4">{{chartTitle}}</h5>
+                <hr>
+              </div>
+            </div>
+            <div class="row">
+              <canvas baseChart
+                [hidden]="hideFirstLevelCharts"
+                [data]="barChartDatafilled"
+                [options]="barChartOptions"
+                [plugins]="barChartPlugins"
+                [type]="barChartType"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)">
+              </canvas>
+              <canvas baseChart
+                [hidden]="hideSecondLevelCharts"
+                [data]="tipoServicioDatafilled"
+                [options]="barChartOptions"
+                [plugins]="barChartPlugins"
+                [type]="barChartType"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartTSClicked($event)">
+              </canvas>
+              <canvas baseChart
+                [hidden]="hideThirdLevelCharts"
+                [data]="actividadDatafilled"
+                [options]="barChartOptions"
+                [plugins]="barChartPlugins"
+                [type]="barChartType"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartAClicked($event)">
+              </canvas>
+            </div>
+            <div class="row d-flex justify-content-end">
+              <div class="col-md-2">
+                <h4>Total: {{totalChart}}</h4>
+              </div>
+              <div class="col-md-1">
+                <a class="btn btn-primary form-control download-btn" href="#"
+                  (click)="downloadCanvas($event)"><i class="fas fa-download"
+                    aria-hidden="true" disabled></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
