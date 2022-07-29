@@ -177,11 +177,62 @@
                       <option *ngFor="let marca of marcas" value = {{marca.marca}}></option>
                     </datalist>
                   </div>
+                  <div class="col-md-4 mt-3">
+                    <label for="statusEquipo" class="form-label">Estatus</label>
+                    <select [disabled]="loadingE" [(ngModel)]="equipo.estatus" (change)="checkFormE('estatus')" id="estatusInput" class="form-select" aria-label="Default select example">
+                      <option selected disabled value = null>Seleccione una opción...</option>
+                      <option value = "ACTIVO">ACTIVO</option>
+                      <option value = "INACTIVO">INACTIVO</option>
+                      <option value = "STOCK">STOCK</option>
+                    </select>
+                    <div class="invalid-feedback">
+                      Por favor, seleccione una opción
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 mt-3">
+                    <label for="ubicacionEqInput" class="form-label">Ubicación</label>
+                    <input [disabled]="loadingE" #ubicacionEqInput class="form-control" list="datalistUbicacionEq" (change)="ubicacionEqChanged(ubicacionEqInput.value)" id="ubicacionEqInput" placeholder="Selecciona una UEN...">
+                    <div class="invalid-feedback">
+                      Por favor, elija una UEN.
+                    </div>
+                    <datalist id="datalistUbicacionEq">
+                      <option *ngFor="let uen of uens" value = {{uen.uen}}></option>
+                    </datalist>
+                  </div>
+                  <div class="col-md-4 mt-3">
+                    <label for="pertenenciaEqInput" class="form-label">Pertenencia</label>
+                    <input [disabled]="loadingE" #pertenenciaEqInput class="form-control" list="datalistPertenenciaEq" (change)="pertenenciaEqChanged(pertenenciaEqInput.value)" id="pertenenciaEqInput" placeholder="Selecciona una UEN...">
+                    <div class="invalid-feedback">
+                      Por favor, elija una UEN.
+                    </div>
+                    <datalist id="datalistPertenenciaEq">
+                      <option *ngFor="let uen of uens" value = {{uen.uen}}></option>
+                    </datalist>
+                  </div>
+                  <div class="col-md-4 mt-3">
+                    <label for="puestoEquipo" class="form-label">Puesto</label>
+                    <input [disabled]="loadingE" #puestoEquipoInput class="form-control" list="datalistPuestoEq" (change)="puestoEqChanged(puestoEquipoInput.value)" id="puestoEquipoInput" placeholder="Selecciona un puesto...">
+                    <div class="invalid-feedback">
+                      Por favor, elija un puesto.
+                    </div>
+                    <datalist id="datalistPuestoEq">
+                      <option *ngFor="let puesto of puestos" value = {{puesto.puesto}}></option>
+                    </datalist>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col-md-6 mt-3">
                     <label for="descripcionTA" class="form-label">Descripción</label>
                     <textarea [disabled]="loadingE" (keyup)="checkFormE('descripcion')" id="descripcionTA" placeholder="Ingrese la descripción del equipo..." class="form-control" id="descripcionTA" rows="3" [(ngModel)]="equipo.descripcion"></textarea>
+                    <div class="invalid-feedback">
+                      Por favor, escriba una descripción del equipo.
+                    </div>
+                  </div>
+                  <div class="col-md-6 mt-3">
+                    <label for="comentariosTA" class="form-label">Comentarios</label>
+                    <textarea [disabled]="loadingE" (keyup)="checkFormE('comentarios')" id="comentariosTA" placeholder="Ingrese comentarios del equipo..." class="form-control" id="comentariosTA" rows="3" [(ngModel)]="equipo.comentarios"></textarea>
                     <div class="invalid-feedback">
                       Por favor, escriba una descripción del equipo.
                     </div>
@@ -209,6 +260,9 @@
                           <th>Descripcion</th>
                           <th>Propiedad</th>
                           <th>Estatus</th>
+                          <th>Ubicacion</th>
+                          <th>Pertenencia</th>
+                          <th>Puesto</th>
                           <th>Comentarios</th>
                           <th>Editar</th>
                         </tr>
@@ -223,6 +277,9 @@
                           <td>{{equipo.descripcion}}</td>
                           <td>{{equipo.propiedad}}</td>
                           <td>{{equipo.estatus}}</td>
+                          <td>{{equipo.ubicacion}}</td>
+                          <td>{{equipo.pertenencia}}</td>
+                          <td>{{equipo.puesto}}</td>
                           <td>{{equipo.comentarios}}</td>
                           <td class="text-center">
                           <button style="height:auto;" (click)="editEquipo(equipo)" type="button" class="ml-2 mt-2 btn btn-primary"> <i class="fas fa-edit"></i> </button>
@@ -525,11 +582,62 @@
                 <option *ngFor="let marca of marcas" value = {{marca.marca}}></option>
               </datalist>
             </div>
+            <div class="col-md-4 mt-3">
+              <label for="estatusInputEE">Estatus</label>
+              <select [disabled]="loadingEE" [(ngModel)]="equipoEditing.estatus" (change)="checkFormEE('estatus')" id="estatusInputEE" class="form-select">
+                <option selected disabled value = null>Seleccione una opción...</option>
+                <option value = "ACTIVO">ACTIVO</option>
+                <option value = "INACTIVO">INACTIVO</option>
+                <option value = "STOCK">STOCK</option>
+              </select>
+              <div class="invalid-feedback">
+                Por favor, seleccione una opción
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 mt-3">
+              <label for="ubicacionEqEInput" class="form-label">Ubicación</label>
+              <input [(ngModel)]="eqEditingUbicacion" [disabled]="loadingEE" #ubicacionEqEInput class="form-control" list="datalistUbicacionEqE" (change)="ubicacionEqEChanged(ubicacionEqEInput.value)" id="ubicacionEqEInput" placeholder="Selecciona una UEN...">
+              <div class="invalid-feedback">
+                Por favor, elija una UEN.
+              </div>
+              <datalist id="datalistUbicacionEqE">
+                <option *ngFor="let uen of uens" value = {{uen.uen}}></option>
+              </datalist>
+            </div>
+            <div class="col-md-4 mt-3">
+              <label for="pertenenciaEqEInput" class="form-label">Pertenencia</label>
+              <input [(ngModel)]="eqEditingPertenencia" [disabled]="loadingEE" #pertenenciaEqEInput class="form-control" list="datalistPertenenciaEqE" (change)="pertenenciaEqEChanged(pertenenciaEqEInput.value)" id="pertenenciaEqEInput" placeholder="Selecciona una UEN...">
+              <div class="invalid-feedback">
+                Por favor, elija una UEN.
+              </div>
+              <datalist id="datalistPertenenciaEqE">
+                <option *ngFor="let uen of uens" value = {{uen.uen}}></option>
+              </datalist>
+            </div>
+            <div class="col-md-4 mt-3">
+              <label for="puestoEquipo" class="form-label">Puesto</label>
+              <input [(ngModel)]="eqEditingPuesto" [disabled]="loadingEE" #puestoEqEInput class="form-control" list="datalistpuestoEqE" (change)="puestoEqEChanged(puestoEqEInput.value)" id="puestoEqEInput" placeholder="Selecciona un puesto...">
+              <div class="invalid-feedback">
+                Por favor, elija un puesto.
+              </div>
+              <datalist id="datalistpuestoEqE">
+                <option *ngFor="let puesto of puestos" value = {{puesto.puesto}}></option>
+              </datalist>
+            </div>
           </div>
           <div class="row">
             <div class="col-md-6 mt-3">
               <label for="descripcionTAEE" class="form-label">Descripción</label>
               <textarea [disabled]="loadingEE" (keyup)="checkFormEE('descripcion')" id="descripcionTAEE" placeholder="Ingrese la descripción del equipo..." class="form-control" rows="3" [(ngModel)]="equipoEditing.descripcion"></textarea>
+              <div class="invalid-feedback">
+                Por favor, escriba una descripción del equipo.
+              </div>
+            </div>
+            <div class="col-md-6 mt-3">
+              <label for="comentariosTAEE" class="form-label">Comentarios</label>
+              <textarea [disabled]="loadingEE" (keyup)="checkFormEE('comentarios')" id="comentariosTAEE" placeholder="Ingrese comentarios del equipo..." class="form-control" id="comentariosTAEE" rows="3" [(ngModel)]="equipoEditing.comentarios"></textarea>
               <div class="invalid-feedback">
                 Por favor, escriba una descripción del equipo.
               </div>

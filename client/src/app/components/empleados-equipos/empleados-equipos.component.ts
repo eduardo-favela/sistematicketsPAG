@@ -35,6 +35,9 @@ export class EmpleadosEquiposComponent implements OnInit {
 
   eqEditingTipo = null;
   eqEditingMarca = null;
+  eqEditingUbicacion = null;
+  eqEditingPertenencia = null;
+  eqEditingPuesto = null;
 
   colaborador: any = {
     nombres: null,
@@ -52,8 +55,13 @@ export class EmpleadosEquiposComponent implements OnInit {
     propiedad: null,
     no_serie: null,
     descripcion: null,
-    tipo: null,
-    marca: null
+    tipo_idtipo: null,
+    marcas_id_marca: null,
+    estatus: null,
+    comentarios: null,
+    ubicacion: null,
+    pertenencia: null,
+    puesto: null
   }
 
   colabAEliminar = null
@@ -97,7 +105,7 @@ export class EmpleadosEquiposComponent implements OnInit {
       language: {
         url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json'
       },
-      responsive: true
+      /* responsive: true */
     }
   }
 
@@ -199,6 +207,9 @@ export class EmpleadosEquiposComponent implements OnInit {
     this.equipoEditing = { ...equipo }
     this.eqEditingTipo = this.equipoEditing.tipo
     this.eqEditingMarca = this.equipoEditing.marca
+    this.eqEditingUbicacion = this.equipoEditing.ubicacion
+    this.eqEditingPertenencia = this.equipoEditing.pertenencia
+    this.eqEditingPuesto = this.equipoEditing.puesto
     $('#editEqModal').modal('show')
   }
 
@@ -229,10 +240,18 @@ export class EmpleadosEquiposComponent implements OnInit {
   guardarCambiosEE() {
     this.loadingEE = true
     let tipoEq = this.tipos.find(tipos => tipos.tipo_equipo === this.eqEditingTipo)
-    this.equipoEditing.tipo = ((tipoEq) ? (tipoEq.idtipo) : (null))
+    this.equipoEditing.tipo_idtipo = ((tipoEq) ? (tipoEq.idtipo) : (null))
     let marcaEq = this.marcas.find(marcas => marcas.marca === this.eqEditingMarca)
-    this.equipoEditing.marca = ((marcaEq) ? (marcaEq.id_marca) : (null))
+    this.equipoEditing.marcas_id_marca = ((marcaEq) ? (marcaEq.id_marca) : (null))
+    let ubicacionEq = this.uens.find(uen => uen.uen === this.eqEditingUbicacion)
+    this.equipoEditing.ubicacion = ((ubicacionEq) ? (ubicacionEq.id) : (null))
+    let pertenenciaEq = this.uens.find(uen => uen.uen === this.eqEditingPertenencia)
+    this.equipoEditing.pertenencia = ((pertenenciaEq) ? (pertenenciaEq.id) : (null))
+    let puesto = this.puestos.find(puestos => puestos.puesto === this.eqEditingPuesto)
+    this.equipoEditing.puesto = ((puesto) ? (puesto.id) : (null))
     if (this.checkFormEE('')) {
+      delete this.equipoEditing.marca
+      delete this.equipoEditing.tipo
       this.equiposService.updateEquipo(this.equipoEditing).subscribe(
         res => {
           if (res) {
@@ -308,25 +327,61 @@ export class EmpleadosEquiposComponent implements OnInit {
 
   tipoEqChanged(tipoEquipo) {
     let tipoEq = this.tipos.find(tipos => tipos.tipo_equipo === tipoEquipo)
-    this.equipo.tipo = ((tipoEq) ? (tipoEq.idtipo) : (null))
+    this.equipo.tipo_idtipo = ((tipoEq) ? (tipoEq.idtipo) : (null))
     this.checkFormE('tipo')
   }
 
   marcaEqChanged(marcaEquipo) {
     let marcaEq = this.marcas.find(marcas => marcas.marca === marcaEquipo)
-    this.equipo.marca = ((marcaEq) ? (marcaEq.id_marca) : (null))
+    this.equipo.marcas_id_marca = ((marcaEq) ? (marcaEq.id_marca) : (null))
     this.checkFormE('marca')
+  }
+
+  ubicacionEqChanged(ubicacionEquipo) {
+    let ubicacionEq = this.uens.find(uen => uen.uen === ubicacionEquipo)
+    this.equipo.ubicacion = ((ubicacionEq) ? (ubicacionEq.id) : (null))
+    this.checkFormE('ubicacion')
+  }
+
+  ubicacionEqEChanged(ubicacionEquipo) {
+    let ubicacionEq = this.uens.find(uen => uen.uen === ubicacionEquipo)
+    this.equipoEditing.ubicacion = ((ubicacionEq) ? (ubicacionEq.id) : (null))
+    this.checkFormEE('ubicacion')
+  }
+
+  pertenenciaEqChanged(pertenenciaEquipo) {
+    let pertenenciaEq = this.uens.find(uen => uen.uen === pertenenciaEquipo)
+    this.equipo.pertenencia = ((pertenenciaEq) ? (pertenenciaEq.id) : (null))
+    this.checkFormE('pertenencia')
+  }
+
+  pertenenciaEqEChanged(pertenenciaEquipo) {
+    let pertenenciaEq = this.uens.find(uen => uen.uen === pertenenciaEquipo)
+    this.equipoEditing.pertenencia = ((pertenenciaEq) ? (pertenenciaEq.id) : (null))
+    this.checkFormEE('pertenencia')
+  }
+
+  puestoEqChanged(puestoEqSelected) {
+    let puesto = this.puestos.find(puestos => puestos.puesto === puestoEqSelected)
+    this.equipo.puesto = ((puesto) ? (puesto.id) : (null))
+    this.checkFormE('puesto')
+  }
+
+  puestoEqEChanged(puestoEqSelected) {
+    let puesto = this.puestos.find(puestos => puestos.puesto === puestoEqSelected)
+    this.equipoEditing.puesto = ((puesto) ? (puesto.id) : (null))
+    this.checkFormEE('puesto')
   }
 
   tipoEqChangedEE(tipoEquipo) {
     let tipoEq = this.tipos.find(tipos => tipos.tipo_equipo === tipoEquipo)
-    this.equipoEditing.tipo = ((tipoEq) ? (tipoEq.idtipo) : (null))
+    this.equipoEditing.tipo_idtipo = ((tipoEq) ? (tipoEq.idtipo) : (null))
     this.checkFormEE('tipo')
   }
 
   marcaEqChangedEE(marcaEquipo) {
     let marcaEq = this.marcas.find(marcas => marcas.marca === marcaEquipo)
-    this.equipoEditing.marca = ((marcaEq) ? (marcaEq.id_marca) : (null))
+    this.equipoEditing.marcas_id_marca = ((marcaEq) ? (marcaEq.id_marca) : (null))
     this.checkFormEE('marca')
   }
 
@@ -385,6 +440,16 @@ export class EmpleadosEquiposComponent implements OnInit {
     $('#marcaEquipoInput').val('')
     $('#descripcionTA').removeClass('is-valid')
     $('#descripcionTA').val('')
+    $('#comentariosTA').removeClass('is-valid')
+    $('#comentariosTA').val('')
+    $('#ubicacionEqInput').removeClass('is-valid')
+    $('#ubicacionEqInput').val('')
+    $('#estatusInput').removeClass('is-valid')
+    $('#estatusInput').val('')
+    $('#pertenenciaEqInput').removeClass('is-valid')
+    $('#pertenenciaEqInput').val('')
+    $('#puestoEquipoInput').removeClass('is-valid')
+    $('#puestoEquipoInput').val('')
 
     this.equipo = {
       equipo: null,
@@ -392,8 +457,12 @@ export class EmpleadosEquiposComponent implements OnInit {
       no_serie: null,
       descripcion: null,
       estatus: null,
-      tipo: null,
-      marca: null
+      tipo_idtipo: null,
+      marcas_id_marca: null,
+      comentarios: null,
+      ubicacion: null,
+      pertenencia: null,
+      puesto: null
     }
   }
 
@@ -704,8 +773,41 @@ export class EmpleadosEquiposComponent implements OnInit {
           $('#propiedadInput').addClass('is-invalid')
         }
         break;
+      case 'estatus':
+        if (this.equipo.estatus) {
+          $('#estatusInput').removeClass('is-invalid')
+          $('#estatusInput').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#estatusInput').removeClass('is-valid')
+          $('#estatusInput').addClass('is-invalid')
+        }
+        break;
+      case 'comentarios':
+        if (this.equipo.comentarios) {
+          $('#comentariosTA').removeClass('is-invalid')
+          $('#comentariosTA').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#comentariosTA').removeClass('is-valid')
+          $('#comentariosTA').addClass('is-invalid')
+        }
+        break;
+      case 'pertenencia':
+        if (this.equipo.pertenencia) {
+          $('#pertenenciaEqInput').removeClass('is-invalid')
+          $('#pertenenciaEqInput').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#pertenenciaEqInput').removeClass('is-valid')
+          $('#pertenenciaEqInput').addClass('is-invalid')
+        }
+        break;
       case 'tipo':
-        if (this.equipo.tipo) {
+        if (this.equipo.tipo_idtipo) {
           $('#tipoEquipoInput').removeClass('is-invalid')
           $('#tipoEquipoInput').addClass('is-valid')
         }
@@ -716,7 +818,7 @@ export class EmpleadosEquiposComponent implements OnInit {
         }
         break;
       case 'marca':
-        if (this.equipo.marca) {
+        if (this.equipo.marcas_id_marca) {
           $('#marcaEquipoInput').removeClass('is-invalid')
           $('#marcaEquipoInput').addClass('is-valid')
         }
@@ -724,6 +826,28 @@ export class EmpleadosEquiposComponent implements OnInit {
           valid = false;
           $('#marcaEquipoInput').removeClass('is-valid')
           $('#marcaEquipoInput').addClass('is-invalid')
+        }
+        break;
+      case 'ubicacion':
+        if (this.equipo.ubicacion) {
+          $('#ubicacionEqInput').removeClass('is-invalid')
+          $('#ubicacionEqInput').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#ubicacionEqInput').removeClass('is-valid')
+          $('#ubicacionEqInput').addClass('is-invalid')
+        }
+        break;
+      case 'puesto':
+        if (this.equipo.puesto) {
+          $('#puestoEquipoInput').removeClass('is-invalid')
+          $('#puestoEquipoInput').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#puestoEquipoInput').removeClass('is-valid')
+          $('#puestoEquipoInput').addClass('is-invalid')
         }
         break;
       case 'descripcion':
@@ -757,7 +881,7 @@ export class EmpleadosEquiposComponent implements OnInit {
           $('#propiedadInput').removeClass('is-valid')
           $('#propiedadInput').addClass('is-invalid')
         }
-        if (this.equipo.tipo) {
+        if (this.equipo.tipo_idtipo) {
           $('#tipoEquipoInput').removeClass('is-invalid')
           $('#tipoEquipoInput').addClass('is-valid')
         }
@@ -766,7 +890,7 @@ export class EmpleadosEquiposComponent implements OnInit {
           $('#tipoEquipoInput').removeClass('is-valid')
           $('#tipoEquipoInput').addClass('is-invalid')
         }
-        if (this.equipo.marca) {
+        if (this.equipo.marcas_id_marca) {
           $('#marcaEquipoInput').removeClass('is-invalid')
           $('#marcaEquipoInput').addClass('is-valid')
         }
@@ -783,6 +907,51 @@ export class EmpleadosEquiposComponent implements OnInit {
           valid = false;
           $('#descripcionTA').removeClass('is-valid')
           $('#descripcionTA').addClass('is-invalid')
+        }
+        if (this.equipo.ubicacion) {
+          $('#ubicacionEqInput').removeClass('is-invalid')
+          $('#ubicacionEqInput').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#ubicacionEqInput').removeClass('is-valid')
+          $('#ubicacionEqInput').addClass('is-invalid')
+        }
+        if (this.equipo.estatus) {
+          $('#estatusInput').removeClass('is-invalid')
+          $('#estatusInput').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#estatusInput').removeClass('is-valid')
+          $('#estatusInput').addClass('is-invalid')
+        }
+        if (this.equipo.comentarios) {
+          $('#comentariosTA').removeClass('is-invalid')
+          $('#comentariosTA').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#comentariosTA').removeClass('is-valid')
+          $('#comentariosTA').addClass('is-invalid')
+        }
+        if (this.equipo.pertenencia) {
+          $('#pertenenciaEqInput').removeClass('is-invalid')
+          $('#pertenenciaEqInput').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#pertenenciaEqInput').removeClass('is-valid')
+          $('#pertenenciaEqInput').addClass('is-invalid')
+        }
+        if (this.equipo.puesto) {
+          $('#puestoEquipoInput').removeClass('is-invalid')
+          $('#puestoEquipoInput').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#puestoEquipoInput').removeClass('is-valid')
+          $('#puestoEquipoInput').addClass('is-invalid')
         }
         break;
     }
@@ -818,7 +987,7 @@ export class EmpleadosEquiposComponent implements OnInit {
         }
         break;
       case 'tipo':
-        if (this.equipoEditing.tipo) {
+        if (this.equipoEditing.tipo_idtipo) {
           $('#tipoEquipoInputEE').removeClass('is-invalid')
           $('#tipoEquipoInputEE').addClass('is-valid')
         }
@@ -829,7 +998,7 @@ export class EmpleadosEquiposComponent implements OnInit {
         }
         break;
       case 'marca':
-        if (this.equipoEditing.marca) {
+        if (this.equipoEditing.marcas_id_marca) {
           $('#marcaEquipoInputEE').removeClass('is-invalid')
           $('#marcaEquipoInputEE').addClass('is-valid')
         }
@@ -837,6 +1006,61 @@ export class EmpleadosEquiposComponent implements OnInit {
           valid = false;
           $('#marcaEquipoInputEE').removeClass('is-valid')
           $('#marcaEquipoInputEE').addClass('is-invalid')
+        }
+        break;
+      case 'estatus':
+        if (this.equipoEditing.estatus) {
+          $('#estatusInputEE').removeClass('is-invalid')
+          $('#estatusInputEE').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#estatusInputEE').removeClass('is-valid')
+          $('#estatusInputEE').addClass('is-invalid')
+        }
+        break;
+      case 'ubicacion':
+        if (this.equipoEditing.ubicacion) {
+          $('#ubicacionEqEInput').removeClass('is-invalid')
+          $('#ubicacionEqEInput').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#ubicacionEqEInput').removeClass('is-valid')
+          $('#ubicacionEqEInput').addClass('is-invalid')
+        }
+        break;
+      case 'pertenencia':
+        if (this.equipoEditing.pertenencia) {
+          $('#pertenenciaEqEInput').removeClass('is-invalid')
+          $('#pertenenciaEqEInput').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#pertenenciaEqEInput').removeClass('is-valid')
+          $('#pertenenciaEqEInput').addClass('is-invalid')
+        }
+        break;
+      case 'comentarios':
+        /* if (this.equipoEditing.comentarios) {
+          $('#comentariosTAEE').removeClass('is-invalid')
+          $('#comentariosTAEE').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#comentariosTAEE').removeClass('is-valid')
+          $('#comentariosTAEE').addClass('is-invalid')
+        } */
+        break;
+      case 'puesto':
+        if (this.equipoEditing.puesto) {
+          $('#puestoEqEInput').removeClass('is-invalid')
+          $('#puestoEqEInput').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#puestoEqEInput').removeClass('is-valid')
+          $('#puestoEqEInput').addClass('is-invalid')
         }
         break;
       case 'descripcion':
@@ -869,7 +1093,7 @@ export class EmpleadosEquiposComponent implements OnInit {
           $('#propiedadInputEE').removeClass('is-valid')
           $('#propiedadInputEE').addClass('is-invalid')
         }
-        if (this.equipoEditing.tipo) {
+        if (this.equipoEditing.tipo_idtipo) {
           $('#tipoEquipoInputEE').removeClass('is-invalid')
           $('#tipoEquipoInputEE').addClass('is-valid')
         }
@@ -878,7 +1102,7 @@ export class EmpleadosEquiposComponent implements OnInit {
           $('#tipoEquipoInputEE').removeClass('is-valid')
           $('#tipoEquipoInputEE').addClass('is-invalid')
         }
-        if (this.equipoEditing.marca) {
+        if (this.equipoEditing.marcas_id_marca) {
           $('#marcaEquipoInputEE').removeClass('is-invalid')
           $('#marcaEquipoInputEE').addClass('is-valid')
         }
@@ -895,6 +1119,51 @@ export class EmpleadosEquiposComponent implements OnInit {
           valid = false;
           $('#descripcionTAEE').removeClass('is-valid')
           $('#descripcionTAEE').addClass('is-invalid')
+        }
+        if (this.equipoEditing.estatus) {
+          $('#estatusInputEE').removeClass('is-invalid')
+          $('#estatusInputEE').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#estatusInputEE').removeClass('is-valid')
+          $('#estatusInputEE').addClass('is-invalid')
+        }
+        if (this.equipoEditing.ubicacion) {
+          $('#ubicacionEqEInput').removeClass('is-invalid')
+          $('#ubicacionEqEInput').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#ubicacionEqEInput').removeClass('is-valid')
+          $('#ubicacionEqEInput').addClass('is-invalid')
+        }
+        if (this.equipoEditing.pertenencia) {
+          $('#pertenenciaEqEInput').removeClass('is-invalid')
+          $('#pertenenciaEqEInput').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#pertenenciaEqEInput').removeClass('is-valid')
+          $('#pertenenciaEqEInput').addClass('is-invalid')
+        }
+        /* if (this.equipoEditing.comentarios) {
+          $('#comentariosTAEE').removeClass('is-invalid')
+          $('#comentariosTAEE').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#comentariosTAEE').removeClass('is-valid')
+          $('#comentariosTAEE').addClass('is-invalid')
+        } */
+        if (this.equipoEditing.puesto) {
+          $('#puestoEqEInput').removeClass('is-invalid')
+          $('#puestoEqEInput').addClass('is-valid')
+        }
+        else {
+          valid = false;
+          $('#puestoEqEInput').removeClass('is-valid')
+          $('#puestoEqEInput').addClass('is-invalid')
         }
         break;
     }

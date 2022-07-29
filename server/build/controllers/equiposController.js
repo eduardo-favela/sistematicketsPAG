@@ -114,9 +114,7 @@ class EquiposController {
     }
     setEquipo(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.query(`INSERT INTO equipos SET equipo = ?, propiedad = ?, no_serie = ?, descripcion = ?,
-         estatus = 'ACTIVO', tipo_idtipo = ?, marcas_id_marca = ?;`, [req.body.equipo, req.body.propiedad, req.body.no_serie,
-                req.body.descripcion, req.body.tipo, req.body.marca], function (err, result, fields) {
+            yield database_1.default.query(`INSERT INTO equipos SET ?;`, [req.body], function (err, result, fields) {
                 if (err)
                     throw err;
                 res.json(result);
@@ -125,9 +123,9 @@ class EquiposController {
     }
     updateEquipo(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.query(`UPDATE equipos SET equipo = ?, propiedad = ?, no_serie = ?, descripcion = ?,
-        tipo_idtipo = ?, marcas_id_marca = ? WHERE idequipo = ?;`, [req.body.equipo, req.body.propiedad, req.body.no_serie,
-                req.body.descripcion, req.body.tipo, req.body.marca, req.body.idequipo], function (err, result, fields) {
+            let idequipo = req.body.idequipo;
+            delete req.body.idequipo;
+            yield database_1.default.query(`UPDATE equipos SET ? WHERE idequipo = ?;`, [req.body, idequipo], function (err, result, fields) {
                 if (err)
                     throw err;
                 res.json(result);
@@ -146,10 +144,13 @@ class EquiposController {
     getEquiposTable(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             yield database_1.default.query(`SELECT idequipo, equipo, propiedad, no_serie, descripcion, estatus, tipo_equipo AS tipo, marca, 
-        comentarios
+        uen_ubi.UEN as ubicacion, uen_pert.UEN as pertenencia, puestos.puesto,comentarios
         FROM equipos
         INNER JOIN tipo ON equipos.tipo_idtipo = tipo.idtipo
-        INNER JOIN marcas ON equipos.marcas_id_marca = marcas.id_marca;`, function (err, result, fields) {
+        INNER JOIN marcas ON equipos.marcas_id_marca = marcas.id_marca
+        INNER JOIN uens as uen_ubi ON equipos.ubicacion = uen_ubi.idUEN
+        INNER JOIN uens as uen_pert ON equipos.pertenencia = uen_pert.idUEN
+        INNER JOIN puestos ON equipos.puesto = puestos.id_puesto;`, function (err, result, fields) {
                 if (err)
                     throw err;
                 res.json(result);
